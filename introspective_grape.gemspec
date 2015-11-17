@@ -18,6 +18,8 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n").sort
   s.test_files    = `git ls-files -- spec/*`.split("\n")
 
+  s.required_ruby_version = '~> 2.0'
+
   s.add_dependency "rails"
   s.add_dependency "activerecord"
 
@@ -43,8 +45,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'machinist'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'rufus-mnemo'
-  s.add_development_dependency "schema_plus", "2.0.0.pre12" # For compatibility of schema_validations with AR 4.2.1+
-  s.add_development_dependency "schema_validations"
+  #s.add_development_dependency "schema_plus", "2.0.0.pre12" # For compatibility of schema_validations with AR 4.2.1+
+  #s.add_development_dependency "schema_validations"
   s.add_development_dependency "activerecord-tableless", "~> 1.0"
 
 end
