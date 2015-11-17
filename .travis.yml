@@ -1,0 +1,34 @@
+language: ruby
+install: bundle install --jobs=1 --retry=1
+script:
+  - bundle install
+  - bundle exec rspec
+rvm:
+  - 1.9
+  - 2.2.3
+#  - jruby-9.0.0.0
+env:
+  matrix:
+    - RAILS=3.2.22
+    - RAILS=4.1.13
+    - RAILS=4.2.4
+    - RAILS=master
+  global:
+    - JRUBY_OPTS="-J-Xmx1024m --debug"
+matrix:
+  fast_finish: true
+  exclude:
+    - rvm: 2.2.3
+      env: RAILS=3.2.22
+    - rvm: jruby-9.0.0.0
+      env: RAILS=3.2.22
+    - rvm: 1.9
+      env: RAILS=master
+  allow_failures:
+    - env: RAILS=master
+notifications:
+  email: 
+    recipients:
+    - buermann@gmail.com
+    on_success: change
+    on_failure: always
