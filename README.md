@@ -2,9 +2,9 @@
 
 IntrospectiveGrape is a Rails Plugin for DRYing up Grape APIs by laying out simple
 defaults and including deeply nested relations according to the models'
-accepts_nested_attributes_for :relation declarations.
+accepts_nested_attributes_for :relation declarations. 
 
-IntrospectiveGrape supports file uploads via Paperclip but presently only hypothetically supports CarrierWave.
+IntrospectiveGrape supports file uploads via Paperclip and hypothetically supports CarrierWave.
 
 Presently it is tightly coupled with two behaviors that I like but should be abstracted out:
 
@@ -14,7 +14,7 @@ Presently it is tightly coupled with two behaviors that I like but should be abs
 
 Libraries for Grape and Swagger docs are rather invasively duck typed to support this behavior. It modifies Grape's JSON Formatter module and Grape Swagger's documentation classes to camelize parameter keys, and then converts the keys back to snake case for handling in the API.
 
-To include this behavior in your test coverage you need to either access the API's params object or you can `include IntrospectiveGrape::CamelSnake` in your test helper and `snake_keys(JSON.parse(response.body))` to format the params in a helper method.
+To include this behavior in your test coverage you need to either access the API's params hash or you can `include IntrospectiveGrape::CamelSnake` in your test helper and `snake_keys(JSON.parse(response.body))` to format the params in a helper method.
 
 ## Documentation
 
@@ -38,15 +38,15 @@ class MyModelAPI < IntrospectiveGrape::API
     # Add additional end points to the model's namespace
   end
  
-    class <MyModel>Entity < Grape::Entity
-      expose :id, :attribute
-      expose :nested, using: <NestedModel>Entity>
-    end
-
-    class <NestedModel>Entity < Grape::Entity
-      expose :id, :attribute
-    end
+  class <MyModel>Entity < Grape::Entity
+    expose :id, :attribute
+    expose :nested, using: <NestedModel>Entity>
   end
+
+  class <NestedModel>Entity < Grape::Entity
+    expose :id, :attribute
+  end
+end
 ```
 
 A Pundit policy will need to be defined for :index?,:show?,:update?,:create?, and
@@ -65,20 +65,22 @@ types for the attributes specified in a hash, e.g.:
 
 For nested models declared in Rails' strong params both the Grape params for the
 nested params as well as nested routes will be declared, allowing for
-a good deal of flexibility for API consumers out of the box, nested params for
-bulk updates and nested routes for interacting with single records.
-end
+a good deal of flexibility for API consumers out of the box, such as implicitly
+creating bulk update endpoints for nested models.
+
 
 ## Dependencies
 
 Tool                  | Description
 --------------------- | -----------
 [Grape]               | An opinionated micro-framework for creating REST-like APIs in Ruby
+[GrapeEntity]         | Adds Entity support to API frameworks, such as Grape.
 [GrapeSwagger]        | Swagger docs.
 [Pundit]              | Minimal authorization through OO design and pure Ruby classes
 
-[Grape]: https://github.com/ruby-grape/grape
+[Grape]:        https://github.com/ruby-grape/grape
+[GrapeEntity]:  https://github.com/ruby-grape/grape-entity
 [GrapeSwagger]: https://github.com/ruby-grape/grape-swagger
-[Pundit]: https://github.com/elabs/pundit
+[Pundit]:       https://github.com/elabs/pundit
 
 
