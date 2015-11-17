@@ -55,7 +55,11 @@ module IntrospectiveGrape
       def inherited(child)
         super(child)
         child.before do
-          authorize! # ensure that a user is logged in
+          # Convert incoming camel case params to snake case: grape will totally blow this
+          # if the params hash is not a Hashie::Mash, so make it one of those:
+          @params = Hashie::Mash.new(snake_keys(params))
+          # ensure that a user is logged in
+          authorize!
         end
       end
 

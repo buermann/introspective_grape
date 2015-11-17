@@ -1,4 +1,5 @@
-require 'active_support/inflections'
+require 'grape-swagger'
+require 'active_support/core_ext/module/aliasing'
 module IntrospectiveGrape::CamelSnake
   def snake_keys(data)
     if data.kind_of? Array
