@@ -10,9 +10,9 @@ Gem::Specification.new do |s|
   s.version     = IntrospectiveGrape::VERSION
   s.authors     = ["Josh Buermann"]
   s.email       = ["buermann@gmail.com"]
-  s.homepage    = "TODO"
+  s.homepage    = "https://github.com/buermann/introspective_grape"
   s.summary     = "Introspectively configure deeply nested RESTful Grape APIs for ActiveRecord models."
-  s.description = ""
+  s.description = "Introspectively configure deeply nested RESTful Grape APIs for ActiveRecord models."
   s.license     = "MIT"
 
   s.files         = `git ls-files`.split("\n").sort
