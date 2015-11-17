@@ -1,5 +1,22 @@
 # IntrospectiveGrape
 
+[![Gem Version][GV img]][Gem Version]
+[![Build Status][BS img]][Build Status]
+[![Dependency Status][DS img]][Dependency Status]
+[![Coverage Status][CS img]][Coverage Status]
+
+[Gem Version]: https://rubygems.org/gems/introspective_grape
+[Build Status]: https://travis-ci.org/buermann/introspective_grape
+[travis pull requests]: https://travis-ci.org/buermann/introspective_grape/pull_requests
+[Dependency Status]: https://gemnasium.com/buermann/introspective_grape
+[Coverage Status]: https://coveralls.io/r/buermann/introspective_grape
+
+[GV img]: https://badge.fury.io/rb/introspective_grape.png
+[BS img]: https://travis-ci.org/buermann/introspective_grape.png
+[DS img]: https://gemnasium.com/buermann/introspective_grape.png
+[CS img]: https://coveralls.io/repos/buermann/introspective_grape/badge.png?branch=master
+
+
 IntrospectiveGrape is a Rails Plugin for DRYing up Grape APIs by laying out simple
 defaults and including deeply nested relations according to the models'
 accepts_nested_attributes_for :relation declarations. 
