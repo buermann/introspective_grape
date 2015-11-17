@@ -344,7 +344,7 @@ module IntrospectiveGrape
         # We'll be doing a recursive walk (to handle nested attributes) down the
         # whitelisted params, generating the Grape param definitions by introspecting
         # on the model and its associations.
-        raise "Invalid action: #{action}" if %i(:update :create).include?(action)
+        raise "Invalid action: #{action}" if [:update, :create].include?(action)
         # dsl   : The Grape::Validations::ParamsScope object
         # klass : A reference back to the original descendant of IntrospectiveGrape::API.
         #         You have to pass this around to remember who you were before the DSL
