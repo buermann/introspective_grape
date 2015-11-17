@@ -26,8 +26,8 @@ RSpec.describe User, type: :model do
       let(:target3) { user('target3@springshot.com') }
 
       let(:discussion) {
-        c = sender.chat(users: [target,target2], message: 'Hey guys')
-        target2.reply(chat: c, message: "What's up?")
+        c = sender.chat([target,target2], 'Hey guys')
+        target2.reply( c, "What's up?")
         c 
       }
 
@@ -37,7 +37,7 @@ RSpec.describe User, type: :model do
       end
 
       it "chatting a user returns a chat" do 
-        c = sender.chat(users:target, message: 'a private message')
+        c = sender.chat(target, 'a private message')
         c.kind_of?(Chat).should be_truthy
       end
 
@@ -50,8 +50,8 @@ RSpec.describe User, type: :model do
 
       it "a user gets notifications for all new messages for all conversations" do
         discussion.save!
-        chat2 = target.chat(users: [target2], message: "Come to E2")
-        target.reply(chat: chat2, message: "Hurry")
+        chat2 = target.chat( [target2], "Come to E2")
+        target.reply( chat2, "Hurry")
 
         target2.new_messages?[discussion.id].should == nil
         target2.new_messages?[chat2.id].should == 2
@@ -64,15 +64,15 @@ RSpec.describe User, type: :model do
         sender.read_messages[0].message.should == "What's up?"
 
         target.read_messages.size.should == 2
-        target.read_messages(chat: discussion)[0].message.should == "Hey guys"
-        target.read_messages(chat: discussion)[1].message.should == "What's up?"
+        target.read_messages(discussion)[0].message.should == "Hey guys"
+        target.read_messages(discussion)[1].message.should == "What's up?"
 
         target2.read_messages.size.should == 0
         #target2.new_messages[0].message.should == "Hey guys"
       end
 
       it "users are notified when a new user is added to the chat" do
-        target2.add_chatters(chat:discussion, users: target3)
+        target2.add_chatters(discussion, target3)
 
         sender.messages.last.message.should =~ /ADDED_USER/
           target.messages.last.message.should =~ /ADDED_USER/
@@ -86,7 +86,7 @@ RSpec.describe User, type: :model do
         # and if the user has left leaving again should register as a success
         target.leave_chat(discussion).should == true
         discussion.active_users.size.should == 2
-        sender.reply(chat: discussion, message: 'I never liked target anyway.')
+        sender.reply(discussion, 'I never liked target anyway.')
 
         sender.messages.last.message.should == 'I never liked target anyway.'
         target2.messages.last.message.should == 'I never liked target anyway.'
@@ -97,8 +97,8 @@ RSpec.describe User, type: :model do
 
       it "a user rejoins a chat and doesn't see messages while they were gone" do
         target2.leave_chat(discussion)
-        sender.reply(chat: discussion, message: "Where'd target2 go?")
-        sender.add_chatters(chat: discussion, users: target2)
+        sender.reply(discussion, "Where'd target2 go?")
+        sender.add_chatters( discussion, target2)
 
         messages = target2.messages.order('created_at').map(&:message)
         messages.include?("Where'd target2 go?").should be_falsey
@@ -113,11 +113,11 @@ RSpec.describe User, type: :model do
       end
 
       it "should cascade deletes to chat_user, messages, and read logs" do
-        ChatUser.where(chat_id: discussion.id).size.should == 3
-        ChatMessage.where(chat_id: discussion.id).size.should == 2
+        ChatUser.where(discussion.id).size.should == 3
+        ChatMessage.where(discussion.id).size.should == 2
         discussion.destroy
-        ChatUser.where(chat_id: discussion.id).size.should == 0
-        ChatMessage.where(chat_id: discussion.id).size.should == 0
+        ChatUser.where(discussion.id).size.should == 0
+        ChatMessage.where(discussion.id).size.should == 0
       end
     end
   end

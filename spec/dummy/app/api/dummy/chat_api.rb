@@ -31,7 +31,7 @@ class Dummy::ChatAPI < DummyAPI
     }
     get '/messages' do
       authorize Chat.new, :show?
-      present current_user.read_messages(chat: params[:id], mark_as_read: params[:mark_as_read], new: params[:new]), with: MessageEntity
+      present current_user.read_messages(params[:id], mark_as_read: params[:mark_as_read], new: params[:new]), with: MessageEntity
     end
 
 
@@ -53,7 +53,7 @@ class Dummy::ChatAPI < DummyAPI
     post '/users' do
       authorize Chat.new, :create?
       user_ids = params[:user_ids].split(',')
-      present status: current_user.add_chatters(chat: params[:id], users: user_ids)
+      present status: current_user.add_chatters(params[:id], user_ids)
     end
 
 
@@ -65,7 +65,7 @@ class Dummy::ChatAPI < DummyAPI
     post do
       authorize Chat.new, :create?
       user_ids = params[:user_ids].split(',')
-      present current_user.chat(users: user_ids, message: params[:message])
+      present current_user.chat(user_ids, params[:message])
     end
 
 
@@ -76,7 +76,7 @@ class Dummy::ChatAPI < DummyAPI
     }
     put ':id' do
       authorize Chat.new, :create?
-      current_user.reply(chat: params[:id], message: params[:message])
+      current_user.reply(params[:id], params[:message])
     end
 
 

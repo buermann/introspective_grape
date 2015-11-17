@@ -9,15 +9,15 @@ describe Dummy::ChatAPI, type: :request do
     @sender = User.make!(email: "sender@springshot.com")
     @lurker = User.make!(email: "lurker@springshot.com")
 
-    @lurk = @sender.chat(users: @lurker, message: "Private conversation.")
-    @lurker.reply(chat: @lurk, message:"the lurker has his own conversation that we don't want the current_user to see anywhere")
+    @lurk = @sender.chat( @lurker, "Private conversation.")
+    @lurker.reply(@lurk, "the lurker has his own conversation that we don't want the current_user to see anywhere")
 
-    @pm = @sender.chat(users: @current_user, message: "Private conversation.")
-    @sender.reply(chat: @pm, message: "I'm asking a question?")
-    @sender.reply(chat: @pm, message: "you there?")
+    @pm = @sender.chat( @current_user, "Private conversation.")
+    @sender.reply(@pm, "I'm asking a question?")
+    @sender.reply(@pm, "you there?")
 
-    @chat = @sender.chat(users: [@lurker,@current_user], message: "We need to talk.")
-    @current_user.reply(chat: @chat, message: "Is this about tough love?")
+    @chat = @sender.chat( [@lurker,@current_user], "We need to talk.")
+    @current_user.reply(@chat, "Is this about tough love?")
   end
 
   context "while current_user is the current user" do
@@ -59,11 +59,6 @@ describe Dummy::ChatAPI, type: :request do
     end
 
     context :messages do 
-      it "should get all chat messages" do
-        get "/api/v1/chats/messages", id: @chat.id
-        response.should be_success
-        json.size.should == 2
-      end
 
       it "should get no new chat messages if user was last to reply" do
         get "/api/v1/chats/messages", id: @chat.id, new: true
@@ -72,14 +67,14 @@ describe Dummy::ChatAPI, type: :request do
       end
 
       it "should get new chat messages if user recieves another reply" do
-        @sender.reply(chat: @chat, message: "And now for something completely different.")
+        @sender.reply(@chat, "And now for something completely different.")
         get "/api/v1/chats/messages", id: @chat.id, new: true
         response.should be_success
         json.size.should == 1
       end
 
       it "should mark all new messages from all chats as read if mark_as_read is true" do 
-        @sender.reply(chat: @chat, message: 'A new response.')
+        @sender.reply(@chat, 'A new response.')
         @current_user.new_messages?.keys.size.should == 2
         get "/api/v1/chats/messages", new: true, mark_as_read: true
         response.should be_success
@@ -146,15 +141,15 @@ describe Dummy::ChatAPI, type: :request do
         json['creator_id'].should == @current_user.id
         Chat.last.creator.should == @current_user
         Chat.last.messages.map(&:message).first.should == 'a new chat'
-        @lurker.read_messages(chat: Chat.last.id ).last.message.should == 'a new chat'
+        @lurker.read_messages(Chat.last.id ).last.message.should == 'a new chat'
       end
 
       it "should reply to a chat" do
         put "/api/v1/chats/#{@chat.id}", message: 'A reply.'
         response.should be_success
         ChatMessage.last.author.should == @current_user
-        @sender.read_messages(chat: Chat.last.id ).last.message.should == 'A reply.'
-        @lurker.read_messages(chat: Chat.last.id ).last.message.should == 'A reply.'
+        @sender.read_messages(Chat.last.id ).last.message.should == 'A reply.'
+        @lurker.read_messages(Chat.last.id ).last.message.should == 'A reply.'
       end
 
       it "should leave a chat" do
