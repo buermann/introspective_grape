@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'grape'
   s.add_dependency 'grape-entity'
-  s.add_dependency 'grape-swagger'
+  s.add_dependency 'grape-swagger', '<= 0.10.2'
   s.add_dependency 'pundit'
 
   if RUBY_PLATFORM == 'java'
