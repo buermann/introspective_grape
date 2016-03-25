@@ -50,7 +50,7 @@ module Grape
         doc = create_documentation_class_without_camelized
         doc.class_eval do
           class << self
-            def parse_params_with_camelized(params, path, method)
+            def parse_params_with_camelized(params, path, method, options = {})
               parsed_params = parse_params_without_camelized(params, path, method)
               parsed_params.each_with_index do |param|
                 param[:name] = param[:name]
