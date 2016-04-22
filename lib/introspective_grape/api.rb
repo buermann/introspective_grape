@@ -40,6 +40,22 @@ module IntrospectiveGrape
         datetime: DateTime
       }
 
+      def authentication_method=(method)
+        # IntrospectiveGrape::API.authentication_method=
+        @authentication_method = method
+      end
+
+      def authentication_method(context)
+        # Default to "authenticate!" or as grape docs once suggested, "authorize!"
+        if @authentication_method 
+          @authentication_method
+        elsif context.respond_to?('authenticate!')
+          'authenticate!'
+        elsif context.respond_to?('authorize!')
+          'authorize!'
+        end
+      end
+
       def exclude_actions(model, *args)
         @exclude_actions ||= {}
         @@api_actions ||= [:index,:show,:create,:update,:destroy,nil]
@@ -58,8 +74,8 @@ module IntrospectiveGrape
           # Convert incoming camel case params to snake case: grape will totally blow this
           # if the params hash is not a Hashie::Mash, so make it one of those:
           @params = Hashie::Mash.new(snake_keys(params))
-          # ensure that a user is logged in
-          authorize!
+          # Ensure that a user is logged in.
+          self.send(IntrospectiveGrape::API.authentication_method(self))
         end
       end
 
@@ -375,10 +391,10 @@ module IntrospectiveGrape
           # Look at model.reflections to find the association's class name:
           reflection = r.to_s.sub(/_attributes$/,'') # the reflection name
           relation = begin
-            model.reflections[reflection].class_name.constantize # its class
-          rescue
-            model
-          end
+                       model.reflections[reflection].class_name.constantize # its class
+                     rescue
+                       model
+                     end
 
           if is_file_attachment?(model,r)
             # Handle Carrierwave file upload fields
@@ -407,8 +423,8 @@ module IntrospectiveGrape
 
       def is_file_attachment?(model,field)
         model.try(:uploaders) && model.uploaders[field.to_sym] || # carrierwave
-        model.try(:paperclip_definitions) && model.paperclip_definitions[field.to_sym] || # paperclip
-        model.send(:new).try(field).kind_of?(Paperclip::Attachment)
+          model.try(:paperclip_definitions) && model.paperclip_definitions[field.to_sym] || # paperclip
+          model.send(:new).try(field).kind_of?(Paperclip::Attachment)
       end
 
       def param_type(model,f)
@@ -439,7 +455,7 @@ module IntrospectiveGrape
         end
       end
 
+      end
     end
-  end
 
-end
+  end

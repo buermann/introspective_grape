@@ -16,7 +16,7 @@ class Dummy::Sessions < Grape::API
       if user && user.valid_password?(params[:password]) && user.valid_for_authentication?
 
         # commented out for now, User model is not yet confirmable
-        #unauthorized! DummyAPI::USER_NOT_CONFIRMED unless user.confirmed?
+        #unauthenticated! DummyAPI::USER_NOT_CONFIRMED unless user.confirmed?
 
         token = nil
         if params[:token]
@@ -33,7 +33,7 @@ class Dummy::Sessions < Grape::API
         env['warden'].set_user(user, scope: :user)
         present user, with: Dummy::Entities::User, token: token
       else
-        unauthorized! DummyAPI::BAD_LOGIN
+        unauthenticated! DummyAPI::BAD_LOGIN
       end
     end
 

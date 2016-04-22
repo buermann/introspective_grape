@@ -1,7 +1,7 @@
 class Dummy::ChatAPI < DummyAPI
 
   before do 
-    authorize!
+    authenticate!
   end
 
   resource :chats do  

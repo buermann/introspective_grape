@@ -23,7 +23,7 @@ describe Dummy::Sessions, type: :request do
       post '/api/v1/sessions', { login: user.email, password: 'bad password', token: true }
       response.should_not be_success
       json['error'].should be_truthy
-      json['error']['type'].should == 'unauthorized'
+      json['error']['type'].should == 'unauthenticated'
       user.authentication_token.should be_nil
     end
   end

@@ -8,13 +8,13 @@ module ApiHelpers
     warden.user || params[:api_key].present? && @user = User.find_by_authentication_token(params[:api_key])
   end
 
-  def authorize!
-    unauthorized! unless current_user 
+  def authenticate!
+    unauthenticated! unless current_user 
   end
 
-  # returns an 'unauthorized' response
-  def unauthorized!(error_type = nil)
-    respond_error!('unauthorized', error_type, 401)
+  # returns an 'unauthenticated' response
+  def unauthenticated!(error_type = nil)
+    respond_error!('unauthenticated', error_type, 401)
   end
 
   # returns a error response with given type, message_key and status
