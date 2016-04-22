@@ -1,6 +1,5 @@
 #require 'grape-swagger'
 #require 'grape-entity'
-require 'active_record_helpers'
 #require 'introspective_grape/camel_snake'
 
 class DummyAPI < Grape::API

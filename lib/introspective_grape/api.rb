@@ -174,7 +174,7 @@ module IntrospectiveGrape
             #    attributes, to be passed to the root instance for update. This keeps
             #    behavior consistent between bulk and single record updates.
             if params[root.key]
-              default_includes = routes.size > 1 ? [] : root.model.default_includes
+              default_includes = routes.size > 1 ? [] : klass.default_includes(root.model)
               @model = root.model.includes( default_includes ).find(params[root.key])
             end
 
@@ -186,7 +186,7 @@ module IntrospectiveGrape
 
           end
 
-          unless model.exclude_actions.include?(:index)
+          unless exclude_actions(model).include?(:index)
             desc "list #{name.pluralize}" do
               detail "returns list of all #{name.pluralize}"
             end
@@ -204,7 +204,7 @@ module IntrospectiveGrape
           end
 
 
-          unless model.exclude_actions.include?(:show)
+          unless exclude_actions(model).include?(:show)
             desc "retrieve a #{name}" do
               detail "returns details on a #{name}"
             end
@@ -215,7 +215,7 @@ module IntrospectiveGrape
           end
 
 
-          unless model.exclude_actions.include?(:create)
+          unless exclude_actions(model).include?(:create)
             desc "create a #{name}" do
               detail "creates a new #{name} record"
             end
@@ -235,7 +235,7 @@ module IntrospectiveGrape
           end
 
 
-          unless model.exclude_actions.include?(:update)
+          unless exclude_actions(model).include?(:update)
             desc "update a #{name}" do
               detail "updates the details of a #{name}"
             end
@@ -252,7 +252,7 @@ module IntrospectiveGrape
           end
 
 
-          unless model.exclude_actions.include?(:destroy)
+          unless exclude_actions(model).include?(:destroy)
             desc "destroy a #{name}" do
               detail "destroys the details of a #{name}"
             end

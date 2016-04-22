@@ -1,5 +1,4 @@
 class Dummy::ChatAPI < DummyAPI
-  Chat.default_includes :chat
 
   before do 
     authorize!
