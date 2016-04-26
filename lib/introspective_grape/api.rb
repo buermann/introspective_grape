@@ -423,7 +423,7 @@ module IntrospectiveGrape
 
       def is_file_attachment?(model,field)
         model.try(:uploaders) && model.uploaders[field.to_sym] || # carrierwave
-          model.try(:paperclip_definitions) && model.paperclip_definitions[field.to_sym] || # paperclip
+          (model.try(:attachment_definitions) && model.attachment_definitions[field.to_sym]) ||
           model.send(:new).try(field).kind_of?(Paperclip::Attachment)
       end
 

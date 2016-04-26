@@ -1,4 +1,4 @@
-
+source 'https://rubygems.org'
 gem 'pundit'
-gem 'paperclip', '3.4.2'
-gem 'delayed_paperclip', git: 'https://github.com/buermann/delayed_paperclip.git'
+gem 'paperclip'
+gem 'delayed_paperclip'
