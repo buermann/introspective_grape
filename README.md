@@ -32,7 +32,7 @@ Presently it is tightly coupled with two behaviors that I like but should be abs
 
 Libraries for Grape and Swagger docs are rather invasively duck typed to support this behavior. It modifies Grape's JSON Formatter module and Grape Swagger's documentation classes to camelize parameter keys, and then converts the keys back to snake case for handling in the API.
 
-To include this behavior in your test coverage you need to either access the API's params hash or you can `include IntrospectiveGrape::CamelSnake` in your test helper and `snake_keys(JSON.parse(response.body))` to format the params in a helper method.
+To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` to in a helper method.
 
 ## Documentation
 

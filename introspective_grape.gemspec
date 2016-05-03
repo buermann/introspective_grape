@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'grape-entity', '<0.5.0'
   s.add_dependency 'grape-swagger', '~>0.11.0'
   s.add_dependency 'pundit'
+  s.add_dependency 'camel_snake_keys'
 
   if RUBY_PLATFORM == 'java'
     #s.add_development_dependency "jdbc-sqlite3"

@@ -20,7 +20,7 @@ class DummyAPI < Grape::API
     header "Expires", 1.year.ago.httpdate
     # Convert incoming camel case params to snake case: grape will totally blow this
     # if the params hash is not a Hashie::Mash, so make it one of those:
-    #@params = Hashie::Mash.new(snake_keys(params))
+    #@params = Hashie::Mash.new(params.with_snake_keys)
   end
 
   before_validation do

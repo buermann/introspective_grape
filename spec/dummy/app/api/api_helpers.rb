@@ -1,5 +1,4 @@
 module ApiHelpers
-  include IntrospectiveGrape::CamelSnake
   def warden
     env['warden']
   end

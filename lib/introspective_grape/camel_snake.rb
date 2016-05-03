@@ -1,43 +1,18 @@
 require 'grape-swagger'
 require 'active_support' #/core_ext/module/aliasing'
-module IntrospectiveGrape::CamelSnake
-  def snake_keys(data)
-    if data.kind_of? Array
-      data.map { |v| snake_keys(v) }
-    elsif data.kind_of? HashWithIndifferentAccess
-      HashWithIndifferentAccess[data.map {|k, v| [k.to_s.underscore, snake_keys(v)] }]
-    elsif data.kind_of? Hash
-      Hash[data.map {|k, v| [k.to_s.underscore, snake_keys(v)] }]
-    else
-      data
-    end
-  end
-
-  def camel_keys(data)
-    if data.kind_of? Array
-      data.map { |v| camel_keys(v) }
-    elsif data.kind_of?(HashWithIndifferentAccess)
-      HashWithIndifferentAccess[data.map {|k, v| [k.to_s.camelize(:lower), camel_keys(v)] }]
-    elsif data.kind_of?(Hash)
-      Hash[data.map {|k, v| [k.to_s.camelize(:lower), camel_keys(v)] }]
-    else
-      data
-    end
-  end
-end
+require 'camel_snake_keys'
 
 # Monkey patch Grape's built in JSON formatter to convert all snake case hash keys
-# to camel case.
+# from ruby to camel case.
 module Grape
   module Formatter
     module Json
       class << self
-        include IntrospectiveGrape::CamelSnake
         def call(object, env)
           if object.respond_to?(:to_json)
-            camel_keys(JSON.parse(object.to_json)).to_json
+            JSON.parse(object.to_json).with_camel_keys.to_json
          else
-            camel_keys(MultiJson.dump(object)).to_json
+            MultiJson.dump(object).with_camel_keys.to_json
           end
         end
       end
