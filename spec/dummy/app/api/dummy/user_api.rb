@@ -24,7 +24,7 @@ class Dummy::UserAPI < IntrospectiveGrape::API
   end
 
   class UserEntity < Grape::Entity
-    expose :id, :email, :first_name, :last_name, :avatar_url
+    expose :id, :email, :first_name, :last_name, :avatar_url, :created_at
     expose :roles, as: :roles_attributes, using: RoleEntity
     expose :user_project_jobs, as: :user_project_jobs_attributes, using: UserProjectJobEntity
   end 

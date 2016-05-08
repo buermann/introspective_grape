@@ -25,35 +25,35 @@ RSpec.describe Role, type: :model do
   context "User helper methods" do 
     it "should register a user as a super user" do
       user.superuser?.should == false
-      ur = Role.create!(user:user, ownable: SuperUser.new)
+      Role.create!(user:user, ownable: SuperUser.new)
       user.reload
       user.superuser?.should == true
     end
 
     it "should register a company admin" do
       user.admin?(company).should == false
-      ur = Role.create!(user:user, ownable: company)
+      Role.create!(user:user, ownable: company)
       user.reload
       user.admin?(company).should == true
     end
 
     it "should register a project administrator" do 
       user.admin?(project).should == false
-      ur = Role.create!(user:user, ownable: project)
+      Role.create!(user:user, ownable: project)
       user.reload
       user.admin?(project).should == true
     end
 
     it "should register a user a company admin if admin of any company" do
       user.company_admin?.should == false
-      ur = Role.create!(user:user, ownable: company)
+      Role.create!(user:user, ownable: company)
       user.reload
       user.company_admin?.should == true
     end
 
     it "should register a user as a project admin if admin of any project" do
       user.project_admin?.should == false
-      ur = Role.create!(user:user, ownable: project)
+      Role.create!(user:user, ownable: project)
       user.reload
       user.project_admin?.should == true
     end

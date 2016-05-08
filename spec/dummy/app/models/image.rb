@@ -11,10 +11,10 @@ class Image < ActiveRecord::Base
 
   #process_in_background :file, processing_image_url: 'empty_avatar.png'
 
-  Paperclip.interpolates :imageable_type  do |attachment, style|
+  Paperclip.interpolates :imageable_type  do |attachment, _style|
       attachment.instance.imageable_type.try(:pluralize)
   end
-  Paperclip.interpolates :imageable_id  do |attachment, style|
+  Paperclip.interpolates :imageable_id  do |attachment, _style|
       attachment.instance.imageable_id
   end
 

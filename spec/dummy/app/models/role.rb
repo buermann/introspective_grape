@@ -15,7 +15,7 @@ class Role < AbstractAdapter
     ownable_type == 'SuperUser' ? SuperUser.new : super
   end
 
-  def self.ownable_assign_options(model=nil)
+  def self.ownable_assign_options(_model=nil)
     ([SuperUser.new] + Company.all + Project.all).map { |i| [ "#{i.class}: #{i.name}", "#{i.class}-#{i.id}"] }
   end
 

@@ -17,11 +17,11 @@ module ErrorHandlers
       error_response message: "Join record not found! #{e.message}", status: 404
     end
 
-    m.rescue_from Pundit::NotAuthorizedError do |e|
+    m.rescue_from Pundit::NotAuthorizedError do
       error_response message: "Forbidden", status: 403 
     end
 
-    m.rescue_from Pundit::NotDefinedError do |e|
+    m.rescue_from Pundit::NotDefinedError do
       error_response message: "Policy not implemented", status: 501 
     end
   end

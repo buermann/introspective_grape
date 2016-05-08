@@ -20,11 +20,6 @@ class Dummy::Sessions < Grape::API
 
         token = nil
         if params[:token]
-          payload = {
-              uid: "#{user.id}", # uid must be a string
-              email: user.email,
-              avatar_url: user.avatar_url
-          }
           user.authentication_token = SecureRandom.urlsafe_base64(nil, false)
           user.save
         end
@@ -43,7 +38,8 @@ class Dummy::Sessions < Grape::API
     end
     delete '/' do
       authorize User.new, :sessions?
-      if u = User.find_by_authentication_token(params[:api_key])
+      u = User.find_by_authentication_token(params[:api_key])
+      if u 
         u.authentication_token = nil
         {status: u.save!}
       else

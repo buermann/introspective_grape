@@ -6,7 +6,7 @@ RSpec.describe Image, type: :model do
 
   it { should have_attached_file(:file) }
   it { should validate_attachment_content_type(:file).
-        allowing('image/png', 'image/gif', 'image/jpeg')
+    allowing('image/png', 'image/gif', 'image/jpeg')
   }
   it { should validate_attachment_size(:file).less_than(2.megabytes) }
 

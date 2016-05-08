@@ -22,7 +22,7 @@ RSpec.describe UserProjectJob, type: :model do
     j = Job.make!
     p.jobs.push j
     p.save
-    r = UserProjectJob.make!(project: p, job: j) 
+    UserProjectJob.make!(project: p, job: j) 
     UserProjectJob.options_for_job(p).should == p.jobs
   end
 

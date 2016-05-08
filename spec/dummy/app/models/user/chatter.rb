@@ -2,15 +2,15 @@ module User::Chatter
 
   def message_query(chat_id, new = true)
     messages.joins(:chat_message_users) 
-    .where('chat_message_users.user_id'=> id)
-    .where(new ? {'chat_message_users.read_at'=>nil} : '')
-    .where(chat_id ? {'chat_messages.chat_id'=> chat_id} : '')
-    .order('') # or it will add an order by id clause that breaks the count query.
+            .where('chat_message_users.user_id'=> id)
+            .where(new ? {'chat_message_users.read_at'=>nil} : '')
+            .where(chat_id ? {'chat_messages.chat_id'=> chat_id} : '')
+            .order('') # or it will add an order by id clause that breaks the count query.
   end
 
   def new_messages?(chat=nil) # returns a hash of chat_ids with new message counts 
     chat_id = chat.kind_of?(Chat) ? chat.id : chat
-    new = message_query(chat_id, new = true)
+    new = message_query(chat_id)
           .select("chat_messages.chat_id, count(chat_messages.id) as count")
           .group('chat_id')
 
@@ -20,7 +20,7 @@ module User::Chatter
   def read_messages(chat= nil, mark_as_read= false, new= true)
     chat_id = chat.kind_of?(Chat) ? chat.id : chat
     new = message_query(chat_id, new).order('chat_messages.created_at').includes(:author) # :chat?
-    new.map(&:chat).uniq.each {|chat| mark_as_read(chat) } if mark_as_read
+    new.map(&:chat).uniq.each {|c| mark_as_read(c) } if mark_as_read
     new
   end
 

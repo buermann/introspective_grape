@@ -7,16 +7,32 @@ describe Dummy::LocationAPI, type: :request do
 
   before :all do
     create_test_airport
+    Location.make!(name: "TEST2", kind: "airport") 
   end
 
   it "should return a list of top level locations and their children" do
     get '/api/v1/locations'
     response.should be_success
-    json.length.should > 0
+    json.length.should eq 2
     json.map{|l| l['id'].to_i }.include?(location.id).should == true
 
     json.first['child_locations'].size.should > 0
     json.first['child_locations'].map{|l| l['id'].to_i}.sort.should == location.child_locations.map(&:id).sort
+  end
+
+  it "should generate basic filters on the whitelisted model attributes" do 
+    get '/api/v1/locations', { name: "TEST" }
+    response.should be_success
+    json.length.should eq 1
+    json.first['name'].should eq "TEST"
+  end
+
+  it "should parse more advanced JSON filters" do
+    get '/api/v1/locations', filter: "{\"child_locations_locations\":{\"name\":\"Terminal A\"}}" 
+    response.should be_success
+    json.length.should eq 1
+    json.first['child_locations'].length.should eq 1
+    json.first['child_locations'].first['name'].should eq "Terminal A"
   end
 
   it "should return the specified location" do
@@ -43,7 +59,7 @@ describe Dummy::LocationAPI, type: :request do
     json['name'].should == "Test 123"
     l   = Location.find(json['id'])
     created = l.beacons.first
-    created.uuid.should   == b.uuid.gsub(/-/,'').upcase
+    created.uuid.should   == b.uuid.delete('-').upcase
     created.minor.should  == b.minor
     created.major.should  == b.major
   end

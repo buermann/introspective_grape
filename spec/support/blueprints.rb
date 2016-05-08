@@ -12,11 +12,11 @@ def syllable(length=-1)
 end
 
 def word(max_syl=3)
-  (1+rand(max_syl)).times.collect { syllable }.join
+  Array.new(1+rand(max_syl)).map { syllable }.join
 end
 
 def words(n=3)
-  n.times.collect { word }.join
+  Array.new(n).collect { word }.join
 end
 
 def paragraph(n=25)

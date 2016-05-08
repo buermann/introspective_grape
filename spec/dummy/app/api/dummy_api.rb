@@ -11,12 +11,12 @@ class DummyAPI < Grape::API
   helpers PermissionsHelper
   helpers ApiHelpers
 
-  USER_NOT_CONFIRMED =    'user_not_confirmed'  # "Your account must be confirmed, please check your email inbox."
-  BAD_LOGIN =             'bad_login' # incorrect username or password'
+  USER_NOT_CONFIRMED = 'user_not_confirmed'.freeze
+  BAD_LOGIN          = 'bad_login'.freeze
 
   before do
     # sets server date in response header. This can be used on the client side
-    header "X-Server-Date", "#{Time.now.to_i}"
+    header "X-Server-Date", Time.now.to_i.to_s
     header "Expires", 1.year.ago.httpdate
     # Convert incoming camel case params to snake case: grape will totally blow this
     # if the params hash is not a Hashie::Mash, so make it one of those:

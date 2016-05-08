@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 20150909225019) do
     t.integer  "file_file_size"
     t.datetime "file_updated_at"
     t.boolean  "file_processing",   default: false, null: false
-    t.text   "meta"
+    t.text     "meta"
     t.string   "source"
     t.float    "lat"
     t.float    "lng"

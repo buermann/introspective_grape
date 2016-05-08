@@ -10,7 +10,7 @@ class ChatUser < AbstractAdapter
   validate :user_not_already_active, on: :create
 
   def user_not_already_active
-    errors[:base] << "#{user.name} is already present in this chat." if chat.chat_users.where(user_id: user.id, departed_at: nil).count > 0 if user.persisted?
+    errors[:base] << "#{user.name} is already present in this chat." if chat.chat_users.where(user_id: user.id, departed_at: nil).count > 0 && user.persisted?
   end
 
 end

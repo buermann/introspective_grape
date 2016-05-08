@@ -16,7 +16,7 @@ RSpec.describe UserLocation, type: :model do
 
   it "logs a user's locations by beacon" do
     beacon = LocationBeacon.last
-    p1 = user.user_locations.build(location: beacon.location, detectable: beacon, coords: rand_coords)
+    user.user_locations.build(location: beacon.location, detectable: beacon, coords: rand_coords)
     user.save.should == true
     p2 = user.user_locations.build(location: beacon.location, detectable: beacon, coords: rand_coords)
     user.save.should == true
@@ -25,7 +25,7 @@ RSpec.describe UserLocation, type: :model do
 
   it "logs a user's beacon location by gps" do
     gps = LocationGps.last
-    p1 = user.user_locations.build(location: gps.location, detectable: gps, coords: rand_coords)
+    user.user_locations.build(location: gps.location, detectable: gps, coords: rand_coords)
     user.save.should == true
     p2 = user.user_locations.build(location: gps.location, detectable: gps, coords: rand_coords)
     user.save.should == true
