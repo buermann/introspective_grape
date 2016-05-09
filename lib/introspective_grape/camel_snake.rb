@@ -6,7 +6,7 @@ if IntrospectiveGrape.config.camelize_parameters
   # Monkey patch Grape's built in JSON formatter to convert all snake case hash keys
   # from ruby to camel case.
   Grape::Formatter::Json::class_eval do 
-    def call(object, _env)
+    def self.call(object, _env)
       if object.respond_to?(:to_json)
         JSON.parse(object.to_json).with_camel_keys.to_json
       else
