@@ -3,18 +3,6 @@ require 'active_support' #/core_ext/module/aliasing'
 require 'camel_snake_keys'
 
 if IntrospectiveGrape.config.camelize_parameters 
-  # Monkey patch Grape's built in JSON formatter to convert all snake case hash keys
-  # from ruby to camel case.
-  Grape::Formatter::Json::class_eval do 
-    def self.call(object, _env)
-      if object.respond_to?(:to_json)
-        JSON.parse(object.to_json).with_camel_keys.to_json
-      else
-        MultiJson.dump(object).with_camel_keys.to_json
-      end
-    end
-  end
-
   # Camelize the parameters in the swagger documentation.
   if Gem::Version.new( GrapeSwagger::VERSION ) <= Gem::Version.new('0.11.0')
     Grape::API.class_eval do 

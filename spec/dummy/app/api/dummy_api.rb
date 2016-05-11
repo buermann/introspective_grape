@@ -4,7 +4,8 @@
 
 class DummyAPI < Grape::API
   version 'v1', using: :path
-  format :json
+  format    :json
+  formatter :json, IntrospectiveGrape::Formatter::CamelJson
   default_format :json
 
   include ErrorHandlers

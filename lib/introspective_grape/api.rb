@@ -447,4 +447,3 @@ module IntrospectiveGrape
     end
   end
 end
-

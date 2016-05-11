@@ -1,3 +1,11 @@
+0.1.1 5/11/2016
+==============
+
+### Features
+
+Stop monkey patching Grape's json formatter and instead use Grape's "formatter" 
+with our own CamelJson module.
+
 0.1.0 5/8/2016
 ==============
 

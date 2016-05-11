@@ -44,16 +44,37 @@ gem 'introspective_grape'
 
 And bundle install.
 
-Authentication is presently enforced on every endpoint. If you have named the authentication helper method in Grape something other than "authenticate!" or "authorize!" you can set it with:
+## Authentication and authorization
+
+Authentication and authorization are presently enforced on every endpoint. If you have named the authentication helper method in Grape something other than "authenticate!" or "authorize!" you can set it with:
 
 ```
 IntrospectiveGrape::API.authentication_method = "whatever!"
 ```
 
+Pundit authorization is invoked against index?, show?, update?, create?, and destroy? methods with the model instance in question (or a new instance in the case of index).
+
+
+## Grape Configuration
+
+IntrospectiveGrape's default behavior is to camelize all outputs and snake case all inputs, so ruby and javascript developers can speak in their own idioms. To camel case all your json output you can use its formatter in your API:
+
+```
+formatter :json, IntrospectiveGrape::Formatter::CamelJson
+```
+
+It also defaults to monkey patching Grape::Swagger to camelize the API's parameters in the swagger docs and, vice-versa, snake casing the parameters that are sent to your API.
+
+You can disable this behavior by setting `IntrospectiveGrape.config.camelize_parameters = false`.
+
+
+## Generate End Points for Models
+
 In app/api/v1/my_model_api.rb:
 
 ```
 class MyModelAPI < IntrospectiveGrape::API
+  skip_presence_validations :attribute
   exclude_actions Model, <:index,:show,:create,:update,:destroy>
   default_includes Model, <associations for eager loading>
 
@@ -75,10 +96,10 @@ class MyModelAPI < IntrospectiveGrape::API
 end
 ```
 
-A Pundit policy will need to be defined for :index?,:show?,:update?,:create?, and
-:destroy? as well as a policy scope for the index action. IntrospectiveGrape
-automatically enforces Pundit's authorize method before all actions.
- 
+If a model has, say, a procedurally generated default for a not-null field
+`skip_presence_validations` will make IntrospectiveGrape declare the parameter
+optional rather than required.
+
 To define a Grape param type for a virtual attribute or override the defaut param
 type from model introspection, define a class method in the model with the param
 types for the attributes specified in a hash, e.g.:
