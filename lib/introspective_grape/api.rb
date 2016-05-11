@@ -43,8 +43,8 @@ module IntrospectiveGrape
         super(child)
         child.before do
           # Convert incoming camel case params to snake case: grape will totally blow this
-          # if the params hash is not a Hashie::Mash, so make it one of those:
-          @params = Hashie::Mash.new(params.with_snake_keys) if IntrospectiveGrape.config.camelize_parameters
+          # if the params hash does not come back as a Hashie::Mash.
+          @params = params.with_snake_keys if IntrospectiveGrape.config.camelize_parameters
           # Ensure that a user is logged in.
           self.send(IntrospectiveGrape::API.authentication_method(self))
         end
