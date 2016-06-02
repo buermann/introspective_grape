@@ -18,12 +18,19 @@
 
 
 IntrospectiveGrape is a Rails Plugin for DRYing up Grape APIs by laying out simple
-defaults with handling for deeply nested relations according to the models'
-accepts_nested_attributes_for :relation declarations, generating all the necessary
+RESTful defaults based on the model definitions. If you use a schema validator
+like [link](https://github.com/SchemaPlus/schema_plus, "SchemaPlus") it will, by
+extension, define your endpoints according to your database schema.
+
+It provides handling for deeply nested relations according to the models'
+`accepts_nested_attributes_for :relation` declarations, generating all the necessary
 boilerplate for flexible and consistent bulk endpoints on plural associations.
 
-It also snake cases everything coming in and camelizes everything going out. This behavior can be disabled.
-
+It also snake cases everything coming in and camelizes parameters in your swagger docs
+default. This behavior can be disabled. In addition it provides a 
+`IntrospectiveGrape::Formatter::CamelJson` json formatter to recursively camelize the
+keys of all your outputs, so ruby and javascript developers can speak in their own
+idioms.
 
 ## Documentation
 
@@ -38,7 +45,7 @@ And bundle install.
 
 ## Grape Configuration
 
-IntrospectiveGrape's default behavior is to camelize all outputs and snake case all inputs, so ruby and javascript developers can speak in their own idioms. To camel case all your json output you can use its formatter in your API:
+IntrospectiveGrape's default behavior is to camelize all outputs and snake case all inputs. To camel case all your json output you'll need to use its formatter in your API:
 
 ```
 formatter :json, IntrospectiveGrape::Formatter::CamelJson
@@ -48,7 +55,7 @@ It also defaults to monkey patching Grape::Swagger to camelize the API's paramet
 
 You can disable this behavior by setting `IntrospectiveGrape.config.camelize_parameters = false`.
 
-To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` to in a helper method.
+To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method.
 
 ## Authentication and authorization
 
