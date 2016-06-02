@@ -29,7 +29,7 @@ Company.blueprint do
 end
 
 User.blueprint do
-  email       { "test-"+syllable+'@springshot.com' }
+  email       { "test-"+word(5)+'@springshot.com' }
   first_name  { word(4) }
   last_name   { word(5) }
   password    { 'abc12345' }
