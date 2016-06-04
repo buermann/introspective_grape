@@ -19,7 +19,7 @@
 
 IntrospectiveGrape is a Rails Plugin for DRYing up Grape APIs by laying out simple
 RESTful defaults based on the model definitions. If you use a schema validator
-like [link](https://github.com/SchemaPlus/schema_plus, "SchemaPlus") it will, by
+like [SchemaPlus](https://github.com/SchemaPlus/schema_plus) it will, by
 extension, define your endpoints according to your database schema.
 
 It provides handling for deeply nested relations according to the models'
@@ -27,10 +27,11 @@ It provides handling for deeply nested relations according to the models'
 boilerplate for flexible and consistent bulk endpoints on plural associations.
 
 It also snake cases everything coming in and camelizes parameters in your swagger docs
-default. This behavior can be disabled. In addition it provides a 
-`IntrospectiveGrape::Formatter::CamelJson` json formatter to recursively camelize the
-keys of all your outputs, so ruby and javascript developers can speak in their own
-idioms.
+by default. This behavior can be disabled.
+
+In addition it provides a `IntrospectiveGrape::Formatter::CamelJson` json formatter to
+recursively camelize the keys of all your outputs, so ruby and javascript developers
+can speak in their own idioms.
 
 ## Documentation
 
