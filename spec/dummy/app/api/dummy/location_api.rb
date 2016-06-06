@@ -1,9 +1,9 @@
 class Dummy::LocationAPI < IntrospectiveGrape::API
+  exclude_actions Location, :none 
+  include_actions LocationBeacon, :index 
+  include_actions LocationGps, :index
 
   default_includes Location, :child_locations, :gps, :beacons, :locatables
-
-  exclude_actions LocationBeacon, :show,:create,:update,:destroy
-  exclude_actions LocationGps, :show,:create,:update,:destroy
 
   restful Location, [:name, :kind,
     {gps_attributes: [:id, :lat, :lng, :alt, :_destroy]},

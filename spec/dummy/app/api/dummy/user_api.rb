@@ -2,6 +2,7 @@ class Dummy::UserAPI < IntrospectiveGrape::API
 
   skip_presence_validations :password
 
+  include_actions User, :all
   exclude_actions Role, :show,:update
   exclude_actions UserProjectJob, :show,:update
 

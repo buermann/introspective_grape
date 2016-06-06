@@ -1,4 +1,5 @@
 module IntrospectiveGrape::Helpers
+  API_ACTIONS = [:index,:show,:create,:update,:destroy].freeze
   def authentication_method=(method)
     # IntrospectiveGrape::API.authentication_method=
     @authentication_method = method
@@ -16,11 +17,22 @@ module IntrospectiveGrape::Helpers
   end
 
   def exclude_actions(model, *args)
-    @exclude_actions ||= {}
-    @@api_actions ||= [:index,:show,:create,:update,:destroy,nil]
-    raise "#{model.name} defines invalid exclude_actions: #{args-@@api_actions}" if (args.flatten-@@api_actions).present?
-    @exclude_actions[model.name] = args.present? ? args.flatten : @exclude_actions[model.name] || []
+    @exclude_actions ||= {}; @exclude_actions[model.name] ||= []
+    args.flatten!
+    args = API_ACTIONS if args.include?(:all) 
+    args = []          if args.include?(:none)
+
+    undefined_actions = args.compact-API_ACTIONS
+    raise "#{model.name} defines invalid actions: #{undefined_actions}" if undefined_actions.present?
+
+    @exclude_actions[model.name] = args.present? ? args.compact : @exclude_actions[model.name] || []
   end
+
+  def include_actions(model, *args)
+    @exclude_actions ||= {}; @exclude_actions[model.name] ||= []
+    @exclude_actions[model.name] = API_ACTIONS-exclude_actions(model, args)
+  end
+
 
   def default_includes(model, *args)
     @default_includes ||= {}

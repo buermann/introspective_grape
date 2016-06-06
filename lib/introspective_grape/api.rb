@@ -125,18 +125,16 @@ module IntrospectiveGrape
         namespace = routes[0..-2].map{|p| "#{p.name.pluralize}/:#{p.swaggerKey}/" }.join + routes.last.name.pluralize
 
         resource namespace do
+
           convert_nested_params_hash(self, routes)
           define_restful_api(self, routes, model, api_params)
         end
       end
 
       def define_restful_api(dsl, routes, model, api_params) 
-        exclude = exclude_actions(model)
-        define_index(  dsl, routes, model, api_params) unless exclude.include?(:index)
-        define_show(   dsl, routes, model) unless exclude.include?(:show)
-        define_create( dsl, routes, model, api_params) unless exclude.include?(:create)
-        define_update( dsl, routes, model, api_params) unless exclude.include?(:update)
-        define_destroy(dsl, routes, model) unless exclude.include?(:destroy)
+        API_ACTIONS.each do |action|
+          send("define_#{action}", dsl, routes, model, api_params) unless exclude_actions(model).include?(action)
+        end
       end
 
       def define_index(dsl, routes, model, api_params)
@@ -178,7 +176,7 @@ module IntrospectiveGrape
         end
       end
 
-      def define_show(dsl, routes, model)
+      def define_show(dsl, routes, model, _api_params)
         name = routes.last.name.singularize
         klass = routes.first.klass
         dsl.desc "retrieve a #{name}" do
@@ -230,7 +228,7 @@ module IntrospectiveGrape
         end
       end
 
-      def define_destroy(dsl, routes, _model)
+      def define_destroy(dsl, routes, _model, _api_params)
         klass = routes.first.klass
         name = routes.last.name.singularize
         dsl.desc "destroy a #{name}" do

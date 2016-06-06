@@ -23,8 +23,9 @@ like [SchemaPlus](https://github.com/SchemaPlus/schema_plus) it will, by
 extension, define your endpoints according to your database schema.
 
 It provides handling for deeply nested relations according to the models'
-`accepts_nested_attributes_for :relation` declarations, generating all the necessary
-boilerplate for flexible and consistent bulk endpoints on plural associations.
+`accepts_nested_attributes_for` declarations, generating all the necessary
+boilerplate for flexible and consistent bulk endpoints on plural associations,
+and building nested routes for the same.
 
 It also snake cases everything coming in and camelizes parameters in your swagger docs
 by default. This behavior can be disabled.
@@ -79,7 +80,7 @@ class MyModelAPI < IntrospectiveGrape::API
   exclude_actions Model, <:index,:show,:create,:update,:destroy>
   default_includes Model, <associations for eager loading>
 
-  exclude_actions NestedModel, <:index,:show,:create,:update,:destroy>
+  include_actions NestedModel, <:index,:show,:create,:update,:destroy>
   default_includes NestedModel, <associations for eager loading>
 
   restful MyModel, [:strong, :param, :fields, :and, { nested_attributes: [:nested,:fields, :_destroy] }] do
@@ -115,6 +116,20 @@ For nested models declared in Rails' strong params both the Grape params for the
 nested params as well as nested routes will be declared, allowing for
 a good deal of flexibility for API consumers out of the box, such as implicitly
 creating bulk update endpoints for nested models.
+
+## Excluding Endpoints
+
+By default any association included in the strong params argument will have all
+RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
+be excluded (or conversely included) with the `exclude_actions` or `include_actions`
+declarations on the model.
+
+## Grape Hooks
+
+Grape only applies hooks in the order they were declared, so to hook into the default
+RESTful actions defined by IntrospectiveGrape you need to declare any hooks before the
+`restful` declaration, rather than inside its block, where the hook will only apply to
+subsequently declared endpoints.
 
 
 ## Dependencies

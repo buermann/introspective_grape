@@ -1,3 +1,10 @@
+0.1.4 5/11/2016
+==============
+
+### Features
+
+Added an include_actions declaration as the inverse of exclude_actions.
+
 0.1.1 5/11/2016
 ==============
 
