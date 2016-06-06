@@ -122,7 +122,7 @@ creating bulk update endpoints for nested models.
 By default any association included in the strong params argument will have all
 RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
 be excluded (or conversely included) with the `exclude_actions` or `include_actions`
-declarations on the model.
+declarations on the model. You can also include or exclude :all or :none as shorthand.
 
 ## Grape Hooks
 
