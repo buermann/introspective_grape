@@ -206,7 +206,7 @@ module IntrospectiveGrape
           end
           authorize @model, :create?
           @model.save!
-          present klass.find_leaves(routes, @model, params), with: "#{klass}::#{model}Entity".constantize
+          present klass.find_leaves(routes, @model.reload, params), with: "#{klass}::#{model}Entity".constantize
         end
       end
 
@@ -224,7 +224,7 @@ module IntrospectiveGrape
 
           @model.update_attributes!( safe_params(params).permit(klass.whitelist) )
 
-          present klass.find_leaf(routes, @model, params), with: "#{klass}::#{model}Entity".constantize
+          present klass.find_leaf(routes, @model.reload, params), with: "#{klass}::#{model}Entity".constantize
         end
       end
 

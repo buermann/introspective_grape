@@ -1,3 +1,11 @@
+0.1.5 6/26/2016
+==============
+
+### Bug Fix
+
+Reload the model from the database before presenting it to the user after create/update, as
+some deeply nested association changes will not be properly loaded by active record.
+
 0.1.4 5/11/2016
 ==============
 
