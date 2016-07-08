@@ -28,7 +28,8 @@ boilerplate for flexible and consistent bulk endpoints on plural associations,
 and building nested routes for the same.
 
 It also snake cases everything coming in and camelizes parameters in your swagger docs
-by default. This behavior can be disabled.
+by default if you `require 'introspective_grape/camel_snake'` in your API.
+This behavior can be disabled.
 
 In addition it provides a `IntrospectiveGrape::Formatter::CamelJson` json formatter to
 recursively camelize the keys of all your outputs, so ruby and javascript developers
