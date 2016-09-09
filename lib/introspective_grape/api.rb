@@ -1,4 +1,5 @@
 require 'action_controller'
+require 'grape-kaminari'
 
 module IntrospectiveGrape
   class API < Grape::API
@@ -41,10 +42,10 @@ module IntrospectiveGrape
 
       def inherited(child)
         super(child)
-        child.before do
+        child.after_validation do
           # Convert incoming camel case params to snake case: grape will totally blow this
           # if the params hash does not come back as a Hashie::Mash.
-          @params = (params||{}).with_snake_keys if IntrospectiveGrape.config.camelize_parameters
+          @params = (params||Hashie::Mash.new).with_snake_keys if IntrospectiveGrape.config.camelize_parameters
           # Ensure that a user is logged in.
           self.send(IntrospectiveGrape::API.authentication_method(self))
         end
@@ -125,7 +126,6 @@ module IntrospectiveGrape
         namespace = routes[0..-2].map{|p| "#{p.name.pluralize}/:#{p.swaggerKey}/" }.join + routes.last.name.pluralize
 
         resource namespace do
-
           convert_nested_params_hash(self, routes)
           define_restful_api(self, routes, model, api_params)
         end
@@ -138,10 +138,12 @@ module IntrospectiveGrape
       end
 
       def define_index(dsl, routes, model, api_params)
+        include Grape::Kaminari
         root  = routes.first
         klass = routes.first.klass
         name  = routes.last.name.pluralize
         simple_filters = api_params.select {|p| p.is_a? Symbol }
+
         dsl.desc "list #{name}" do
           detail "returns list of all #{name}"
         end
@@ -152,12 +154,21 @@ module IntrospectiveGrape
           optional :filter, type: String, description: "JSON of conditions for query. If you're familiar with ActiveRecord's query conventions you can build more complex filters, e.g. against included child associations, e.g. {\"<association_name>_<parent>\":{\"field\":\"value\"}}"
 
         end
+        if klass.pagination
+          paginate per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0
+        end
         dsl.get '/' do
+          params[:per_page] = params[:per_page].to_i if params[:per_page]
+          params[:offset]   = params[:offset].to_i   if params[:offset]
+
           # Invoke the policy for the action, defined in the policy classes for the model:
           authorize root.model.new, :index?
 
           # Nested route indexes need to be scoped by the API's top level policy class:
           records = policy_scope( root.model.includes(klass.default_includes(root.model)) )
+       
+          # Will Kaminari impose these limits for us?
+          #.limit(params[:per_page]).offset(params[:offset])
 
           simple_filters.each do |f|
             records = records.where(f => params[f]) if params[f].present?
@@ -171,7 +182,10 @@ module IntrospectiveGrape
           end
 
           records.where( JSON.parse(params[:query]) ) if params[:query].present?
+
           records = records.map{|r| klass.find_leaves( routes, r, params ) }.flatten.compact.uniq
+          # paginate the records using Kaminari
+          records = paginate(Kaminari.paginate_array(records)) if klass.pagination
           present records, with: "#{klass}::#{model}Entity".constantize
         end
       end

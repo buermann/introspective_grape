@@ -1,6 +1,34 @@
 require 'rails_helper'
 
 describe Dummy::CompanyAPI, type: :request do
+  context :default_values do
+    it "should respect default values" do
+      get '/api/v1/companies/special/list'
+      response.should be_success
+      json.should eq({"boolean_default"=>false, "string_default"=>"foo", "integer_default"=>123})
+    end
+
+    it "should override default values" do
+      get '/api/v1/companies/special/list', boolean_default: true, string_default: 'bar', integer_default: 321
+      response.should be_success
+      json.should eq({"boolean_default"=>true, "string_default"=>"bar", "integer_default"=>321})
+    end
+  end
+
+  context :pagination do
+    it "should use the default introsepctive grape pagination values" do
+      Company.destroy_all
+      30.times { Company.make! }
+
+      get '/api/v1/companies'
+
+      response.should be_success
+      json.length.should eq 25
+      json.first['id'].should eq Company.first.id
+      response.headers.slice("X-Total", "X-Total-Pages", "X-Per-Page", "X-Page", "X-Next-Page", "X-Prev-Page", "X-Offset").values.should eq ["30", "2", "25", "1", "2", "", "0"]
+    end
+  end
+
   before :all do
     Company.find_by_name("Sprockets") || Company.make!(name:"Sprockets")
   end

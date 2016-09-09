@@ -24,7 +24,7 @@ describe Dummy::ProjectAPI, type: :request do
 
   context "As a super admin" do
     it "should return a list of all projects" do
-      get '/api/v1/projects'
+      get '/api/v1/projects', per_page: 10, offset: 0
       response.should be_success
       json.length.should == Project.count
       json.map{|c| c['id'].to_i}.include?(project.id).should == true
@@ -118,7 +118,7 @@ describe Dummy::ProjectAPI, type: :request do
     end
 
     it "should return a list of all the company's projects" do
-      get '/api/v1/projects'
+      get '/api/v1/projects', offset: 0
       response.should be_success
       json.length.should == 2 
       json.map{|c| c['name']}.include?("Manufacture Sprockets").should == true
@@ -140,12 +140,43 @@ describe Dummy::ProjectAPI, type: :request do
     end
 
     it "should return a list of all the project admin's projects" do
-      get '/api/v1/projects'
+      get '/api/v1/projects', offset: 0
       response.should be_success
       json.length.should == 1 
       json.map{|c| c['name']}.include?("Manufacture Sprockets").should == true
       json.map{|c| c['name']}.include?("Disassemble Sprockets").should == false
     end
   end
+
+  context :pagination do
+    before(:all) do
+      Project.destroy_all
+      20.times { Project.make! }
+    end
+
+    it "should return the project API's declared default paginated results" do
+      get '/api/v1/projects'
+      response.should be_success
+      json.length.should == 2
+      json.first['id'].should eq Project.all[2].id
+      json.second['id'].should eq Project.all[3].id
+      response.headers.slice("X-Total", "X-Total-Pages", "X-Per-Page", "X-Page", "X-Next-Page", "X-Prev-Page", "X-Offset").values.should eq ["20", "9", "2", "1", "2", "", "2"]
+    end
+
+    it "should return the request number of results" do
+      get '/api/v1/projects', per_page: 9, offset: 9
+      response.should be_success
+      json.size.should == 9
+      json.map {|j| j['id']}.should eq Project.all[9..17].map(&:id)
+      response.headers.slice("X-Total", "X-Total-Pages", "X-Per-Page", "X-Page", "X-Next-Page", "X-Prev-Page", "X-Offset").values.should eq ["20", "2", "9", "1", "2", "", "9"]
+    end
+
+    it "should respect the maximum number of results" do
+      get '/api/v1/projects', per_page: 20, offset: 0
+      response.code.should eq "400"
+      json['error'].should eq "per_page must be less than 10"
+    end
+  end
+
 
 end

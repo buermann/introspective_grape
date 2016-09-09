@@ -23,9 +23,10 @@ Gem::Specification.new do |s|
   s.add_dependency "rails"
   s.add_dependency "activerecord"
 
-  s.add_dependency 'grape', '~> 0.16.2'
-  s.add_dependency 'grape-entity', '<0.5.0'
-  s.add_dependency 'grape-swagger', '~>0.11.0'
+  s.add_dependency 'grape',          '~> 0.16.2'
+  s.add_dependency 'grape-entity',   '<0.5.0'
+  s.add_dependency 'grape-swagger',  '~>0.11.0'
+  s.add_dependency 'grape-kaminari', '~>0.1.9'
   s.add_dependency 'pundit'
   s.add_dependency 'camel_snake_keys', '~>0.0.2'
 
@@ -35,6 +36,9 @@ Gem::Specification.new do |s|
   else
     s.add_development_dependency "sqlite3"
   end
+
+  #s.add_development_dependency 'pry'
+  #s.add_development_dependency 'byebug'
 
   s.add_development_dependency "rspec-rails", '>= 3.0'
   s.add_development_dependency 'devise'

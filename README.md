@@ -84,6 +84,8 @@ class MyModelAPI < IntrospectiveGrape::API
   include_actions NestedModel, <:index,:show,:create,:update,:destroy>
   default_includes NestedModel, <associations for eager loading>
 
+  paginate per_page 25, offset: 0, max_per_page: false
+
   restful MyModel, [:strong, :param, :fields, :and, { nested_attributes: [:nested,:fields, :_destroy] }] do
     # Add additional end points to the model's namespace
   end
@@ -117,6 +119,10 @@ For nested models declared in Rails' strong params both the Grape params for the
 nested params as well as nested routes will be declared, allowing for
 a good deal of flexibility for API consumers out of the box, such as implicitly
 creating bulk update endpoints for nested models.
+
+## Pagination
+
+The index action by default will not be paginated, simply declared `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0.
 
 ## Excluding Endpoints
 

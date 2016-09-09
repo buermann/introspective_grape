@@ -16,6 +16,14 @@ module IntrospectiveGrape::Helpers
     end
   end
 
+  def paginate(args={})
+    @pagination = args
+  end
+
+  def pagination
+    @pagination
+  end
+
   def exclude_actions(model, *args)
     @exclude_actions ||= {}; @exclude_actions[model.name] ||= []
     args.flatten!

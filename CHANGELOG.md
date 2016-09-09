@@ -1,3 +1,15 @@
+
+0.1.6 9/10/2016
+==============
+
+### Bug Fix
+
+The before hook snake casing parameters in the API was preventing the assignment of default values, this was moved to an after_validation hook.
+
+### Features
+
+Grape::Kaminari pagination was added to the index actions if configured in the parent class.
+
 0.1.5 6/26/2016
 ==============
 

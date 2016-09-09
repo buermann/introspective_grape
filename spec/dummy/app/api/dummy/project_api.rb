@@ -9,6 +9,7 @@ class Dummy::ProjectAPI < IntrospectiveGrape::API
   exclude_actions Team, :show
   exclude_actions TeamUser, :show,:update
 
+  paginate per_page: 2, max_per_page: 10, offset: 2
 
   restful Project, [:id, teams_attributes: [:id,:name,:_destroy, team_users_attributes: [:id, :user_id, :_destroy] ]] 
 
