@@ -25,7 +25,7 @@ env:
     - RAILS=3.2.22
     - RAILS=4.1.13
     - RAILS=4.2.5.1
-    - RAILS=master
+#    - RAILS=master
   global:
     - JRUBY_OPTS="-J-Xmx1024m --debug"
 
