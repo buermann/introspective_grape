@@ -20,8 +20,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '~> 2.0'
 
-  s.add_dependency "rails"
-  s.add_dependency "activerecord"
+  s.add_dependency "rails", '< 5'
 
   s.add_dependency 'grape',          '~> 0.16.2'
   s.add_dependency 'grape-entity',   '<0.5.0'
