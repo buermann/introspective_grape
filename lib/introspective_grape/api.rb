@@ -158,18 +158,12 @@ module IntrospectiveGrape
           paginate per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0
         end
         dsl.get '/' do
-          params[:per_page] = params[:per_page].to_i if params[:per_page]
-          params[:offset]   = params[:offset].to_i   if params[:offset]
-
           # Invoke the policy for the action, defined in the policy classes for the model:
           authorize root.model.new, :index?
 
           # Nested route indexes need to be scoped by the API's top level policy class:
           records = policy_scope( root.model.includes(klass.default_includes(root.model)) )
        
-          # Will Kaminari impose these limits for us?
-          #.limit(params[:per_page]).offset(params[:offset])
-
           simple_filters.each do |f|
             records = records.where(f => params[f]) if params[f].present?
           end
