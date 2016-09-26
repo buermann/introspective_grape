@@ -26,6 +26,17 @@ describe Dummy::UserAPI, type: :request do
       json.first['roles_attributes'].first['ownable_id'].should == company.id
     end
 
+    it "should constrain the index by a time range" do
+      6.times { User.make! }
+      u = User.last
+      u.update_column(:created_at, 1.day.ago)
+      get '/api/v1/users', { created_at_start: 2.day.ago, created_at_end: 8.hours.ago }
+      response.should be_success
+      json.length.should eq 1
+      json.first['id'].to_i.should    eq u.id
+      json.first['first_name'].should eq u.first_name
+    end
+
     it "should not expose users' encrypted_passwords" do
       get "/api/v1/users"
       response.should be_success
@@ -131,7 +142,7 @@ describe Dummy::UserAPI, type: :request do
       user.avatar.should     == Image.last
       user.avatar_url.should == Image.last.file.url(:medium)
     end
- 
+
     it "should upload a user avatar via the nested route, to test the restful api's handling of has_one associations" do
       params = { file: Rack::Test::UploadedFile.new(Rails.root+'../fixtures/images/avatar.jpeg', 'image/jpeg', true) }
 
@@ -142,7 +153,7 @@ describe Dummy::UserAPI, type: :request do
       user.avatar_url.should == Image.last.file.url(:medium)
       user.avatar_url
     end
-    
+
     it "should require a devise re-confirmation email to update a user's email address" do
       new_email = 'new.email@test.com'
       old_email = user.email
@@ -167,7 +178,7 @@ describe Dummy::UserAPI, type: :request do
       put "/api/v1/users/#{user.id}", { roles_attributes: [{ownable_type: 'Company', ownable_id: company.id}] }
       response.should_not be_success
       json['error'].should =~ /user has already been assigned that role/
-        user.admin?(company).should be_truthy
+      user.admin?(company).should be_truthy
     end
 
     it "should update a user to be company admin" do 

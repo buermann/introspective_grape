@@ -4,6 +4,8 @@ require 'grape-kaminari'
 module IntrospectiveGrape
   class API < Grape::API
     extend IntrospectiveGrape::Helpers
+    extend IntrospectiveGrape::Filters
+    extend IntrospectiveGrape::Traversal
 
     # Allow files to be uploaded through ActionController:
     ActionController::Parameters::PERMITTED_SCALAR_TYPES.push Rack::Multipart::UploadedFile, ActionController::Parameters
@@ -135,6 +137,7 @@ module IntrospectiveGrape
       end
 
       def define_restful_api(dsl, routes, model, api_params) 
+        # declare index, show, update, create, and destroy methods:
         API_ACTIONS.each do |action|
           send("define_#{action}", dsl, routes, model, api_params) unless exclude_actions(model).include?(action)
         end
@@ -145,17 +148,13 @@ module IntrospectiveGrape
         root  = routes.first
         klass = routes.first.klass
         name  = routes.last.name.pluralize
-        simple_filters = api_params.select {|p| p.is_a? Symbol }
+        simple_filters(klass, model, api_params)
 
         dsl.desc "list #{name}" do
           detail "returns list of all #{name}"
         end
         dsl.params do
-          simple_filters.each do |field|
-            optional field, type: klass.param_type(model,field), description: "Filter on #{field} by value."
-          end
-          optional :filter, type: String, description: "JSON of conditions for query. If you're familiar with ActiveRecord's query conventions you can build more complex filters, e.g. against included child associations, e.g. {\"<association_name>_<parent>\":{\"field\":\"value\"}}"
-
+          klass.declare_filter_params(self, klass, model, api_params)
         end
         if klass.pagination
           paginate per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0
@@ -166,20 +165,9 @@ module IntrospectiveGrape
 
           # Nested route indexes need to be scoped by the API's top level policy class:
           records = policy_scope( root.model.includes(klass.default_includes(root.model)) )
-       
-          simple_filters.each do |f|
-            records = records.where(f => params[f]) if params[f].present?
-          end
 
-          if params[:filter].present?
-            filters = JSON.parse( params[:filter].delete('\\') )
-            filters.each do |key, value|
-              records = records.where(key => value) if value.present?
-            end
-          end
-
-          records.where( JSON.parse(params[:query]) ) if params[:query].present?
-
+          records = klass.apply_filter_params(klass, model, api_params, params, records)
+          records = records.where( JSON.parse(params[:query]) ) if params[:query].present?
           records = records.map{|r| klass.find_leaves( routes, r, params ) }.flatten.compact.uniq
           # paginate the records using Kaminari
           records = paginate(Kaminari.paginate_array(records)) if klass.pagination
@@ -288,7 +276,7 @@ module IntrospectiveGrape
         return routes if model == parent_model
 
         name       = reflection_name || model.name.underscore
-        reflection = parent_model && parent_model.reflections[reflection_name]
+        reflection = parent_model.try(:reflections).try(:fetch,reflection_name)
         many       = parent_model && PLURAL_REFLECTIONS.include?( reflection.class ) ? true : false
         swaggerKey = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
 
@@ -317,46 +305,6 @@ module IntrospectiveGrape
         end
       end
 
-
-      def find_leaves(routes, record, params)
-        # Traverse down our route and find the leaf's siblings from its parent, e.g.
-        # project/#/teams/#/team_users ~> project.find.teams.find.team_users
-        # (the traversal of the intermediate nodes occurs in find_leaf())
-        return record if routes.size < 2 # the leaf is the root
-        if record = find_leaf(routes, record, params)
-          assoc = routes.last
-          if assoc.many? && leaves = record.send( assoc.reflection.name ).includes( default_includes(assoc.model) )
-            unless (leaves.map(&:class) - [routes.last.model]).empty? 
-              raise ActiveRecord::RecordNotFound.new("Records contain the wrong models, they should all be #{routes.last.model.name}, found #{records.map(&:class).map(&:name).join(',')}")
-            end
-
-            leaves
-          else 
-            # has_one associations don't return a CollectionProxy and so don't support 
-            # eager loading.
-            record.send( assoc.reflection.name )
-          end
-        end
-      end
-
-      def find_leaf(routes, record, params)
-        return record unless routes.size > 1
-        # For deeply nested routes we need to search from the root of the API to the leaf
-        # of its nested associations in order to guarantee the validity of the relationship,
-        # the authorization on the parent model, and the sanity of passed parameters. 
-        routes[1..-1].each_with_index do |r|
-          if record && params[r.key]
-            ref = r.reflection
-            record = record.send(ref.name).where( id: params[r.key] ).first if ref
-          end
-        end
-
-        if params[routes.last.key] && record.class != routes.last.model
-          raise ActiveRecord::RecordNotFound.new("No #{routes.last.model.name} with ID '#{params[routes.last.key]}'")
-        end
-
-        record
-      end
 
 
       def generate_params(dsl, klass, action, model, fields)
@@ -430,8 +378,8 @@ module IntrospectiveGrape
         f       = f.to_s
         db_type = (model.try(:columns_hash)||{})[f].try(:type)
 
-        # Look for an override class from the model, check Pg2Ruby, use the database type,
-        # or fail over to a String:
+        # Check if it's a file attachment, look for an override class from the model,
+        # check Pg2Ruby, use the database type, or fail over to a String:
         ( is_file_attachment?(model,f) && Rack::Multipart::UploadedFile ) || 
           (model.try(:attribute_param_types)||{})[f]                      || 
           Pg2Ruby[db_type]                                                ||

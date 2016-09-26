@@ -109,4 +109,5 @@ describe Dummy::LocationAPI, type: :request do
     Location.where(id: child_locations).size.should == 0
   end
 
+
 end

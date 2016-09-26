@@ -1,4 +1,11 @@
 
+0.1.8 9/10/2016
+==============
+
+### Features
+
+Add date range filters for the index page.
+
 0.1.6 9/10/2016
 ==============
 

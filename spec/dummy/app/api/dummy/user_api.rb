@@ -7,6 +7,7 @@ class Dummy::UserAPI < IntrospectiveGrape::API
   exclude_actions UserProjectJob, :show,:update
 
   restful User, [:id, :email, :password, :first_name, :last_name, :skip_confirmation_email,
+    :created_at, :updated_at,
     user_project_jobs_attributes: [:id, :job_id, :project_id, :_destroy],
     roles_attributes: [:id, :ownable_type, :ownable_id, :_destroy],
     avatar_attributes: [:id, :file, :_destroy]

@@ -36,9 +36,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency "sqlite3"
   end
 
-  #s.add_development_dependency 'pry'
-  #s.add_development_dependency 'byebug'
-
+  #s.add_development_dependency "byebug"
   s.add_development_dependency "rspec-rails", '>= 3.0'
   s.add_development_dependency 'devise'
   s.add_development_dependency 'devise-async'
@@ -46,8 +44,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'machinist'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'rufus-mnemo'
-  #s.add_development_dependency "schema_plus", "2.0.0.pre12" # For compatibility of schema_validations with AR 4.2.1+
-  #s.add_development_dependency "schema_validations"
   s.add_development_dependency "activerecord-tableless", "~> 1.0"
 
 end

@@ -5,9 +5,9 @@ class UserProjectJob < AbstractAdapter
 
   validates_inclusion_of :job, in: proc {|r| r.project.try(:jobs) || [] }
 
-  delegate :email, :avatar_url, to: :user
-  delegate :title, to: :job
-  delegate :name,  to: :project
+  delegate :email, :avatar_url, to: :user,    allow_nil: true
+  delegate :title,              to: :job,     allow_nil: true
+  delegate :name,               to: :project, allow_nil: true
 
   def self.options_for_job(project=nil)
     project.jobs
