@@ -10,8 +10,6 @@ module IntrospectiveGrape::Filters
 
   def timestamp_filter(klass,model,field)
     filter = field.sub(/_(end|start)\z/,'')
-    Rails.logger.fatal filter.inspect
-    Rails.logger.fatal klass.param_type(model,filter).inspect
     if field =~ /_(end|start)\z/ && klass.param_type(model,filter) == DateTime
       filter
     else
