@@ -17,6 +17,14 @@ module IntrospectiveGrape::Filters
     end
   end
 
+  def identifier_filter(klass,model,field)
+    if field.ends_with?('id') && klass.param_type(model,field) == Integer
+      field
+    else
+      false
+    end
+  end
+
   def declare_filter_params(dsl, klass, model, api_params)
     # Declare optional parameters for filtering parameters, create two parameters per
     # timestamp, a Start and an End, to apply a date range.
@@ -24,6 +32,8 @@ module IntrospectiveGrape::Filters
       if timestamp_filter(klass,model,field)
         terminal = field.ends_with?("_start") ? "initial" : "terminal" 
         dsl.optional field, type: klass.param_type(model,field), description: "Constrain #{field} by #{terminal} date."
+      elsif identifier_filter(klass,model,field)
+        dsl.optional field, type: Array[Integer], coerce_with: ->(val) { val.split(',') }
       else
         dsl.optional field, type: klass.param_type(model,field), description: "Filter on #{field} by value."
       end

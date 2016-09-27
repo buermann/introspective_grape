@@ -1,5 +1,11 @@
 
-0.1.8 9/10/2016
+0.1.9 9/27/2016
+==============
+### Features
+
+Allow identifier filters for foreign and primary keys to accept comma separated lists.
+
+0.1.8 9/25/2016
 ==============
 
 ### Features
