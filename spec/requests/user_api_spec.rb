@@ -37,6 +37,16 @@ describe Dummy::UserAPI, type: :request do
       json.first['first_name'].should eq u.first_name
     end
 
+    it "should accept a comma separated list of ids" do
+      4.times { User.make! }
+      user_ids = [User.first,User.second,User.third].map(&:id)
+      get '/api/v1/users', { id: user_ids.join(',') }
+      response.should be_success
+      json.length.should eq 3
+      json.map {|j| j['id'] }.should eq user_ids
+
+    end
+
     it "should not expose users' encrypted_passwords" do
       get "/api/v1/users"
       response.should be_success
