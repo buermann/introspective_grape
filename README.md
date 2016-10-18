@@ -77,7 +77,7 @@ In app/api/v1/my_model_api.rb:
 
 ```
 class MyModelAPI < IntrospectiveGrape::API
-  skip_presence_validations :attribute
+  skip_presence_validations :attribute_with_generated_default_value
   exclude_actions Model, <:index,:show,:create,:update,:destroy>
   default_includes Model, <associations for eager loading>
 
@@ -86,7 +86,7 @@ class MyModelAPI < IntrospectiveGrape::API
 
   paginate per_page 25, offset: 0, max_per_page: false
 
-  restful MyModel, [:strong, :param, :fields, :and, { nested_attributes: [:nested,:fields, :_destroy] }] do
+  restful MyModel, [:strong, :param, :fields, :and, { nested_model_attributes: [:nested,:fields, :_destroy] }] do
     # Add additional end points to the model's namespace
   end
  
@@ -111,7 +111,9 @@ types for the attributes specified in a hash, e.g.:
  
 ```
    def self.attribute_param_types
-    { "<attribute name>" => Virtus::Attribute::Boolean }
+    { "<attribute name 1>" => String,
+      "<attribute name 2>" => Integer,
+      "<attribute name 3>" => Virtus::Attribute::Boolean }
    end
 ```
 
@@ -120,9 +122,57 @@ nested params as well as nested routes will be declared, allowing for
 a good deal of flexibility for API consumers out of the box, such as implicitly
 creating bulk update endpoints for nested models.
 
+
+## Filtering and Searching
+
+IntrospectiveGrape will automatically generate and parse filters on all exposed fields in the API.
+
+Multiple values can be specified at once for Integer attributes that end in "id" (i.e. conventional primary and foreign keys) at once by passing a comma separated list of IDs.
+
+For timestamp attributes it will generate `<name_of_timestamp>_start` and `<name_of_timestamp>_end` constraints.
+
+### Overriding Filter Queries
+
+If, e.g., a field is some sort of complex composite rather than a simple field value you can override the default behavior (`where(field: params[field])`) by adding a query method on the model class:
+
+```
+class MyAPI < IntrospectiveGrape::API
+  restful MyModel, [my_composite_field]
+end
+
+class MyModel
+  self << class
+    def my_composite_field=(parameters)
+      # parse the passed parameters in some way and return a query scope
+    end
+  end
+end
+```
+
+### Custom Filter Methods
+
+To add a custom filter to the index action you can declare a method to be called
+against the model class with `custom_filter`. You can pass documentation and type
+constraints (it would default to String) and other Grape parameter options in a hash:
+
+```
+class MyAPI < IntrospectiveGrape::API
+  custom_filter :my_filter, type: Boolean, description: "Filter on some scope"
+end
+
+class MyModel
+  self << class
+    def my_filter(filter=false)
+      filter ? my_scope : where(nil)
+    end
+  end
+end
+```
+
+
 ## Pagination
 
-The index action by default will not be paginated, simply declared `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0.
+The index action by default will not be paginated, simply declared `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
 
 ## Excluding Endpoints
 
@@ -136,7 +186,7 @@ declarations on the model. You can also include or exclude :all or :none as shor
 Grape only applies hooks in the order they were declared, so to hook into the default
 RESTful actions defined by IntrospectiveGrape you need to declare any hooks before the
 `restful` declaration, rather than inside its block, where the hook will only apply to
-subsequently declared endpoints.
+your own subsequently declared endpoints.
 
 
 ## Dependencies
@@ -146,11 +196,13 @@ Tool                  | Description
 [Grape]               | An opinionated micro-framework for creating REST-like APIs in Ruby
 [GrapeEntity]         | Adds Entity support to API frameworks, such as Grape.
 [GrapeSwagger]        | Swagger docs.
+[GrapeKaminari]       | Pagination.
 [Pundit]              | Minimal authorization through OO design and pure Ruby classes
 
-[Grape]:        https://github.com/ruby-grape/grape
-[GrapeEntity]:  https://github.com/ruby-grape/grape-entity
-[GrapeSwagger]: https://github.com/ruby-grape/grape-swagger
-[Pundit]:       https://github.com/elabs/pundit
+[Grape]:         https://github.com/ruby-grape/grape
+[GrapeEntity]:   https://github.com/ruby-grape/grape-entity
+[GrapeSwagger]:  https://github.com/ruby-grape/grape-swagger
+[GrapeKaminari]: https://github.com/monterail/grape-kaminari
+[Pundit]:        https://github.com/elabs/pundit
 
 

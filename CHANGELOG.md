@@ -1,4 +1,31 @@
 
+0.2.0 10/12/2016
+==============
+
+### Features
+
+Allow index action filter overrides if there is a class-level 'assignment' method on the field
+
+Allow custom filters, e.g.:
+
+class MyAPI < IntrospectiveGrape::API
+  custom_filter :my_filter, {type: Boolean, description: "Filter on some scope" }
+
+  restful MyModel, [my_field]
+end
+
+class MyModel
+  self << class
+    def my_filter(filter=false)
+      filter ? my_scope : where(nil)
+    end
+    
+    def my_field=(parameters)
+      # parse the passed parameters in some fancy way and return a query scope
+    end
+  end 
+end
+
 0.1.9 9/27/2016
 ==============
 ### Features

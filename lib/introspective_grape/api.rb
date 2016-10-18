@@ -28,7 +28,9 @@ module IntrospectiveGrape
     # types for the attributes specified in a hash:
     #
     #  def self.attribute_param_types
-    #   { "<attribute name>" => Virtus::Attribute::Boolean }
+    #   { "<attribute name>" => Virtus::Attribute::Boolean,
+    #     "<attribute name>" => Integer,
+    #     "<attribute name>" => String }
     #  end
     #
     # For nested models declared in Rails' strong params both the Grape params for the
@@ -88,6 +90,7 @@ module IntrospectiveGrape
         routes = build_routes(routes, model)
         define_routes(routes, whitelist)
 
+        # Top level declaration of the Grape::API namespace for the resource:
         resource routes.first.name.pluralize do
           # yield to append additional routes under the root namespace
           yield if block_given? 

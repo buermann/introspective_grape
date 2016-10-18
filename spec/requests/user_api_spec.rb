@@ -44,7 +44,6 @@ describe Dummy::UserAPI, type: :request do
       response.should be_success
       json.length.should eq 3
       json.map {|j| j['id'] }.should eq user_ids
-
     end
 
     it "should not expose users' encrypted_passwords" do
