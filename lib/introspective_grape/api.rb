@@ -6,6 +6,7 @@ module IntrospectiveGrape
     extend IntrospectiveGrape::Helpers
     extend IntrospectiveGrape::Filters
     extend IntrospectiveGrape::Traversal
+    extend IntrospectiveGrape::Doc
 
     # Allow files to be uploaded through ActionController:
     ActionController::Parameters::PERMITTED_SCALAR_TYPES.push Rack::Multipart::UploadedFile, ActionController::Parameters
@@ -154,7 +155,7 @@ module IntrospectiveGrape
         simple_filters(klass, model, api_params)
 
         dsl.desc "list #{name}" do
-          detail "returns list of all #{name}"
+          detail klass.index_documentation || "returns list of all #{name}"
         end
         dsl.params do
           klass.declare_filter_params(self, klass, model, api_params)
@@ -182,7 +183,7 @@ module IntrospectiveGrape
         name = routes.last.name.singularize
         klass = routes.first.klass
         dsl.desc "retrieve a #{name}" do
-          detail "returns details on a #{name}"
+          detail klass.show_documentation || "returns details on a #{name}"
         end
         dsl.get ":#{routes.last.swaggerKey}" do
           authorize @model, :show?
@@ -195,7 +196,7 @@ module IntrospectiveGrape
         klass = routes.first.klass
         root  = routes.first
         dsl.desc "create a #{name}" do
-          detail "creates a new #{name} record"
+          detail klass.create_documentation || "creates a new #{name} record"
         end
         dsl.params do
           klass.generate_params(self, klass, :create, model, api_params)
@@ -216,7 +217,7 @@ module IntrospectiveGrape
         klass = routes.first.klass
         name = routes.last.name.singularize
         dsl.desc "update a #{name}" do
-          detail "updates the details of a #{name}"
+          detail klass.update_documentation || "updates the details of a #{name}"
         end
         dsl.params do
           klass.generate_params(self, klass, :update, model, api_params)
@@ -234,7 +235,7 @@ module IntrospectiveGrape
         klass = routes.first.klass
         name = routes.last.name.singularize
         dsl.desc "destroy a #{name}" do
-          detail "destroys the details of a #{name}"
+          detail klass.destroy_documentation || "destroys the details of a #{name}"
         end
         dsl.delete ":#{routes.last.swaggerKey}" do
           authorize @model, :destroy?

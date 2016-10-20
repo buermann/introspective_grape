@@ -1,6 +1,7 @@
 module IntrospectiveGrape
   autoload :API,        'introspective_grape/api'
   autoload :CamelSnake, 'introspective_grape/camel_snake'
+  autoload :Doc,        'introspective_grape/doc'
   autoload :Filters,    'introspective_grape/filters'
   autoload :Helpers,    'introspective_grape/helpers'
   autoload :Traversal,  'introspective_grape/traversal'

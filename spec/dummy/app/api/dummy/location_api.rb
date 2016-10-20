@@ -5,6 +5,8 @@ class Dummy::LocationAPI < IntrospectiveGrape::API
 
   default_includes Location, :child_locations, :gps, :beacons, :locatables
 
+  filter_on :name, :filter
+
   restful Location, [:name, :kind,
     {gps_attributes: [:id, :lat, :lng, :alt, :_destroy]},
     {beacons_attributes: [:id, :company_id, :mac_address, :uuid, :major, :minor, :_destroy]},

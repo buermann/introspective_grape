@@ -125,11 +125,19 @@ creating bulk update endpoints for nested models.
 
 ## Filtering and Searching
 
-IntrospectiveGrape will automatically generate and parse filters on all exposed fields in the API.
+Simple filters on field values (and start and end values for timestamps) can be added with the `filter_on` declaration. Declaring `filter_on :all` will add filters for every attribute of the model.
+
+```
+class MyModelAPI < IntrospectiveGrape::API
+  filter_on :my_attribute, :my_other_attribute
+end
+```
 
 Multiple values can be specified at once for Integer attributes that end in "id" (i.e. conventional primary and foreign keys) at once by passing a comma separated list of IDs.
 
 For timestamp attributes it will generate `<name_of_timestamp>_start` and `<name_of_timestamp>_end` constraints.
+
+There is also a special "filter" filter, that allows a JSON hash to be passed of attributes and values: this allows more complex filtering if one is familiar with ActiveRecord's query conventions.
 
 ### Overriding Filter Queries
 
@@ -137,6 +145,7 @@ If, e.g., a field is some sort of complex composite rather than a simple field v
 
 ```
 class MyAPI < IntrospectiveGrape::API
+  filter_on :my_composite_field
   restful MyModel, [my_composite_field]
 end
 
@@ -169,6 +178,9 @@ class MyModel
 end
 ```
 
+## Documenting Endpoints
+
+If you wish to provide additional documentation for end points you can define `<action>_documentation` methods in the API class.
 
 ## Pagination
 

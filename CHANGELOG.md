@@ -1,4 +1,11 @@
 
+0.2.1 10/20/2016
+==============
+
+Require explicit declarations for index filters using `filter_on :attribute`. Automatically generate filters on all fields as before using `filter_on :all`.
+
+Defer endpoint documentation to <action>_documentation class methods on the API, so docs can be written.
+
 0.2.0 10/12/2016
 ==============
 
