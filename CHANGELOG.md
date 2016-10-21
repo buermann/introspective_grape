@@ -1,4 +1,13 @@
 
+0.2.2 10/20/2016
+==============
+
+### Bug Fix
+
+The default pagination values for Kaminari in snake case were overwriting the passed values
+in camel case, update the camel_snake_keys dependency so key conflicts resolve in favor of
+the expected convention.
+
 0.2.1 10/20/2016
 ==============
 
