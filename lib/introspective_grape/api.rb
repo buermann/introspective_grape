@@ -52,11 +52,16 @@ module IntrospectiveGrape
           self.send(IntrospectiveGrape::API.authentication_method(self))
         end
 
-        child.after_validation do
-          # Convert incoming camel case params to snake case: grape will totally blow this
-          # if the params hash does not come back as a Hashie::Mash.
-          @params = (params||Hashie::Mash.new).with_snake_keys if IntrospectiveGrape.config.camelize_parameters
-        end
+        child.before_validation do
+          # We have to snake case the Rack params then re-assign @params to the
+          # request.params, because of the I-think-very-goofy-and-inexplicable
+          # way Grape interacts with both independently of each other
+          (params.try(:with_snake_keys)||{}).each do |k,v|
+            request.delete_param(k.camelize(:lower))
+            request.update_param(k, v)
+          end
+          @params = request.params 
+        end if IntrospectiveGrape.config.camelize_parameters
       end
 
       # We will probably need before and after hooks eventually, but haven't yet...

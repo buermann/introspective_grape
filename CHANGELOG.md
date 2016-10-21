@@ -1,4 +1,13 @@
 
+0.2.3 10/21/2016
+==============
+### Bug Fix
+
+We have to modify request.params and then re-assign @params to request.params before
+validation in order to work with Grape's habit of mucking with both independently.
+
+This makes Grape validations work properly again against camel inputs.
+
 0.2.2 10/20/2016
 ==============
 
