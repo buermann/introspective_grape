@@ -397,9 +397,12 @@ module IntrospectiveGrape
       end
 
       def param_required?(model,f)
-        return false if skip_presence_validations.include? f
         # Detect if the field is a required field for the create action
-        model.validators_on(f.to_sym).any?{|v| v.kind_of? ActiveRecord::Validations::PresenceValidator }
+        return false if skip_presence_validations.include? f
+
+        validated_field = (f =~ /_id/) ? f.to_s.sub(/_id\z/,'').to_sym : f.to_sym
+
+        model.validators_on(validated_field).any? {|v| v.kind_of? ActiveRecord::Validations::PresenceValidator }
       end
 
       def add_destroy_param(dsl,model,reflection)

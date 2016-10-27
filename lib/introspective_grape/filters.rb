@@ -4,6 +4,10 @@ module IntrospectiveGrape::Filters
   # customer filters for the index in a method.
   #
 
+  def default_sort(*args)
+    @default_sort ||= args
+  end
+
   def custom_filter(*args)
     custom_filters( *args )
   end
@@ -72,6 +76,8 @@ module IntrospectiveGrape::Filters
   end
 
   def apply_filter_params(klass, model, api_params, params, records)
+    records = records.order(default_sort) if default_sort.present?
+
     simple_filters(klass, model, api_params).each do |field|
       next if params[field].blank?
 

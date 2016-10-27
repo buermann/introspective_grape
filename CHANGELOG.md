@@ -1,4 +1,15 @@
 
+0.2.4 10/26/2016
+==============
+
+### Bug Fix
+
+Validate the presence of required belongs_to associations.
+
+### Features
+
+Add a default_sort for the index action option, rather than relying on custom_filters or a default_scope.
+
 0.2.3 10/21/2016
 ==============
 ### Bug Fix
