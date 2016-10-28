@@ -204,7 +204,7 @@ module IntrospectiveGrape
           detail klass.create_documentation || "creates a new #{name} record"
         end
         dsl.params do
-          klass.generate_params(self, klass, :create, model, api_params)
+          klass.generate_params(self, :create, model, api_params, true)
         end
         dsl.post do
           if @model
@@ -225,7 +225,7 @@ module IntrospectiveGrape
           detail klass.update_documentation || "updates the details of a #{name}"
         end
         dsl.params do
-          klass.generate_params(self, klass, :update, model, api_params)
+          klass.generate_params(self, :update, model, api_params, true)
         end
         dsl.put ":#{routes.last.swaggerKey}" do
           authorize @model, :update?
@@ -316,35 +316,36 @@ module IntrospectiveGrape
 
 
 
-      def generate_params(dsl, klass, action, model, fields)
+      def generate_params(dsl, action, model, fields, is_root_endpoint=false)
         # We'll be doing a recursive walk (to handle nested attributes) down the
         # whitelisted params, generating the Grape param definitions by introspecting
         # on the model and its associations.
         raise "Invalid action: #{action}" unless [:update, :create].include?(action)
         # dsl   : The Grape::Validations::ParamsScope object
-        # klass : A reference back to the original descendant of IntrospectiveGrape::API.
-        #         You have to pass this around to remember who you were before the DSL
-        #         scope hijacked your identity.
         # action: create or update
         # model : The ActiveRecord model class
         # fields: The whitelisted data structure for Rails' strong params, from which we
         #         infer Grape's parameters
+        
+        # skip the ID param at the root level endpoint, so we don't duplicate the URL parameter (api/v#/model/modelId)
+        fields -= [:id] if is_root_endpoint
 
-        (fields-[:id]).each do |field|
+        fields.each do |field|
           if field.kind_of?(Hash)
-            generate_nested_params(dsl,klass,action,model,field)
-          elsif (action==:create && klass.param_required?(model,field) )
+            generate_nested_params(dsl,action,model,field)
+          elsif (action==:create && param_required?(model,field) )
             # All params are optional on an update, only require them during creation.
             # Updating a record with new child models will have to rely on ActiveRecord
             # validations:
-            dsl.requires field, type: klass.param_type(model,field)
+            dsl.requires field, type: param_type(model,field)
           else
-            dsl.optional field, type: klass.param_type(model,field)
+            dsl.optional field, type: param_type(model,field)
           end
         end
       end
 
-      def generate_nested_params(dsl,klass,action,model,fields)
+      def generate_nested_params(dsl,action,model,fields)
+        klass = self
         fields.each do |r,v|
           # Look at model.reflections to find the association's class name:
           reflection = r.to_s.sub(/_attributes$/,'') # the reflection name
@@ -360,7 +361,7 @@ module IntrospectiveGrape
             # In case you need a refresher on how these work:
             # http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
             dsl.optional r, type: Array do |dl|
-              klass.generate_params(dl,klass,action,relation,v)
+              klass.generate_params(dl,action,relation,v)
               klass.add_destroy_param(dl,model,reflection) unless action==:create
             end
           else
@@ -369,7 +370,7 @@ module IntrospectiveGrape
             # ThroughReflection, HasOneReflection,
             # HasAndBelongsToManyReflection, BelongsToReflection
             dsl.optional r, type: Hash do |dl|
-              klass.generate_params(dl,klass,action,relation,v)
+              klass.generate_params(dl,action,relation,v)
               klass.add_destroy_param(dl,model,reflection) unless action==:create
             end
           end

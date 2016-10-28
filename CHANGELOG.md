@@ -1,4 +1,11 @@
 
+0.2.5 10/28/2016
+==============
+
+### Bug Fix
+
+Include the nested model IDs in the swagger doc.
+
 0.2.4 10/26/2016
 ==============
 
