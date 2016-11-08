@@ -1,7 +1,7 @@
 class Dummy::CompanyAPI < IntrospectiveGrape::API
   paginate
 
-  restful Company do
+  restful Company, [:id, :name, :short_name, :gizmos, :widgets, :sprockets] do
 
     desc "Test default values in an extra endpoint"
     params do

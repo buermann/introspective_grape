@@ -110,11 +110,30 @@ type from model introspection, define a class method in the model with the param
 types for the attributes specified in a hash, e.g.:
  
 ```
-   def self.attribute_param_types
+   def self.grape_param_types
     { "<attribute name 1>" => String,
       "<attribute name 2>" => Integer,
       "<attribute name 3>" => Virtus::Attribute::Boolean }
    end
+```
+
+To add additional validations on API inputs you can define a hash of hashes in the model in a
+class method ("grape_validations") that will be applied to that field's param declaration:
+
+```
+  def self.grape_validations
+    { field1: { values: %w(red blue green) },
+      field2: { json_array: true }, 
+      field3: { regexp: /\w+/ } 
+  end
+```
+
+IntrospectiveGrape provides the following custom grape validators:
+
+```
+json: true       # validates that the JSON string parses
+json_array: true # validates that the JSON string parses and returns an Array 
+json_hash: true  # validates that the JSON string parses and returns a Hash
 ```
 
 For nested models declared in Rails' strong params both the Grape params for the

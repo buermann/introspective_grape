@@ -11,4 +11,25 @@ class Company < AbstractAdapter
 
   validates_length_of :name, maximum: 256
   validates_length_of :short_name, maximum: 10
+
+  def self.grape_validations
+    {
+      gizmos: { json: true },
+      widgets: { json_array: true },
+      sprockets: { json_hash: true }
+    }
+  end
+
+  def gizmos=(json)
+    JSON.parse(json)
+  end
+
+  def widgets=(json_array)
+    JSON.parse(json_array)
+  end
+
+  def sprockets=(json_hash)
+    JSON.parse(json_hash)
+  end
+
 end

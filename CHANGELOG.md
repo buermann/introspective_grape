@@ -1,4 +1,16 @@
 
+0.2.6 11/01/2016
+==============
+
+Change the Model.attribute_param_types class method lookup (for specifying custom param types attributes on a model) to "grape_param_types" to make it clearer that the method is used in the API.
+
+### Features
+
+Add support for custom validations on a model using a `self.grape_validations` hash of fields and validations to apply.
+
+Add custom validators to verify that JSON strings parse as a JSON object, an array, or a hash.
+
+
 0.2.5 10/28/2016
 ==============
 

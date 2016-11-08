@@ -1,5 +1,9 @@
 require 'action_controller'
 require 'grape-kaminari'
+require 'introspective_grape/validators'
+
+class IntrospectiveGrapeError < StandardError
+end
 
 module IntrospectiveGrape
   class API < Grape::API
@@ -28,7 +32,7 @@ module IntrospectiveGrape
     # type from model introspection, define a class method in the model with the param
     # types for the attributes specified in a hash:
     #
-    #  def self.attribute_param_types
+    #  def self.grape_param_types
     #   { "<attribute name>" => Virtus::Attribute::Boolean,
     #     "<attribute name>" => Integer,
     #     "<attribute name>" => String }
@@ -71,6 +75,9 @@ module IntrospectiveGrape
       #end
 
       def restful(model, strong_params=[], routes=[])
+        if model.respond_to?(:attribute_param_types)
+          raise IntrospectiveGrapeError.new("#{model.name}'s attribute_param_types class method needs to be changed to grape_param_types")
+        end
         # Recursively define endpoints for the model and any nested models.
         #
         # model: the model class for the API
@@ -337,11 +344,16 @@ module IntrospectiveGrape
             # All params are optional on an update, only require them during creation.
             # Updating a record with new child models will have to rely on ActiveRecord
             # validations:
-            dsl.requires field, type: param_type(model,field)
+            dsl.requires field, { type: param_type(model,field) }.merge( validations(model, field) )
           else
-            dsl.optional field, type: param_type(model,field)
+            #dsl.optional field, *options
+            dsl.optional field, { type: param_type(model,field) }.merge( validations(model, field) )
           end
         end
+      end
+
+      def validations(model, field)
+        (model.try(:grape_validations) || {}).with_indifferent_access[field] || {}
       end
 
       def generate_nested_params(dsl,action,model,fields)
@@ -391,7 +403,7 @@ module IntrospectiveGrape
         # Check if it's a file attachment, look for an override class from the model,
         # check Pg2Ruby, use the database type, or fail over to a String:
         ( is_file_attachment?(model,f) && Rack::Multipart::UploadedFile ) || 
-          (model.try(:attribute_param_types)||{})[f]                      || 
+          (model.try(:grape_param_types)||{}).with_indifferent_access[f] || 
           Pg2Ruby[db_type]                                                ||
           begin db_type.to_s.camelize.constantize rescue nil end          ||
           String

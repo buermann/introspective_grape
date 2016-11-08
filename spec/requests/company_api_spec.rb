@@ -86,4 +86,19 @@ describe Dummy::CompanyAPI, type: :request do
     json['error'].should == "Name: is too long (maximum is 256 characters), Short Name: is too long (maximum is 10 characters)"
   end
 
+  it "should validate json parameters" do
+    put "/api/v1/companies/#{company.id}", { gizmos: "garbage" }
+    json["error"].should eq "gizmos must be valid JSON!" 
+  end
+
+  it "should validate json array parameters" do
+    put "/api/v1/companies/#{company.id}", { widgets: "[garbage[\"A\",\"B\"]" }
+    json["error"].should eq "widgets must be valid JSON array!"
+  end
+
+  it "should validate json hash parameters" do
+    put "/api/v1/companies/#{company.id}", { sprockets: "{\"foo\":\"bar\"}garbage}" }
+    json["error"].should eq "sprockets must be valid JSON hash!"
+  end
+
 end

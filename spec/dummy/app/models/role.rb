@@ -3,11 +3,16 @@ class Role < AbstractAdapter
   belongs_to :ownable, polymorphic: true
 
   validates_uniqueness_of :user_id, scope: [:ownable_type,:ownable_id], unless: "user_id.nil?", message: "user has already been assigned that role"
-  validates_inclusion_of :ownable_type, in: ['SuperUser', 'Company', 'Project']
+  OWNABLE_TYPES = %w(SuperUser Company Project).freeze
+  validates_inclusion_of :ownable_type, in: OWNABLE_TYPES
 
   delegate :email, to: :user,              allow_nil: true
   def attributes
     super.merge(email: email)
+  end
+
+  def self.grape_validations
+    { ownable_type: { values: OWNABLE_TYPES } }
   end
 
   def ownable

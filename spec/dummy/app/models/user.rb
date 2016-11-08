@@ -69,7 +69,7 @@ class User < AbstractAdapter
     avatar.try(:file).try(:url,size)
   end
 
-  def self.attribute_param_types
+  def self.grape_param_types
     { "skip_confirmation_email" => Virtus::Attribute::Boolean }
   end
 
