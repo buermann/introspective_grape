@@ -16,7 +16,7 @@ module Grape::Validators
       begin
         raise unless JSON.parse( params[field] ).kind_of? Array 
       rescue
-        fail Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be valid JSON array!'
+        fail Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be a valid JSON array!'
       end
     end
   end
@@ -26,7 +26,7 @@ module Grape::Validators
       begin
         raise unless JSON.parse( params[field] ).kind_of? Hash
       rescue
-        fail Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be valid JSON hash!'
+        fail Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be a valid JSON hash!'
       end
     end
   end
