@@ -93,12 +93,12 @@ describe Dummy::CompanyAPI, type: :request do
 
   it "should validate json array parameters" do
     put "/api/v1/companies/#{company.id}", { widgets: "[garbage[\"A\",\"B\"]" }
-    json["error"].should eq "widgets must be valid JSON array!"
+    json["error"].should eq "widgets must be a valid JSON array!"
   end
 
   it "should validate json hash parameters" do
     put "/api/v1/companies/#{company.id}", { sprockets: "{\"foo\":\"bar\"}garbage}" }
-    json["error"].should eq "sprockets must be valid JSON hash!"
+    json["error"].should eq "sprockets must be a valid JSON hash!"
   end
 
 end
