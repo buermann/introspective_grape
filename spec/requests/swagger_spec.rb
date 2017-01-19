@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'byebug'
 describe GrapeSwagger, type: :request do
 
   context :swagger_doc do
