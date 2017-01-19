@@ -9,8 +9,6 @@ script:
 rvm:
   - 2.3.0
   - 2.2.6
-#  - 2.1
-#  - 2.0.0
   - ruby-head
   - jruby-head
 matrix:
@@ -34,6 +32,7 @@ env:
     - RAILS=3.2.22
     - RAILS=4.1.13
     - RAILS=4.2.5.1
+    - RAILS=5.0.1
     - RAILS=master
   global:
     - JRUBY_OPTS="-J-Xmx1024m --debug"
