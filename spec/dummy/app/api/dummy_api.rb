@@ -46,12 +46,18 @@ class DummyAPI < Grape::API
   # configure grape-swagger to auto-generate swagger docs
   protocol = Rails.application.config.force_ssl ? 'https' : 'http'
   add_swagger_documentation({
-    base_path:                "#{protocol}://localhost:3000/api",
-    api_version:              'v1',
-      hide_documentation_path:  true,
-      format:                   :json,
-      hide_format:              true
-     #markdown:                 true
+    base_path:                "/api",
+    doc_version:              'v1',
+    hide_documentation_path:  true,
+    format:                   :json,
+    hide_format:              true,
+    security_definitions: {
+      api_key: {
+        type: "apiKey",
+        name: "api_key",
+        in: "header"
+      }
+    }
   })
 
 end

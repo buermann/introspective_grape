@@ -1,7 +1,6 @@
 require 'grape-swagger'
 require 'active_support' #/core_ext/module/aliasing'
 require 'camel_snake_keys'
-
 if IntrospectiveGrape.config.camelize_parameters 
   # Camelize the parameters in the swagger documentation.
   if Gem::Version.new( GrapeSwagger::VERSION ) <= Gem::Version.new('0.11.0')
@@ -31,10 +30,23 @@ if IntrospectiveGrape.config.camelize_parameters
       end
     end
   else Gem::Version.new( GrapeSwagger::VERSION ) > Gem::Version.new('0.11.0')
-    # Grape::Swagger 0.20.xx is not yet compatible with Grape >0.14 and will alter
-    # the way it parses params, so will not be compatible with introspective_grape,
-    # and produces swagger docs for SwaggerUI 2.1.4 that don't appear to be
-    # backwards compatible swagger.js 2.0.41, so this is pending.
+    module GrapeSwagger
+      module DocMethods
+        def self.extended(mod)
+          # Do not camelize the grape-swagger documentation endpoints.
+          mod.formatter :json, Grape::Formatter::Json
+        end
+        class ParseParams
+          class << self
+            def call_with_camelized(*args)
+              param = call_without_camelized(*args)
+              param[:name] = param[:name].camelize(:lower).gsub(/Destroy/, '_destroy')
+              param
+            end
+            alias_method_chain :call, :camelized
+          end
+        end
+      end
+    end
   end
-
 end

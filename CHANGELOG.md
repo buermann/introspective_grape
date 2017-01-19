@@ -1,4 +1,10 @@
 
+0.2.7 01/18/2017
+==============
+
+Add support for Swagger 2+, we can now support the latest versions of grape and other dependencies.
+
+
 0.2.6 11/01/2016
 ==============
 

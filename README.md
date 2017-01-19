@@ -152,7 +152,7 @@ class MyModelAPI < IntrospectiveGrape::API
 end
 ```
 
-Multiple values can be specified at once for Integer attributes that end in "id" (i.e. conventional primary and foreign keys) at once by passing a comma separated list of IDs.
+Multiple values can be specified at once for Integer attributes that end in "id" (i.e. conventional primary and foreign keys) by passing a comma separated list of IDs.
 
 For timestamp attributes it will generate `<name_of_timestamp>_start` and `<name_of_timestamp>_end` constraints.
 

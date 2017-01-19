@@ -22,12 +22,13 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", '>= 3.0.0', '< 5.0.0'
 
-  s.add_dependency 'grape',          '~> 0.16.2'
-  s.add_dependency 'grape-entity',   '< 0.5.0'
-  s.add_dependency 'grape-swagger',  '~>0.11.0'
-  s.add_dependency 'grape-kaminari', '~>0.1.9'
+  s.add_dependency 'grape'          #, '~> 0.16.2'
+  s.add_dependency 'grape-entity'   #, '< 0.5.0'
+  s.add_dependency 'grape-swagger'  #, '~>0.11.0'
+  s.add_dependency 'kaminari', '< 1.0' # There's a version 1.0.0 out there that breaks everything
+  s.add_dependency 'grape-kaminari'
   s.add_dependency 'pundit'
-  s.add_dependency 'camel_snake_keys', '~>0.0.4'
+  s.add_dependency 'camel_snake_keys'
 
   if RUBY_PLATFORM == 'java'
     #s.add_development_dependency "jdbc-sqlite3"

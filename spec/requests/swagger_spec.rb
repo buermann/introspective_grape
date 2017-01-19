@@ -7,7 +7,9 @@ describe GrapeSwagger, type: :request do
       get '/api/v1/swagger_doc'
       response.should be_success
       json =  JSON.parse( response.body )
-      json['apiVersion'].should == 'v1'
+      json['paths'].map {|p| p[1].values }.flatten.map{|p| p['parameters']}.flatten.compact.map{|p| p['name']}.each do |name|
+        name.should eq name.camelize(:lower).gsub(/Destroy/,'_destroy')
+      end
     end
   end
 
