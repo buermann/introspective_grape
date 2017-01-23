@@ -45,6 +45,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'machinist'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'rufus-mnemo'
-  s.add_development_dependency "activerecord-tableless", "~> 1.0"
 
 end
