@@ -41,7 +41,7 @@ class User < AbstractAdapter
   end
 
   def superuser?
-    roles && roles.detect{|r| r.ownable_type == 'SuperUser' }.present?
+    superuser
   end
 
   def admin?(record)

@@ -7,11 +7,6 @@ RSpec.describe Role, type: :model do
   let(:company) { Company.make! } 
   let(:project) { Project.make! } 
   
-  it "allows user assignment to super user" do
-    ur = Role.new(user: user, ownable: SuperUser.new )
-    ur.valid?.should be_truthy
-  end
-
   it "allows user assignment to company admin" do
     ur = Role.create(user:user, ownable: company)
     ur.valid?.should be_truthy
@@ -25,8 +20,7 @@ RSpec.describe Role, type: :model do
   context "User helper methods" do 
     it "should register a user as a super user" do
       user.superuser?.should == false
-      Role.create!(user:user, ownable: SuperUser.new)
-      user.reload
+      user.superuser = true
       user.superuser?.should == true
     end
 

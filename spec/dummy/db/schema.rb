@@ -261,6 +261,7 @@ ActiveRecord::Schema.define(version: 20150909225019) do
     t.integer  "failed_attempts",        default: 0,  null: false
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.boolean  "superuser",   default: false, null: false
     t.string   "authentication_token"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
