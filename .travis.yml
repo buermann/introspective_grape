@@ -7,29 +7,29 @@ script:
   - bundle exec rspec
 
 rvm:
-  matrix:
-    include:
-      # We'll have to back up to grape-swagger 0.11 for earlier rubies.
-      - rvm: 2.0.0
-        gemfile: gemfiles/2.0.0-Gemfile
-      - rvm: 2.1.0
-        gemfile: gemfiles/2.0.0-Gemfile
-      - rvm: 2.2.0
-        gemfile: gemfiles/2.0.0-Gemfile
-      - rvm: jruby-9.0.4.0
-        gemfile: gemfiles/2.0.0-Gemfile
-      # Upgrade to latest grape:
-      - rvm: 2.2.6
-        gemfile: gemfiles/2.2.0-Gemfile
-      - rvm: 2.3.0
-        gemfile: gemfiles/2.2.0-Gemfile
-      - rvm: ruby-head
-        gemfile: gemfiles/2.2.0-Gemfile
-      - rvm: jruby-head
-        gemfile: gemfiles/2.2.0-Gemfile
-    allow_failures:
-      - rvm: ruby-head
-      - rvm: jruby-head
+  - 2.3.0
+
+matrix:
+  include:
+  # We'll have to back up to grape-swagger 0.11 for earlier rubies.
+  - rvm: 2.0.0
+    gemfile: gemfiles/2.0.0-Gemfile
+  - rvm: 2.1.0
+    gemfile: gemfiles/2.0.0-Gemfile
+  - rvm: 2.2.0
+    gemfile: gemfiles/2.0.0-Gemfile
+  - rvm: jruby-9.0.4.0
+    gemfile: gemfiles/2.0.0-Gemfile
+  # Upgrade to latest grape:
+  - rvm: 2.2.6
+    gemfile: gemfiles/2.2.0-Gemfile
+  - rvm: ruby-head
+    gemfile: gemfiles/2.2.0-Gemfile
+  - rvm: jruby-head
+    gemfile: gemfiles/2.2.0-Gemfile
+  allow_failures:
+  - rvm: ruby-head
+  - rvm: jruby-head
 
 env:
   matrix:
