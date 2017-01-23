@@ -6,9 +6,9 @@ source 'https://rubygems.org'
 
 gemspec :path => '../'
 
-gem 'grape', '0.16.2'
-gem 'grape-swagger', '~> 0.11.0'
-gem 'nokogiri', '~> 1.6.8'
+gem 'grape', '< 0.17'
+gem 'grape-swagger', '< 0.12.0'
+gem 'nokogiri', '< 1.6.9'
 gem 'coveralls', require: false
 
 # Declare any dependencies that are still in development here instead of in
