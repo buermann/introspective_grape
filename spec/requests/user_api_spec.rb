@@ -98,6 +98,15 @@ describe Dummy::UserAPI, type: :request do
       json['error'].should == "Email: is invalid, Password: can't be blank"
     end
 
+    it "should return only the records that were created at a nested endpoint" do
+      new_company = Company.make!
+      post "/api/v1/users/#{user.id}/roles",  {ownable_type: 'Company', ownable_id: new_company.id} 
+      response.should be_success
+      json.size.should eq 1
+      json.first['ownable_id'].should eq new_company.id
+    end
+
+
     let(:params) do
       { email: 'test@test.com', password: 'abc12345', roles_attributes:[] }
     end
@@ -148,8 +157,9 @@ describe Dummy::UserAPI, type: :request do
       put "/api/v1/users/#{user.id}", params
 
       response.should be_success
-      user.avatar.should     == Image.last
-      user.avatar_url.should == Image.last.file.url(:medium)
+      json['avatar_url'].should eq Image.last.file.url(:medium)
+      user.avatar.should     eq Image.last
+      user.avatar_url.should eq Image.last.file.url(:medium)
     end
 
     it "should upload a user avatar via the nested route, to test the restful api's handling of has_one associations" do

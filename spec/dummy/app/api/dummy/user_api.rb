@@ -8,7 +8,8 @@ class Dummy::UserAPI < IntrospectiveGrape::API
 
   filter_on :all
 
-  restful User, [:id, :email, :password, :first_name, :last_name, :skip_confirmation_email,
+  restful User, [
+    :id, :email, :password, :first_name, :last_name, :skip_confirmation_email,
     :created_at, :updated_at,
     user_project_jobs_attributes: [:id, :job_id, :project_id, :_destroy],
     roles_attributes: [:id, :ownable_type, :ownable_id, :_destroy],
@@ -20,7 +21,7 @@ class Dummy::UserAPI < IntrospectiveGrape::API
   end
 
   class ImageEntity < Grape::Entity
-    expose :id, :file_processing #, 'file.url'
+    expose :id, :file_processing, :medium_url
   end
 
   class UserProjectJobEntity < Grape::Entity

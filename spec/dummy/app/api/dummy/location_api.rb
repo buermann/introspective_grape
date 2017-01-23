@@ -7,7 +7,8 @@ class Dummy::LocationAPI < IntrospectiveGrape::API
 
   filter_on :name, :filter
 
-  restful Location, [:name, :kind,
+  restful Location, [
+    :name, :kind,
     {gps_attributes: [:id, :lat, :lng, :alt, :_destroy]},
     {beacons_attributes: [:id, :company_id, :mac_address, :uuid, :major, :minor, :_destroy]},
   ]

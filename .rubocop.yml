@@ -536,10 +536,10 @@ Style/DefWithParentheses:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#method-parens'
   Enabled: false
 
-Style/DeprecatedHashMethods:
-  Description: 'Checks for use of deprecated Hash methods.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-key'
-  Enabled: false
+#Style/DeprecatedHashMethods:
+#  Description: 'Checks for use of deprecated Hash methods.'
+#  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-key'
+#  Enabled: false
 
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
@@ -724,7 +724,7 @@ Style/LineEndConcatenation:
                  line end.
   Enabled: false
 
-Style/MethodCallParentheses:
+Style/MethodCallWithoutArgsParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-args-no-parens'
   Enabled: false
@@ -809,6 +809,10 @@ Style/Not:
   Description: 'Use ! instead of not.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bang-not-not'
   Enabled: false
+
+Style/NumericPredicate:
+  Exclude:
+    - 'spec/**/*'
 
 Style/NumericLiterals:
   Description: >-
@@ -1162,3 +1166,8 @@ Style/WordArray:
   Description: 'Use %w or %W for arrays of words.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-w'
   Enabled: false
+
+Style/BlockLength:
+  Exclude:
+    - '*.gemspec'
+    - 'spec/**/*'

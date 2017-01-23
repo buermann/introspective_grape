@@ -53,8 +53,8 @@ describe Dummy::ProjectAPI, type: :request do
 
       context "via nested attributes" do 
         it "should create a team with users" do 
-          p = { name: 'New Team',
-            team_users_attributes: [{ user_id: @u1.id }, { user_id: @u2.id }]
+          p = {
+            name: 'New Team', team_users_attributes: [{ user_id: @u1.id }, { user_id: @u2.id }]
           }
           post "/api/v1/projects/#{project.id}/teams", p
           response.should be_success

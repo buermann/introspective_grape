@@ -29,7 +29,7 @@ if IntrospectiveGrape.config.camelize_parameters
         alias_method_chain :create_documentation_class, :camelized
       end
     end
-  else Gem::Version.new( GrapeSwagger::VERSION ) > Gem::Version.new('0.11.0')
+  else
     module GrapeSwagger
       module DocMethods
         def self.extended(mod)

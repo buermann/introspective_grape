@@ -8,6 +8,7 @@ end
 module IntrospectiveGrape
   class API < Grape::API
     extend IntrospectiveGrape::Helpers
+    extend IntrospectiveGrape::CreateHelpers
     extend IntrospectiveGrape::Filters
     extend IntrospectiveGrape::Traversal
     extend IntrospectiveGrape::Doc
@@ -56,16 +57,18 @@ module IntrospectiveGrape
           self.send(IntrospectiveGrape::API.authentication_method(self))
         end
 
-        child.before_validation do
-          # We have to snake case the Rack params then re-assign @params to the
-          # request.params, because of the I-think-very-goofy-and-inexplicable
-          # way Grape interacts with both independently of each other
-          (params.try(:with_snake_keys)||{}).each do |k,v|
-            request.delete_param(k.camelize(:lower))
-            request.update_param(k, v)
+        if IntrospectiveGrape.config.camelize_parameters
+          child.before_validation do
+            # We have to snake case the Rack params then re-assign @params to the
+            # request.params, because of the I-think-very-goofy-and-inexplicable
+            # way Grape interacts with both independently of each other
+            (params.try(:with_snake_keys)||{}).each do |k,v|
+              request.delete_param(k.camelize(:lower))
+              request.update_param(k, v)
+            end
+            @params = request.params 
           end
-          @params = request.params 
-        end if IntrospectiveGrape.config.camelize_parameters
+        end
       end
 
       # We will probably need before and after hooks eventually, but haven't yet...
@@ -183,8 +186,9 @@ module IntrospectiveGrape
           records = policy_scope( root.model.includes(klass.default_includes(root.model)) )
 
           records = klass.apply_filter_params(klass, model, api_params, params, records)
-          records = records.where( JSON.parse(params[:query]) ) if params[:query].present?
+
           records = records.map{|r| klass.find_leaves( routes, r, params ) }.flatten.compact.uniq
+
           # paginate the records using Kaminari
           records = paginate(Kaminari.paginate_array(records)) if klass.pagination
           present records, with: "#{klass}::#{model}Entity".constantize
@@ -206,7 +210,6 @@ module IntrospectiveGrape
       def define_create(dsl, routes, model, api_params)
         name  = routes.last.name.singularize
         klass = routes.first.klass
-        root  = routes.first
         dsl.desc "create a #{name}" do
           detail klass.create_documentation || "creates a new #{name} record"
         end
@@ -214,14 +217,8 @@ module IntrospectiveGrape
           klass.generate_params(self, :create, model, api_params, true)
         end
         dsl.post do
-          if @model
-            @model.update_attributes( safe_params(params).permit(klass.whitelist) )
-          else 
-            @model = root.model.new( safe_params(params).permit(klass.whitelist) ) 
-          end
-          authorize @model, :create?
-          @model.save!
-          present klass.find_leaves(routes, @model.reload, params), with: "#{klass}::#{model}Entity".constantize
+          representation = @model ? klass.add_new_records_to_root_record(self, routes, params, @model) : klass.create_new_record(self, routes, params)
+          present representation, with: "#{klass}::#{model}Entity".constantize
         end
       end
 
@@ -333,7 +330,7 @@ module IntrospectiveGrape
         # model : The ActiveRecord model class
         # fields: The whitelisted data structure for Rails' strong params, from which we
         #         infer Grape's parameters
-        
+
         # skip the ID param at the root level endpoint, so we don't duplicate the URL parameter (api/v#/model/modelId)
         fields -= [:id] if is_root_endpoint
 
@@ -403,7 +400,7 @@ module IntrospectiveGrape
         # Check if it's a file attachment, look for an override class from the model,
         # check Pg2Ruby, use the database type, or fail over to a String:
         ( is_file_attachment?(model,f) && Rack::Multipart::UploadedFile ) || 
-          (model.try(:grape_param_types)||{}).with_indifferent_access[f] || 
+          (model.try(:grape_param_types)||{}).with_indifferent_access[f]  || 
           Pg2Ruby[db_type]                                                ||
           begin db_type.to_s.camelize.constantize rescue nil end          ||
           String
@@ -411,9 +408,9 @@ module IntrospectiveGrape
 
       def param_required?(model,f)
         # Detect if the field is a required field for the create action
-        return false if skip_presence_validations.include? f
+        return false if skip_presence_validations.include?(f)
 
-        validated_field = (f =~ /_id/) ? f.to_s.sub(/_id\z/,'').to_sym : f.to_sym
+        validated_field = f =~ /_id/ ? f.to_s.sub(/_id\z/,'').to_sym : f.to_sym
 
         model.validators_on(validated_field).any? {|v| v.kind_of? ActiveRecord::Validations::PresenceValidator }
       end

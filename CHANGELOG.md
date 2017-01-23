@@ -1,4 +1,9 @@
 
+0.2.8 01/22/2017
+==============
+
+Nested endpoints for creating new associations will now return only the newly created records.
+
 0.2.7 01/18/2017
 ==============
 

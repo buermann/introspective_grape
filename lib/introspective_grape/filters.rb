@@ -72,29 +72,32 @@ module IntrospectiveGrape::Filters
     end
 
     dsl.optional :filter, type: String, description: "JSON of conditions for query. If you're familiar with ActiveRecord's query conventions you can build more complex filters, e.g. against included child associations, e.g. {\"&lt;association_name&gt;_&lt;parent&gt;\":{\"field\":\"value\"}}" if filters.include?(:all) || filters.include?(:filter)
+  end
 
+
+  def apply_simple_filter(klass, model, params, records, field)
+    return records if params[field].blank?
+
+    if timestamp_filter(klass,model,field)
+      op      = field.ends_with?("_start") ? ">=" : "<="
+      records.where("#{timestamp_filter(klass,model,field)} #{op} ?", Time.zone.parse(params[field]))
+    elsif model.respond_to?("#{field}=")
+      records.send("#{field}=", params[field])
+    else
+      records.where(field => params[field])
+    end
   end
 
   def apply_filter_params(klass, model, api_params, params, records)
     records = records.order(default_sort) if default_sort.present?
 
     simple_filters(klass, model, api_params).each do |field|
-      next if params[field].blank?
-
-      if timestamp_filter(klass,model,field)
-        op      = field.ends_with?("_start") ? ">=" : "<="
-        records = records.where("#{timestamp_filter(klass,model,field)} #{op} ?", Time.zone.parse(params[field]))
-      elsif model.respond_to?("#{field}=")
-        records = records.send("#{field}=", params[field])
-      else
-        records = records.where(field => params[field])
-      end
+      records = apply_simple_filter(klass, model, params, records, field)
     end
 
-    klass.custom_filters.each do |filter,details|
+    klass.custom_filters.each do |filter,_details|
       records = records.send(filter, params[filter])
     end
-
 
     if params[:filter].present?
       filters = JSON.parse( params[:filter].delete('\\') )
@@ -102,6 +105,8 @@ module IntrospectiveGrape::Filters
         records = records.where(key => value) if value.present?
       end
     end
+
+    records.where( JSON.parse(params[:query]) ) if params[:query].present?
 
     records
   end

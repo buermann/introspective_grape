@@ -9,6 +9,9 @@ class Image < ActiveRecord::Base
   validates_attachment :file, content_type: {content_type: ["image/jpeg", "image/png", "image/gif"]}
   validates_attachment_size :file, :less_than => 2.megabytes
 
+  def medium_url
+    file.url(:medium)
+  end
   #process_in_background :file, processing_image_url: 'empty_avatar.png'
 
   Paperclip.interpolates :imageable_type  do |attachment, _style|

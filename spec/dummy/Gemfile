@@ -2,18 +2,18 @@ source 'https://rubygems.org'
 gem 'rails', '<5.0'
 
 #gem 'byebug'
+gem 'activerecord-tableless'
+gem 'camel_snake_keys'
+
+gem 'delayed_paperclip'
+gem 'devise-async'
 
 gem 'grape'
 gem 'grape-entity'
-gem 'grape-swagger'
 gem 'grape-kaminari'
+gem 'grape-swagger'
 
-gem 'pundit'
 gem 'paperclip'
-gem 'delayed_paperclip'
-gem 'devise-async'
-gem 'activerecord-tableless'
-
-gem 'camel_snake_keys'
+gem 'pundit'
 
 gem 'sqlite3'
