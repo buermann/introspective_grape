@@ -1,2 +1,2 @@
 #require 'devise/async'
-Devise::Async.backend = :sidekiq
+#Devise::Async.backend = :sidekiq

@@ -113,11 +113,11 @@ RSpec.describe User, type: :model do
       end
 
       it "should cascade deletes to chat_user, messages, and read logs" do
-        ChatUser.where(discussion.id).size.should == 3
-        ChatMessage.where(discussion.id).size.should == 2
+        ChatUser.where(chat_id: discussion.id).size.should == 3
+        ChatMessage.where(chat_id: discussion.id).size.should == 2
         discussion.destroy
-        ChatUser.where(discussion.id).size.should == 0
-        ChatMessage.where(discussion.id).size.should == 0
+        ChatUser.where(chat_id: discussion.id).size.should == 0
+        ChatMessage.where(chat_id: discussion.id).size.should == 0
       end
     end
   end

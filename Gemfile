@@ -13,5 +13,5 @@ gem 'coveralls', require: false
 # your gem to rubygems.org.
 
 group :development do
-#  gem 'byebug'
+  gem 'byebug'
 end

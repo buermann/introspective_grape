@@ -5,7 +5,7 @@ gem 'rails', '<5.0'
 gem 'camel_snake_keys'
 
 gem 'delayed_paperclip'
-gem 'devise-async'
+#gem 'devise-async'
 
 gem 'grape'
 gem 'grape-entity'

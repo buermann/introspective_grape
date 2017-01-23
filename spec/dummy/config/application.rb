@@ -7,7 +7,7 @@ require "action_mailer/railtie"
 require "action_view/railtie"
 #require "sprockets/railtie"
 require 'devise'
-require 'devise/async'
+#require 'devise/async'
 require 'grape-swagger'
 require 'grape-entity'
 # require "rails/test_unit/railtie"
