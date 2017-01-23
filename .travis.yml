@@ -15,7 +15,7 @@ rvm:
   - ruby-head
   - jruby-head
 gemfile:
-  - gemfiles/Gemfile.rails.3.2.22 
+#  - gemfiles/Gemfile.rails.3.2.22 
   #- gemfiles/Gemfile.rails.4.1.13 
   - gemfiles/Gemfile.rails.4.2.7.1
   - gemfiles/Gemfile.rails.4.2.7.1.new.swagger
