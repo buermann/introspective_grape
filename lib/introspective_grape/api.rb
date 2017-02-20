@@ -12,6 +12,7 @@ module IntrospectiveGrape
     extend IntrospectiveGrape::Filters
     extend IntrospectiveGrape::Traversal
     extend IntrospectiveGrape::Doc
+    extend IntrospectiveGrape::SnakeParams
 
     # Allow files to be uploaded through ActionController:
     ActionController::Parameters::PERMITTED_SCALAR_TYPES.push Rack::Multipart::UploadedFile, ActionController::Parameters
@@ -57,18 +58,7 @@ module IntrospectiveGrape
           self.send(IntrospectiveGrape::API.authentication_method(self))
         end
 
-        if IntrospectiveGrape.config.camelize_parameters
-          child.before_validation do
-            # We have to snake case the Rack params then re-assign @params to the
-            # request.params, because of the I-think-very-goofy-and-inexplicable
-            # way Grape interacts with both independently of each other
-            (params.try(:with_snake_keys)||{}).each do |k,v|
-              request.delete_param(k.camelize(:lower))
-              request.update_param(k, v)
-            end
-            @params = request.params 
-          end
-        end
+        snake_parameters(child) if IntrospectiveGrape.config.camelize_parameters
       end
 
       # We will probably need before and after hooks eventually, but haven't yet...
