@@ -1,4 +1,5 @@
 # Add a formatter to grape that converts all snake case hash keys from ruby to camel case.
+require 'camel_snake_keys'
 module IntrospectiveGrape
   module Formatter
     module CamelJson

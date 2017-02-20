@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 gem 'rails', '<5.0'
 
 #gem 'byebug'
-gem 'camel_snake_keys'
+#gem 'camel_snake_keys'
 
 gem 'delayed_paperclip'
 #gem 'devise-async'

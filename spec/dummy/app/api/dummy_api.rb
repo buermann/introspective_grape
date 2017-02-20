@@ -1,7 +1,3 @@
-#require 'grape-swagger'
-#require 'grape-entity'
-#require 'introspective_grape/camel_snake'
-
 class DummyAPI < Grape::API
   version 'v1', using: :path
   format    :json

@@ -1,4 +1,5 @@
-class Dummy::ChatAPI < DummyAPI
+class Dummy::ChatAPI < Grape::API
+  formatter :json, IntrospectiveGrape::Formatter::CamelJson
 
   before do 
     authenticate!
