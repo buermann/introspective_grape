@@ -1,7 +1,7 @@
 module IntrospectiveGrape
   module SnakeParams
-    def snake_parameters(child)
-      child.before_validation do
+    def snake_params_before_validation
+      before_validation do
         # We have to snake case the Rack params then re-assign @params to the
         # request.params, because of the I-think-very-goofy-and-inexplicable
         # way Grape interacts with both independently of each other

@@ -58,7 +58,7 @@ module IntrospectiveGrape
           self.send(IntrospectiveGrape::API.authentication_method(self))
         end
 
-        snake_parameters(child) if IntrospectiveGrape.config.camelize_parameters
+        child.snake_params_before_validation if IntrospectiveGrape.config.camelize_parameters
       end
 
       # We will probably need before and after hooks eventually, but haven't yet...
