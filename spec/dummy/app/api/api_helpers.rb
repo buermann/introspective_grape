@@ -1,14 +1,14 @@
 module ApiHelpers
-  def warden
-    env['warden']
-  end
-
   def current_user
-    warden.user || params[:api_key].present? && @user = User.find_by_authentication_token(params[:api_key])
+    params[:api_key].present? && @user = User.find_by_authentication_token(params[:api_key])
   end
 
   def authenticate!
-    unauthenticated! unless current_user 
+    unauthenticated! unless login_request? || current_user
+  end
+
+  def login_request?
+    self.method_name.start_with?('POST') && self.namespace == '/sessions'
   end
 
   # returns an 'unauthenticated' response

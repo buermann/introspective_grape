@@ -70,6 +70,18 @@ IntrospectiveGrape::API.authentication_method = "whatever!"
 
 Pundit authorization is invoked against index?, show?, update?, create?, and destroy? methods with the model instance in question (or a new instance in the case of index).
 
+The joke goes that you may find you need to allow an unauthenticated user to attempt a log in, which can be handled with something like:
+
+```
+ def authorize!
+    unauthorized! unless current_user || login_request?
+  end
+
+  def login_request?
+    # is it the session login endpoint?
+    self.method_name.start_with?('POST') && self.namespace == '/login'
+  end
+```
 
 ## Generate End Points for Models
 
@@ -152,11 +164,14 @@ class MyModelAPI < IntrospectiveGrape::API
 end
 ```
 
-Multiple values can be specified at once for Integer attributes that end in "id" (i.e. conventional primary and foreign keys) by passing a comma separated list of IDs.
+Multiple values can be specified at once for Integer attributes that end in "id" (i.e.
+conventional primary and foreign keys) by passing a comma separated list of IDs.
 
-For timestamp attributes it will generate `<name_of_timestamp>_start` and `<name_of_timestamp>_end` constraints.
+For timestamp attributes it will generate `<name_of_timestamp>_start` and
+`<name_of_timestamp>_end` range constraints.
 
-There is also a special "filter" filter, that allows a JSON hash to be passed of attributes and values: this allows more complex filtering if one is familiar with ActiveRecord's query conventions.
+There is also a special "filter" filter that accepts a JSON hash of attributes and values:
+this allows more complex filtering if one is familiar with ActiveRecord's query conventions.
 
 ### Overriding Filter Queries
 
@@ -199,7 +214,8 @@ end
 
 ## Documenting Endpoints
 
-If you wish to provide additional documentation for end points you can define `<action>_documentation` methods in the API class.
+If you wish to provide additional documentation for end points you can define
+`<action>_documentation` methods in the API class.
 
 ## Pagination
 
@@ -210,7 +226,7 @@ The index action by default will not be paginated, simply declared `paginate` be
 By default any association included in the strong params argument will have all
 RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
 be excluded (or conversely included) with the `exclude_actions` or `include_actions`
-declarations on the model. You can also include or exclude :all or :none as shorthand.
+declarations in the API class. You can also include or exclude :all or :none as shorthand.
 
 ## Grape Hooks
 
