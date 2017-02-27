@@ -85,11 +85,37 @@ The joke goes that you may find you need to allow an unauthenticated user to att
 
 ## Generate End Points for Models
 
-In app/api/v1/my_model_api.rb:
+The simplest app/api/v1/my_model_api.rb with the broadest functionality would look like:
+
+```
+class MyModelAPI < IntrospectiveGrape::API
+  filter_on :all
+
+  restful MyModel, [:strong, :param, :fields, :and, { nested_model_attributes: [:nested,:fields, :_destroy] }]
+
+  class <NestedModel>Entity < Grape::Entity
+    expose :id, :attribute
+  end
+
+  class MyModelEntity < Grape::Entity
+    expose :id, :attribute1, :attribute2
+    expose :nested, using: <NestedModel>Entity>
+  end
+end
+```
+
+This would set up all the basic RESTFUL actions with nested routes for the associated model and its nested association, providing a good deal of flexibility for API consumers out of the box, such as both plural and singular endpoints for associations.
+
+IntrospectiveGrape looks in the MyModelAPI class for its entity definitions. If you prefer to define your entities elsewhere you could inherit them here.
+
+Note that nested entities must be defined before their parents.
+
+Many simple customizations are available to carve out the default behaviors:
 
 ```
 class MyModelAPI < IntrospectiveGrape::API
   skip_presence_validations :attribute_with_generated_default_value
+
   exclude_actions Model, <:index,:show,:create,:update,:destroy>
   default_includes Model, <associations for eager loading>
 
@@ -98,27 +124,45 @@ class MyModelAPI < IntrospectiveGrape::API
 
   paginate per_page 25, offset: 0, max_per_page: false
 
+  filter_on :param
+
   restful MyModel, [:strong, :param, :fields, :and, { nested_model_attributes: [:nested,:fields, :_destroy] }] do
     # Add additional end points to the model's namespace
   end
  
+  class <NestedModel>Entity < Grape::Entity
+    expose :id, :attribute
+  end
+
   class <MyModel>Entity < Grape::Entity
     expose :id, :attribute
     expose :nested, using: <NestedModel>Entity>
   end
-
-  class <NestedModel>Entity < Grape::Entity
-    expose :id, :attribute
-  end
 end
 ```
+
+
+## Skipping a Presence Validation for a Required Field
 
 If a model has, say, a procedurally generated default for a not-null field
 `skip_presence_validations` will make IntrospectiveGrape declare the parameter
 optional rather than required.
 
+## Excluding Endpoints
+
+By default any association included in the strong params argument will have all
+RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
+be excluded (or conversely included) with the `exclude_actions` or `include_actions`
+declarations in the API class. You can also include or exclude :all or :none as shorthand.
+
+## Pagination
+
+The index action by default will not be paginated, simply declared `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
+
+## Validating Virtual Attributes and Overriding Grape Validations
+
 To define a Grape param type for a virtual attribute or override the defaut param
-type from model introspection, define a class method in the model with the param
+type from database introspection, define a class method in the model with the param
 types for the attributes specified in a hash, e.g.:
  
 ```
@@ -140,18 +184,15 @@ class method ("grape_validations") that will be applied to that field's param de
   end
 ```
 
-IntrospectiveGrape provides the following custom grape validators:
+## Validating JSON Parameters
+
+IntrospectiveGrape provides the following custom grape validators for JSON string parameters:
 
 ```
 json: true       # validates that the JSON string parses
 json_array: true # validates that the JSON string parses and returns an Array 
 json_hash: true  # validates that the JSON string parses and returns a Hash
 ```
-
-For nested models declared in Rails' strong params both the Grape params for the
-nested params as well as nested routes will be declared, allowing for
-a good deal of flexibility for API consumers out of the box, such as implicitly
-creating bulk update endpoints for nested models.
 
 
 ## Filtering and Searching
@@ -215,18 +256,7 @@ end
 ## Documenting Endpoints
 
 If you wish to provide additional documentation for end points you can define
-`<action>_documentation` methods in the API class.
-
-## Pagination
-
-The index action by default will not be paginated, simply declared `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
-
-## Excluding Endpoints
-
-By default any association included in the strong params argument will have all
-RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
-be excluded (or conversely included) with the `exclude_actions` or `include_actions`
-declarations in the API class. You can also include or exclude :all or :none as shorthand.
+`self.<action>_documentation` class methods in the API class (or extend them from a module).
 
 ## Grape Hooks
 
