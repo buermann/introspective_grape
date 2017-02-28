@@ -10,6 +10,17 @@ describe Dummy::LocationAPI, type: :request do
     Location.make!(name: "TEST2", kind: "airport") 
   end
 
+
+  it "should return an array of camelized location entities" do
+    get '/api/v1/locations'
+    response.should be_success
+    j = JSON.parse(response.body)
+    j.each {|l| l.key?('childLocations').should be_truthy }
+    j.each {|l| l.key?('parentLocationId').should be_truthy }
+    j.each {|l| l.key?('updatedAt').should be_truthy }
+    j.each {|l| l.key?('createdAt').should be_truthy }
+  end
+
   it "should return a list of top level locations and their children" do
     get '/api/v1/locations'
     response.should be_success
@@ -19,6 +30,7 @@ describe Dummy::LocationAPI, type: :request do
     json.first['child_locations'].size.should > 0
     json.first['child_locations'].map{|l| l['id'].to_i}.sort.should == location.child_locations.map(&:id).sort
   end
+
 
   it "should generate basic filters on the whitelisted model attributes" do 
     get '/api/v1/locations', { name: "TEST" }

@@ -14,4 +14,5 @@ gem 'coveralls', require: false
 
 group :development do
   gem 'byebug'
+  gem 'rb-readline'
 end

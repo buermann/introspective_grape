@@ -104,13 +104,15 @@ class MyModelAPI < IntrospectiveGrape::API
 end
 ```
 
-This would set up all the basic RESTFUL actions with nested routes for the associated model and its nested association, providing a good deal of flexibility for API consumers out of the box, such as both plural and singular endpoints for associations.
+This would set up all the basic RESTFUL actions with nested routes for the associated model and its association, providing a good deal of flexibility for API consumers out of the box.
 
-IntrospectiveGrape looks in the MyModelAPI class for its entity definitions. If you prefer to define your entities elsewhere you could inherit them here.
+IntrospectiveGrape looks in the MyModelAPI class for grape-entity definitions. If you prefer to define your entities elsewhere you could inherit them here instead.
 
 Note that nested entities must be defined before their parents.
 
-Many simple customizations are available to carve out the default behaviors:
+## Customizing End Points
+
+Many simple customizations are available to carve out from the default behaviors:
 
 ```
 class MyModelAPI < IntrospectiveGrape::API
@@ -154,6 +156,10 @@ By default any association included in the strong params argument will have all
 RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
 be excluded (or conversely included) with the `exclude_actions` or `include_actions`
 declarations in the API class. You can also include or exclude :all or :none as shorthand.
+
+## Eager Loading
+
+Declaring `default_includes` on an activerecord class will tell IntrospectiveGrape which associations to eager load when fetching a collection or instance.
 
 ## Pagination
 
