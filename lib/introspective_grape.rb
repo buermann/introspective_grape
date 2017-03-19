@@ -14,6 +14,7 @@ module IntrospectiveGrape
 
   module Utils
     autoload :KeyTransformations, 'introspective_grape/utils/key_transformations'
+    autoload :JsonExpander,       'introspective_grape/utils/json_expander'
   end
 
   def self.config
