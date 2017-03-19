@@ -28,7 +28,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'kaminari', '< 1.0' # There's a version 1.0.0 out there that breaks everything
   s.add_dependency 'grape-kaminari'
   s.add_dependency 'pundit'
-  s.add_dependency 'activesupport', '> 4.1.8' # need #deep_transform_keys
 
   if RUBY_PLATFORM == 'java'
     #s.add_development_dependency "jdbc-sqlite3"
