@@ -12,6 +12,10 @@ module IntrospectiveGrape
     autoload :CamelJson, 'introspective_grape/formatter/camel_json'
   end
 
+  module Utils
+    autoload :KeyTransformations, 'introspective_grape/utils/key_transformations'
+  end
+
   def self.config
     @config = OpenStruct.new(camelize_parameters: true)
   end
