@@ -8,8 +8,21 @@ module IntrospectiveGrape
   autoload :SnakeParams,    'introspective_grape/snake_params'
   autoload :Traversal,      'introspective_grape/traversal'
 
+  module ErrorFormatter
+    module Simple
+      autoload :Base,      'introspective_grape/error_formatter/simple/base'
+      autoload :Json,      'introspective_grape/error_formatter/simple/json'
+      autoload :CamelJson, 'introspective_grape/error_formatter/simple/camel_json'
+    end
+  end
+
   module Formatter
     autoload :CamelJson, 'introspective_grape/formatter/camel_json'
+  end
+
+  module Utils
+    autoload :KeyTransformations, 'introspective_grape/utils/key_transformations'
+    autoload :JsonExpander,       'introspective_grape/utils/json_expander'
   end
 
   def self.config
