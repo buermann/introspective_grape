@@ -10,11 +10,11 @@ module LocationHelper
     ###  build an airport with 8 terminals each with 3 gates along each cardinal and ordinal
     ###  axis, for two companies each with their own set of bluetooth beacons at every gate:
     ###
-    ###                      (1)A B C          
-    ###                          \|/      
-    ###                      (8)H-*-D e.g.->(Terminal D with gates D1, D2, and D3) 
-    ###                          /|\       
-    ###                         G F E 
+    ###                      (1)A B C
+    ###                          \|/
+    ###                      (8)H-*-D e.g.->(Terminal D with gates D1, D2, and D3)
+    ###                          /|\
+    ###                         G F E
     @sprocketCo, @widgetCo = test_companies
 
     @airport    = Location.find_by_name("TEST") || Location.new(name:'TEST',kind:'airport')
@@ -39,7 +39,7 @@ module LocationHelper
         lat += (1..3).cover?(terminal) ? adj : 0
         lat -= (5..7).cover?(terminal) ? adj : 0
 
-        adj *= Math.cos(37.615223*Math::PI/180) 
+        adj *= Math.cos(37.615223*Math::PI/180)
         lng += (3..5).cover?( terminal) ? adj : 0
         lng -= [1,7,8].include?(terminal) ? adj : 0
 

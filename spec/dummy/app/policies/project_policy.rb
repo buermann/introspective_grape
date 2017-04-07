@@ -8,23 +8,23 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def project_manager?
-    @user.superuser? || @user.all_admin_projects.include?(record) 
+    @user.superuser? || @user.all_admin_projects.include?(record)
   end
 
   def show?
-    @user && project_user? 
+    @user && project_user?
   end
 
   def update?
-    @user && project_manager? 
+    @user && project_manager?
   end
 
   def create?
-    @user && project_manager? 
+    @user && project_manager?
   end
 
   def destroy?
-    @user && project_manager? 
+    @user && project_manager?
   end
 
   class Scope < ApplicationPolicy::Scope

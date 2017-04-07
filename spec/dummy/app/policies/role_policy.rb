@@ -5,11 +5,11 @@ class RolePolicy < ApplicationPolicy
   end
 
   def show?
-    @user.admin?(record.ownable) 
+    @user.admin?(record.ownable)
   end
 
   def update?
-    @user.admin?(record.ownable) 
+    @user.admin?(record.ownable)
   end
 
   def create?

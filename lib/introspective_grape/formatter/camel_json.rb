@@ -4,17 +4,20 @@ require 'grape/formatter/json'
 module IntrospectiveGrape
   module Formatter
     module CamelJson
-      def self.call(object, _env)
-        if object.respond_to?(:to_json) && !object.respond_to?(:with_camel_keys) &&
-          (parsed_object = JSON.parse(object.to_json)).respond_to?(:with_camel_keys)
-          object = parsed_object
-				elsif object.kind_of?(Array) && object.first.kind_of?(Grape::Entity)
-        	# Force arrays of Grape::Entities into their hash representations before camelizing
-        	object = JSON.parse(object.to_json) 
+      class << self
+        def transform_to_camel_keys(object)
+          # We only need to parse(object.to_json) like this if it isn't already
+          # a native hash (or array of them), i.e. we have to parse Grape::Entities
+          # and other formatter facades:
+          unless (object.is_a?(Array) && object.first.is_a?(Hash)) || object.is_a?(Hash)
+            object = JSON.parse(object.to_json) if object.respond_to?(:to_json)
+          end
+          CamelSnakeKeys.camel_keys(object)
         end
-        object = object.with_camel_keys if object.respond_to?(:with_camel_keys)
 
-        Grape::Formatter::Json.call(object, _env)
+        def call(object, env)
+          Grape::Formatter::Json.call(transform_to_camel_keys(object), env)
+        end
       end
     end
   end

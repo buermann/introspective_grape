@@ -58,7 +58,7 @@ It also defaults to monkey patching Grape::Swagger to camelize the API's paramet
 
 You can disable this behavior by setting `IntrospectiveGrape.config.camelize_parameters = false`.
 
-To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method.
+To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method with the `using CamelSnakeKeys` refinement.
 
 ## Authentication and authorization
 
@@ -131,7 +131,7 @@ class MyModelAPI < IntrospectiveGrape::API
   restful MyModel, [:strong, :param, :fields, :and, { nested_model_attributes: [:nested,:fields, :_destroy] }] do
     # Add additional end points to the model's namespace
   end
- 
+
   class <NestedModel>Entity < Grape::Entity
     expose :id, :attribute
   end
@@ -170,7 +170,7 @@ The index action by default will not be paginated, simply declared `paginate` be
 To define a Grape param type for a virtual attribute or override the defaut param
 type from database introspection, define a class method in the model with the param
 types for the attributes specified in a hash, e.g.:
- 
+
 ```
    def self.grape_param_types
     { "<attribute name 1>" => String,
@@ -185,8 +185,8 @@ class method ("grape_validations") that will be applied to that field's param de
 ```
   def self.grape_validations
     { field1: { values: %w(red blue green) },
-      field2: { json_array: true }, 
-      field3: { regexp: /\w+/ } 
+      field2: { json_array: true },
+      field3: { regexp: /\w+/ }
   end
 ```
 
@@ -196,7 +196,7 @@ IntrospectiveGrape provides the following custom grape validators for JSON strin
 
 ```
 json: true       # validates that the JSON string parses
-json_array: true # validates that the JSON string parses and returns an Array 
+json_array: true # validates that the JSON string parses and returns an Array
 json_hash: true  # validates that the JSON string parses and returns a Hash
 ```
 

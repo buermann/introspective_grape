@@ -34,18 +34,18 @@ class Dummy::Sessions < Grape::API
 
 
     desc "delete a user session" do
-      detail "sign out the current user" 
+      detail "sign out the current user"
     end
     delete '/' do
       authorize User.new, :sessions?
       u = User.find_by_authentication_token(params[:api_key])
-      if u 
+      if u
         u.authentication_token = nil
         {status: u.save!}
       else
         {status: true } # the user is already logged out
       end
-    end 
+    end
 
   end
 end

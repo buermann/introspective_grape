@@ -24,8 +24,8 @@ def paragraph(n=25)
 end
 
 Company.blueprint do
-  name       { words } 
-  short_name { syllable(10) } 
+  name       { words }
+  short_name { syllable(10) }
 end
 
 User.blueprint do
@@ -38,7 +38,7 @@ end
 
 Role.blueprint {
   user_id       { User.first||User.make }
-  ownable_id    { Company.first||Company.make } 
+  ownable_id    { Company.first||Company.make }
   ownable_type  { 'Company' }
 }
 
@@ -47,7 +47,7 @@ Locatable.blueprint {
   locatable { Company.make }
 }
 Location.blueprint {
-  name     { (65+rand(8)).chr+"1"} 
+  name     { (65+rand(8)).chr+"1"}
   kind     { 'gate' }
   gps      { LocationGps.new(lat: 37.615223, lng: -122.389977 ) }
 }
@@ -65,12 +65,12 @@ LocationGps.blueprint {
   # place the point randomly within about a mile radius of the TEST airport (LocationHelper)
   lat { 37.615223   + 0.01609*rand(0.1) * (rand(2) > 0 ? 1 : -1) }
   lng { -122.389977 + 0.01609*rand(0.1)*Math.cos(37.615223*Math::PI/180) * (rand(2) > 0 ? 1 : -1) }
-  alt { 0 }  
+  alt { 0 }
 }
 
 Project.blueprint {
   name  { words(2) }
-  owner { Company.make } 
+  owner { Company.make }
   jobs { [Job.make, Job.make] }
   admins { [User.make] }
 }
@@ -78,7 +78,7 @@ Job.blueprint {
   title { words(2) }
 }
 UserProjectJob.blueprint {
-  user    { User.make } 
+  user    { User.make }
   project { Project.make }
   job     { Job.make }
 }
@@ -88,9 +88,9 @@ ProjectJob.blueprint {
 }
 
 
-Team.blueprint { 
+Team.blueprint {
   p = Project.make
-  project { p } 
+  project { p }
   creator { p.admins.first }
   name { words(2) }
 }
@@ -98,6 +98,6 @@ TeamUser.blueprint {
   t = Team.make
   t.project.users.push User.make(projects: [t.project])
   team { t }
-  user { t.project.users.first } 
+  user { t.project.users.first }
 }
 

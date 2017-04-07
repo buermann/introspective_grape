@@ -15,9 +15,6 @@ class DummyAPI < Grape::API
     # sets server date in response header. This can be used on the client side
     header "X-Server-Date", Time.now.to_i.to_s
     header "Expires", 1.year.ago.httpdate
-    # Convert incoming camel case params to snake case: grape will totally blow this
-    # if the params hash is not a Hashie::Mash, so make it one of those:
-    #@params = Hashie::Mash.new(params.with_snake_keys)
   end
 
   before_validation do

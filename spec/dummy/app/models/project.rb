@@ -8,7 +8,7 @@ class Project < AbstractAdapter
   has_many :project_jobs,  dependent: :destroy, inverse_of: :project
   has_many :jobs,     through: :project_jobs
   accepts_nested_attributes_for :project_jobs, allow_destroy: true
-  
+
   has_many :user_project_jobs, dependent: :destroy, inverse_of: :project
   has_many :users,    through: :user_project_jobs, inverse_of: :projects
   accepts_nested_attributes_for :user_project_jobs, allow_destroy: true

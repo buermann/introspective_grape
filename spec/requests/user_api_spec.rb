@@ -12,7 +12,7 @@ describe Dummy::UserAPI, type: :request do
     u.save
   end
 
-  context :index do 
+  context :index do
 
     it "should return a list of users" do
       get '/api/v1/users'
@@ -100,7 +100,7 @@ describe Dummy::UserAPI, type: :request do
 
     it "should return only the records that were created at a nested endpoint" do
       new_company = Company.make!
-      post "/api/v1/users/#{user.id}/roles",  {ownable_type: 'Company', ownable_id: new_company.id} 
+      post "/api/v1/users/#{user.id}/roles",  {ownable_type: 'Company', ownable_id: new_company.id}
       response.should be_success
       json.size.should eq 1
       json.first['ownable_id'].should eq new_company.id
@@ -115,7 +115,7 @@ describe Dummy::UserAPI, type: :request do
       { ownable_id: company.id, ownable_type: 'Company' }
     end
 
-    it "should create a company admin" do 
+    it "should create a company admin" do
       params[:roles_attributes].push(role)
       post "/api/v1/users", params
       response.should be_success
@@ -123,19 +123,19 @@ describe Dummy::UserAPI, type: :request do
     end
 
 
-    context "Project default passwords for new users" do 
+    context "Project default passwords for new users" do
       let(:job)     { Job.make! }
       let(:project) { Project.make!(jobs: [job], default_password: "super secret") }
-      let(:params) do 
+      let(:params) do
         {
           email: 'test@test.com', password: '',
           user_project_jobs_attributes: [ job_id: project.jobs.first.id, project_id: project.id ]
-        } 
+        }
       end
 
       it "should set an empty password to an assigned project's default password" do
         post "/api/v1/users", params
-        response.should be_success 
+        response.should be_success
         json['user_project_jobs_attributes'][0]['name'].should  == project.name
         json['user_project_jobs_attributes'][0]['title'].should == job.title
       end
@@ -176,7 +176,7 @@ describe Dummy::UserAPI, type: :request do
     it "should require a devise re-confirmation email to update a user's email address" do
       new_email = 'new.email@test.com'
       old_email = user.email
-      put "/api/v1/users/#{user.id}", { email: new_email } 
+      put "/api/v1/users/#{user.id}", { email: new_email }
       response.should be_success
       user.reload
       user.email.should             == old_email
@@ -186,30 +186,30 @@ describe Dummy::UserAPI, type: :request do
 
     it "should skip the confirmation and update a user's email address" do
       new_email = 'new.email@test.com'
-      put "/api/v1/users/#{user.id}", { email: new_email, skip_confirmation_email: true } 
+      put "/api/v1/users/#{user.id}", { email: new_email, skip_confirmation_email: true }
       response.should be_success
       json['email'].should == new_email
       user.reload
       user.email.should    == new_email
     end
 
-    it "should validate the uniqueness of a user role" do 
+    it "should validate the uniqueness of a user role" do
       put "/api/v1/users/#{user.id}", { roles_attributes: [{ownable_type: 'Company', ownable_id: company.id}] }
       response.should_not be_success
       json['error'].should =~ /user has already been assigned that role/
       user.admin?(company).should be_truthy
     end
 
-    it "should update a user to be company admin" do 
+    it "should update a user to be company admin" do
       c = Company.make
       c.save!
-      put "/api/v1/users/#{user.id}", { roles_attributes: [{ownable_type: 'Company', ownable_id: c.id}] } 
+      put "/api/v1/users/#{user.id}", { roles_attributes: [{ownable_type: 'Company', ownable_id: c.id}] }
       response.should be_success
       user.reload
       user.admin?(c).should be_truthy
     end
 
-    it "should destroy a user's company admin role" do 
+    it "should destroy a user's company admin role" do
       user.admin?(company).should be_truthy
       put "/api/v1/users/#{user.id}", { roles_attributes: [{id: user.roles.last.id, _destroy: '1'}] }
       response.should be_success

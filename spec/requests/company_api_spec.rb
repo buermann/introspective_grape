@@ -55,12 +55,12 @@ describe Dummy::CompanyAPI, type: :request do
 
 
   it "should create a company" do
-    post "/api/v1/companies", { name: 'Test 123', short_name: 'T123' } 
+    post "/api/v1/companies", { name: 'Test 123', short_name: 'T123' }
     response.should be_success
     json['name'].should       == "Test 123"
     json['short_name'].should == "T123"
   end
-  
+
   it "should validate a new company" do
     post "/api/v1/companies", { name: 'a'*257, short_name: 'a'*11 }
     response.code.should == "400"
@@ -70,7 +70,7 @@ describe Dummy::CompanyAPI, type: :request do
 
   it "should update the company" do
     new_name = 'New Test 1234'
-    put "/api/v1/companies/#{company.id}", { name: new_name } 
+    put "/api/v1/companies/#{company.id}", { name: new_name }
     response.should be_success
     company.reload
     company.name.should == new_name
@@ -88,7 +88,7 @@ describe Dummy::CompanyAPI, type: :request do
 
   it "should validate json parameters" do
     put "/api/v1/companies/#{company.id}", { gizmos: "garbage" }
-    json["error"].should eq "gizmos must be valid JSON!" 
+    json["error"].should eq "gizmos must be valid JSON!"
   end
 
   it "should validate json array parameters" do

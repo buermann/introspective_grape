@@ -10,7 +10,7 @@ class Chat < AbstractAdapter
     chat_users.includes(:user).select {|cu| cu.departed_at.nil? }.map(&:user)
   end
 
-  before_create :add_creator_to_conversation 
+  before_create :add_creator_to_conversation
   def add_creator_to_conversation
     users.push creator
   end

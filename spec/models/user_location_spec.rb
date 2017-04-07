@@ -8,7 +8,7 @@ RSpec.describe UserLocation, type: :model do
 
   let(:user) { User.make! }
 
-  it "validates the detectable type" do 
+  it "validates the detectable type" do
     ul = UserLocation.new(user: user, location: Location.last, detectable: Location.last, coords: rand_coords)
     ul.valid?.should == false
     ul.errors[:detectable_type].should == ["is not included in the list"]

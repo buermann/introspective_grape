@@ -13,7 +13,7 @@ class Dummy::CompanyAPI < IntrospectiveGrape::API
       authorize Company.new, :index?
       present params
     end
-    
+
   end
 
   class CompanyEntity < Grape::Entity

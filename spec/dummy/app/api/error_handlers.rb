@@ -18,11 +18,11 @@ module ErrorHandlers
     end
 
     m.rescue_from Pundit::NotAuthorizedError do
-      error_response message: "Forbidden", status: 403 
+      error_response message: "Forbidden", status: 403
     end
 
     m.rescue_from Pundit::NotDefinedError do
-      error_response message: "Policy not implemented", status: 501 
+      error_response message: "Policy not implemented", status: 501
     end
   end
 end

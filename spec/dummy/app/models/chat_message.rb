@@ -31,4 +31,4 @@ class ChatMessage < AbstractAdapter
     Chat.eager_load(:chat_users).where("chat_users.departed_at IS NULL").order('chats.created_at desc').detect {|c| c.chat_users.map(&:user_id).uniq.sort == users.map(&:id).sort }
   end
 
-end 
+end

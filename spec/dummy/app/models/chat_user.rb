@@ -1,6 +1,6 @@
 class ChatUser < AbstractAdapter
   belongs_to :chat
-  belongs_to :user 
+  belongs_to :user
 
   alias_attribute :joined_at, :created_at
   alias_attribute :left_at,   :departed_at

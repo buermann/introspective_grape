@@ -23,7 +23,7 @@ Lint/AssignmentInCondition:
   Enabled: true
   Exclude:
     - 'bin/spring'
-    
+
 Lint/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true

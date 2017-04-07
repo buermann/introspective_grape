@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe Role, type: :model do
   before :all do
   end
-  let(:user) { User.make! } 
-  let(:company) { Company.make! } 
-  let(:project) { Project.make! } 
-  
+  let(:user) { User.make! }
+  let(:company) { Company.make! }
+  let(:project) { Project.make! }
+
   it "allows user assignment to company admin" do
     ur = Role.create(user:user, ownable: company)
     ur.valid?.should be_truthy
@@ -17,7 +17,7 @@ RSpec.describe Role, type: :model do
     ur.valid?.should be_falsey
   end
 
-  context "User helper methods" do 
+  context "User helper methods" do
     it "should register a user as a super user" do
       user.superuser?.should == false
       user.superuser = true
@@ -31,7 +31,7 @@ RSpec.describe Role, type: :model do
       user.admin?(company).should == true
     end
 
-    it "should register a project administrator" do 
+    it "should register a project administrator" do
       user.admin?(project).should == false
       Role.create!(user:user, ownable: project)
       user.reload

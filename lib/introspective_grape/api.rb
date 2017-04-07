@@ -14,6 +14,8 @@ module IntrospectiveGrape
     extend IntrospectiveGrape::Doc
     extend IntrospectiveGrape::SnakeParams
 
+    using CamelSnakeKeys
+
     # Allow files to be uploaded through ActionController:
     ActionController::Parameters::PERMITTED_SCALAR_TYPES.push Rack::Multipart::UploadedFile, ActionController::Parameters
 
@@ -76,7 +78,7 @@ module IntrospectiveGrape
         # model: the model class for the API
         # whitelist: a list of fields in Rail's strong params structure, also used to
         #            generate grape's permitted params.
-        # routes: An array of OpenStruct representations of a nested route's ancestors 
+        # routes: An array of OpenStruct representations of a nested route's ancestors
         #
 
         # Defining the api will break pending migrations during db:migrate, so bail:
@@ -91,7 +93,7 @@ module IntrospectiveGrape
         # when routes are nested
         whitelist = whitelist( strong_params )
 
-        # As routes are nested keep track of the routes, we are preventing siblings from 
+        # As routes are nested keep track of the routes, we are preventing siblings from
         # appending to the routes array here:
         routes = build_routes(routes, model)
         define_routes(routes, whitelist)
@@ -99,7 +101,7 @@ module IntrospectiveGrape
         # Top level declaration of the Grape::API namespace for the resource:
         resource routes.first.name.pluralize do
           # yield to append additional routes under the root namespace
-          yield if block_given? 
+          yield if block_given?
         end
       end
 
@@ -114,7 +116,7 @@ module IntrospectiveGrape
             # Look at model.reflections to find the association's class name:
             reflection_name = r.to_s.sub(/_attributes$/,'')
             begin
-              relation = model.reflections[reflection_name].class_name.constantize 
+              relation = model.reflections[reflection_name].class_name.constantize
             rescue
               Rails.logger.fatal "Can't find associated model for #{r} on #{model}"
             end
@@ -145,7 +147,7 @@ module IntrospectiveGrape
         end
       end
 
-      def define_restful_api(dsl, routes, model, api_params) 
+      def define_restful_api(dsl, routes, model, api_params)
         # declare index, show, update, create, and destroy methods:
         API_ACTIONS.each do |action|
           send("define_#{action}", dsl, routes, model, api_params) unless exclude_actions(model).include?(action)
@@ -270,16 +272,16 @@ module IntrospectiveGrape
         # routes: the existing routes array passed from the parent
         # model:  the model being manipulated in this leaf
         # reflection_name: the association name from the original strong_params declaration
-        # 
+        #
         # Constructs an array representation of the route's models and their associations,
         # a /root/:rootId/branch/:branchId/leaf/:leafId path would have flat array like
         # [root,branch,leaf] representing the path structure and its models, used to
         # manipulate ActiveRecord relationships and params hashes and so on.
-        parent_model = routes.last.try(:model)
+        parent_model = routes.last&.model
         return routes if model == parent_model
 
         name       = reflection_name || model.name.underscore
-        reflection = parent_model.try(:reflections).try(:fetch,reflection_name)
+        reflection = parent_model&.reflections&.fetch(reflection_name)
         many       = parent_model && PLURAL_REFLECTIONS.include?( reflection.class ) ? true : false
         swaggerKey = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
 
@@ -287,7 +289,7 @@ module IntrospectiveGrape
       end
 
 
-      def build_nested_attributes(routes,hash) 
+      def build_nested_attributes(routes,hash)
         # Recursively re-express the flat attributes hash from nested routes as nested
         # attributes that can be used to perform an update on the root model.
 
@@ -299,12 +301,12 @@ module IntrospectiveGrape
         id      = hash.delete route.key
         attributes = id ? { id: id } : {}
 
-        attributes.merge!( hash ) if routes.blank? # assign param values to the last reference 
+        attributes.merge!( hash ) if routes.blank? # assign param values to the last reference
 
         if route.many? # nest it in an array if it is a has_many association
-          { route.param => [attributes.merge( build_nested_attributes(routes, hash) )] } 
-        else 
-          { route.param => attributes.merge( build_nested_attributes(routes, hash) ) } 
+          { route.param => [attributes.merge( build_nested_attributes(routes, hash) )] }
+        else
+          { route.param => attributes.merge( build_nested_attributes(routes, hash) ) }
         end
       end
 
@@ -354,7 +356,7 @@ module IntrospectiveGrape
             # Handle Carrierwave file upload fields
             s = [:filename, :type, :name, :tempfile, :head]-v
             if s.present?
-              Rails.logger.warn "Missing required file upload parameters #{s} for uploader field #{r}" 
+              Rails.logger.warn "Missing required file upload parameters #{s} for uploader field #{r}"
             end
           elsif PLURAL_REFLECTIONS.include?( model.reflections[reflection].class )
             # In case you need a refresher on how these work:
@@ -377,20 +379,20 @@ module IntrospectiveGrape
       end
 
       def is_file_attachment?(model,field)
-        model.try(:uploaders) && model.uploaders[field.to_sym] || # carrierwave
-          (model.try(:attachment_definitions) && model.attachment_definitions[field.to_sym]) ||
+        model.respond_to?(:uploaders) && model.uploaders[field.to_sym] || # carrierwave
+          (model.respond_to?(:attachment_definitions) && model.attachment_definitions[field.to_sym]) ||
           defined?(Paperclip::Attachment) && model.send(:new).try(field).kind_of?(Paperclip::Attachment)
       end
 
       def param_type(model,f)
         # Translate from the AR type to the GrapeParam types
         f       = f.to_s
-        db_type = (model.try(:columns_hash)||{})[f].try(:type)
+        db_type = (model.try(:columns_hash)||{})[f]&.type
 
         # Check if it's a file attachment, look for an override class from the model,
         # check Pg2Ruby, use the database type, or fail over to a String:
-        ( is_file_attachment?(model,f) && Rack::Multipart::UploadedFile ) || 
-          (model.try(:grape_param_types)||{}).with_indifferent_access[f]  || 
+        ( is_file_attachment?(model,f) && Rack::Multipart::UploadedFile ) ||
+          (model.try(:grape_param_types)||{}).with_indifferent_access[f]  ||
           Pg2Ruby[db_type]                                                ||
           begin db_type.to_s.camelize.constantize rescue nil end          ||
           String

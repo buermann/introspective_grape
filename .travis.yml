@@ -15,8 +15,8 @@ rvm:
   - ruby-head
   - jruby-head
 gemfile:
-#  - gemfiles/Gemfile.rails.3.2.22 
-  #- gemfiles/Gemfile.rails.4.1.13 
+#  - gemfiles/Gemfile.rails.3.2.22
+#  - gemfiles/Gemfile.rails.4.1.13
   - gemfiles/Gemfile.rails.4.2.7.1
   - gemfiles/Gemfile.rails.4.2.7.1.new.swagger
   - gemfiles/Gemfile.rails.4.2.8
@@ -50,7 +50,7 @@ matrix:
       gemfile: gemfiles/Gemfile.rails.5.0.1
     - rvm: 2.2.0
       gemfile: gemfiles/Gemfile.rails.master
-    - rvm: jruby-9.0.4.0
+      - rvm: jruby-9.0.4.0
       gemfile: gemfiles/Gemfile.rails.4.2.7.1.new.swagger
     - rvm: jruby-9.0.4.0
       gemfile: gemfiles/Gemfile.rails.4.2.8
@@ -67,7 +67,7 @@ env:
     - JRUBY_OPTS="-J-Xmx1024m --debug"
 
 notifications:
-  email: 
+  email:
     recipients:
     - buermann@gmail.com
     on_success: change

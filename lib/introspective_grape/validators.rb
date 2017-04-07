@@ -14,7 +14,7 @@ module Grape::Validators
   class JsonArray < Grape::Validations::Base
     def validate_param!(field, params)
       begin
-        raise unless JSON.parse( params[field] ).kind_of? Array 
+        raise unless JSON.parse( params[field] ).kind_of? Array
       rescue
         fail Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be a valid JSON array!'
       end

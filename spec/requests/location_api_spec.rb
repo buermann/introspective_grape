@@ -7,7 +7,7 @@ describe Dummy::LocationAPI, type: :request do
 
   before :all do
     create_test_airport
-    Location.make!(name: "TEST2", kind: "airport") 
+    Location.make!(name: "TEST2", kind: "airport")
   end
 
 
@@ -32,7 +32,7 @@ describe Dummy::LocationAPI, type: :request do
   end
 
 
-  it "should generate basic filters on the whitelisted model attributes" do 
+  it "should generate basic filters on the whitelisted model attributes" do
     get '/api/v1/locations', { name: "TEST" }
     response.should be_success
     json.length.should eq 1
@@ -40,7 +40,7 @@ describe Dummy::LocationAPI, type: :request do
   end
 
   it "should parse more advanced JSON filters" do
-    get '/api/v1/locations', filter: "{\"child_locations_locations\":{\"name\":\"Terminal A\"}}" 
+    get '/api/v1/locations', filter: "{\"child_locations_locations\":{\"name\":\"Terminal A\"}}"
     response.should be_success
     json.length.should eq 1
     json.first['child_locations'].length.should eq 1
@@ -59,14 +59,14 @@ describe Dummy::LocationAPI, type: :request do
   end
 
   it "should create a location" do
-    post "/api/v1/locations", { name: 'Test 123', kind: "terminal" } 
+    post "/api/v1/locations", { name: 'Test 123', kind: "terminal" }
     response.should be_success
     json['name'].should == "Test 123"
   end
-  
+
   it "should create a location with a beacon" do
     b = LocationBeacon.make(company: Company.last)
-    post "/api/v1/locations", { name: 'Test 123', kind: "gate", beacons_attributes: [ b.attributes ] } 
+    post "/api/v1/locations", { name: 'Test 123', kind: "gate", beacons_attributes: [ b.attributes ] }
     response.should be_success
     json['name'].should == "Test 123"
     l   = Location.find(json['id'])
@@ -75,10 +75,10 @@ describe Dummy::LocationAPI, type: :request do
     created.minor.should  == b.minor
     created.major.should  == b.major
   end
- 
+
   it "should create a location with gps coordinates" do
     gps = LocationGps.make
-    post "/api/v1/locations", { name: 'Test 123', kind: "airport", gps_attributes: gps.attributes } 
+    post "/api/v1/locations", { name: 'Test 123', kind: "airport", gps_attributes: gps.attributes }
     response.should be_success
     json['name'].should == "Test 123"
     l   = Location.find(json['id'])
@@ -88,7 +88,7 @@ describe Dummy::LocationAPI, type: :request do
     created.lng.round(10).should == gps.lng.round(10)
     created.alt.should           == gps.alt
   end
-  
+
   it "should validate a new location" do
     post "/api/v1/locations", { name: 'test' }
     response.code.should == "400"
@@ -97,7 +97,7 @@ describe Dummy::LocationAPI, type: :request do
 
   it "should update the location" do
     new_name = 'New Test 1234'
-    put "/api/v1/locations/#{location.id}", { name: new_name } 
+    put "/api/v1/locations/#{location.id}", { name: new_name }
     response.should be_success
     location.reload
     location.name.should == new_name

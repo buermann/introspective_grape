@@ -7,7 +7,7 @@ module IntrospectiveGrape::Helpers
 
   def authentication_method(context)
     # Default to "authenticate!" or as grape docs once suggested, "authorize!"
-    if @authentication_method 
+    if @authentication_method
       @authentication_method
     elsif context.respond_to?('authenticate!')
       'authenticate!'
@@ -27,7 +27,7 @@ module IntrospectiveGrape::Helpers
   def exclude_actions(model, *args)
     @exclude_actions ||= {}; @exclude_actions[model.name] ||= []
     args.flatten!
-    args = API_ACTIONS if args.include?(:all) 
+    args = API_ACTIONS if args.include?(:all)
     args = []          if args.include?(:none)
 
     undefined_actions = args.compact-API_ACTIONS
@@ -46,7 +46,7 @@ module IntrospectiveGrape::Helpers
     @default_includes ||= {}
     @default_includes[model.name] = args.present? ? args.flatten : @default_includes[model.name] || []
   end
-  
+
   def whitelist(whitelist=nil)
     return @whitelist if !whitelist
     @whitelist = whitelist

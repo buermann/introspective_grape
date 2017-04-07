@@ -1,7 +1,7 @@
 require "rails_helper"
 describe Dummy::ChatAPI, type: :request do
 
-  before :all do 
+  before :all do
     User.destroy_all
     @without_authentication = true
 
@@ -23,7 +23,7 @@ describe Dummy::ChatAPI, type: :request do
   context "while current_user is the current user" do
 
     before :each do
-      @chat.reload 
+      @chat.reload
       Grape::Endpoint.before_each do |endpoint|
         allow(endpoint).to receive(:current_user) { @current_user }
       end
@@ -58,7 +58,7 @@ describe Dummy::ChatAPI, type: :request do
       end
     end
 
-    context :messages do 
+    context :messages do
 
       it "should get no new chat messages if user was last to reply" do
         get "/api/v1/chats/messages", id: @chat.id, new: true
@@ -73,7 +73,7 @@ describe Dummy::ChatAPI, type: :request do
         json.size.should == 1
       end
 
-      it "should mark all new messages from all chats as read if mark_as_read is true" do 
+      it "should mark all new messages from all chats as read if mark_as_read is true" do
         @sender.reply(@chat, 'A new response.')
         @current_user.new_messages?.keys.size.should == 2
         get "/api/v1/chats/messages", new: true, mark_as_read: true
@@ -84,7 +84,7 @@ describe Dummy::ChatAPI, type: :request do
     end
 
 
-    context :users do 
+    context :users do
       it "should list the users in a chat" do
         get "/api/v1/chats/users", id: @chat.id
         response.should be_success
@@ -126,7 +126,7 @@ describe Dummy::ChatAPI, type: :request do
 
       it "should raise an error when an outsider tries to add themselves to a chat" do
         post "/api/v1/chats/users", id: @lurk.id, user_ids: @current_user.id
-        response.status.should == 400 
+        response.status.should == 400
         json['error'].should == 'Only current chat participants can add users.'
         @lurk.reload
         @lurk.active_users.include?(@current_user).should == false
@@ -160,7 +160,7 @@ describe Dummy::ChatAPI, type: :request do
         @chat.active_users.include?(@current_user).should == false
       end
 
-      it "should only allow chat participants to reply" do 
+      it "should only allow chat participants to reply" do
         @current_user.leave_chat(@chat)
         @current_user.reload
         put "/api/v1/chats/#{@chat.id}", message: "I'm an interloper"

@@ -2,10 +2,13 @@ require 'grape-swagger'
 require 'active_support/core_ext/module/aliasing'
 require 'active_support/inflector/methods'
 require 'camel_snake_keys'
-if IntrospectiveGrape.config.camelize_parameters 
+
+using CamelSnakeKeys
+
+if IntrospectiveGrape.config.camelize_parameters
   # Camelize the parameters in the swagger documentation.
   if Gem::Version.new( GrapeSwagger::VERSION ) <= Gem::Version.new('0.11.0')
-    Grape::API.class_eval do 
+    Grape::API.class_eval do
       class << self
         private
         def create_documentation_class_with_camelized

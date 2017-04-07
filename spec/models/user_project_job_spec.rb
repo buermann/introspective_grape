@@ -14,7 +14,7 @@ RSpec.describe UserProjectJob, type: :model do
     UserProjectJob.make.title.should_not == nil
   end
 
-  it "should scope job options by project" do 
+  it "should scope job options by project" do
     ProjectJob.make!
     ProjectJob.make!
 
@@ -22,7 +22,7 @@ RSpec.describe UserProjectJob, type: :model do
     j = Job.make!
     p.jobs.push j
     p.save
-    UserProjectJob.make!(project: p, job: j) 
+    UserProjectJob.make!(project: p, job: j)
     UserProjectJob.options_for_job(p).should == p.jobs
   end
 

@@ -9,14 +9,14 @@ module IntrospectiveGrape::Traversal
     # (the traversal of the intermediate nodes occurs in find_leaf())
     return record if routes.size < 2 # the leaf is the root
     record = find_leaf(routes, record, params)
-    if record 
+    if record
       assoc  = routes.last
-      if assoc.many? 
+      if assoc.many?
         leaves = record.send( assoc.reflection.name ).includes( default_includes(assoc.model) )
         verify_records_found(leaves, routes)
         leaves
-      else 
-        # has_one associations don't return a CollectionProxy and so don't support 
+      else
+        # has_one associations don't return a CollectionProxy and so don't support
         # eager loading.
         record.send( assoc.reflection.name )
       end
@@ -24,7 +24,7 @@ module IntrospectiveGrape::Traversal
   end
 
   def verify_records_found(leaves, routes)
-    unless (leaves.map(&:class) - [routes.last.model]).empty? 
+    unless (leaves.map(&:class) - [routes.last.model]).empty?
       raise ActiveRecord::RecordNotFound.new("Records contain the wrong models, they should all be #{routes.last.model.name}, found #{records.map(&:class).map(&:name).join(',')}")
     end
   end

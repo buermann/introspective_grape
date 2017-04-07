@@ -34,7 +34,7 @@ describe Dummy::RoleAPI, type: :request do
     response.code.should == '400'
     json['error'].should =~ /user has already been assigned that role/
   end
-  
+
   it 'validates ownable type value specified in grape_validations' do
     post '/api/v1/roles', { user_id: user.id, ownable_type: 'NotCompany' }
     response.code.should == '400'

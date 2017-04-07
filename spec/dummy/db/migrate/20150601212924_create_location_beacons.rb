@@ -5,7 +5,7 @@ class CreateLocationBeacons < ActiveRecord::Migration
       t.references :company, null: false
       t.string  :mac_address, limit: 12
       t.string  :uuid, null: false, limit: 32
-      t.integer :major, null: false 
+      t.integer :major, null: false
       t.integer :minor, null: false
 
       t.timestamps null: false

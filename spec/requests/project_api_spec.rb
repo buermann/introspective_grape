@@ -14,9 +14,9 @@ describe Dummy::ProjectAPI, type: :request do
 
     cm.admin_companies.push c
     pm.admin_projects.push p
-  
+
     cm.save!
-    pm.save! 
+    pm.save!
   end
 
   let(:company) { Company.find_by_name("Sprockets") }
@@ -41,7 +41,7 @@ describe Dummy::ProjectAPI, type: :request do
       response.code.should == "404"
     end
 
-    context "edit a project team" do 
+    context "edit a project team" do
 
       before(:each) do
         @team = Team.make!(project: project)
@@ -51,8 +51,8 @@ describe Dummy::ProjectAPI, type: :request do
         UserProjectJob.make!(project: project, job: project.jobs.first, user: @u2)
       end
 
-      context "via nested attributes" do 
-        it "should create a team with users" do 
+      context "via nested attributes" do
+        it "should create a team with users" do
           p = {
             name: 'New Team', team_users_attributes: [{ user_id: @u1.id }, { user_id: @u2.id }]
           }
@@ -62,9 +62,9 @@ describe Dummy::ProjectAPI, type: :request do
           Team.last.users.to_a.should == [@u1,@u2]
         end
 
-        it "should add a team member" do  
+        it "should add a team member" do
           p = { team_users_attributes: [
-            { user_id: @u1.id }, { user_id: @u2.id } 
+            { user_id: @u1.id }, { user_id: @u2.id }
           ] }
           put "/api/v1/projects/#{project.id}/teams/#{@team.id}", p
           response.should be_success
@@ -72,11 +72,11 @@ describe Dummy::ProjectAPI, type: :request do
           Team.last.users.to_a.should == [@u1,@u2]
         end
 
-        it "should delete a team member" do 
+        it "should delete a team member" do
           @team.users << [@u1,@u2]
           @team.save!
           p = { team_users_attributes: [
-            { id: @team.team_users.where(user_id:@u1.id).first.id, _destroy: 1 } 
+            { id: @team.team_users.where(user_id:@u1.id).first.id, _destroy: 1 }
           ] }
           put "/api/v1/projects/#{project.id}/teams/#{@team.id}", p
           response.should be_success
@@ -84,15 +84,15 @@ describe Dummy::ProjectAPI, type: :request do
         end
       end
 
-      context "edit a project team via nested routes" do 
-        it "should add a team member" do 
+      context "edit a project team via nested routes" do
+        it "should add a team member" do
           p = { user_id: @u1.id }
           post "/api/v1/projects/#{project.id}/teams/#{@team.id}/team_users", p
           response.should be_success
           Team.last.users.to_a.should == [@u1]
         end
 
-        it "should delete a team member" do 
+        it "should delete a team member" do
           @team.users << [@u1,@u2]
           @team.save!
           id = @team.team_users.where(user_id:@u1.id).first.id
@@ -105,14 +105,14 @@ describe Dummy::ProjectAPI, type: :request do
   end
 
   context "As a company admin" do
-    before :all do 
+    before :all do
       @without_authentication = true
     end
 
     before :each do
       Grape::Endpoint.before_each do |endpoint|
         allow(endpoint).to receive(:current_user) do
-          User.find_by_email("company.admin@springshot.com") 
+          User.find_by_email("company.admin@springshot.com")
         end
       end
     end
@@ -120,7 +120,7 @@ describe Dummy::ProjectAPI, type: :request do
     it "should return a list of all the company's projects" do
       get '/api/v1/projects', offset: 0
       response.should be_success
-      json.length.should == 2 
+      json.length.should == 2
       json.map{|c| c['name']}.include?("Manufacture Sprockets").should == true
       json.map{|c| c['name']}.include?("Disassemble Sprockets").should == true
     end
@@ -128,13 +128,13 @@ describe Dummy::ProjectAPI, type: :request do
   end
 
   context "As a project admin" do
-    before :all do 
+    before :all do
       @without_authentication = true
     end
     before :each do
       Grape::Endpoint.before_each do |endpoint|
         allow(endpoint).to receive(:current_user) do
-          User.find_by_email("project.admin@springshot.com") 
+          User.find_by_email("project.admin@springshot.com")
         end
       end
     end
@@ -142,7 +142,7 @@ describe Dummy::ProjectAPI, type: :request do
     it "should return a list of all the project admin's projects" do
       get '/api/v1/projects', offset: 0
       response.should be_success
-      json.length.should == 1 
+      json.length.should == 1
       json.map{|c| c['name']}.include?("Manufacture Sprockets").should == true
       json.map{|c| c['name']}.include?("Disassemble Sprockets").should == false
     end

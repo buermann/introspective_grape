@@ -2,24 +2,24 @@ require 'rails_helper'
 include ActionDispatch::TestProcess # -> fixture_file_upload
 
 RSpec.describe User, type: :model do
-  context 'User::Chatter' do 
+  context 'User::Chatter' do
 
     def user(email)
-      User.find_by_email(email) || User.make!(email: email) 
+      User.find_by_email(email) || User.make!(email: email)
     end
 
-    it "uploads an avatar to AWS" do 
+    it "uploads an avatar to AWS" do
       u = User.make
       u.avatar = Image.new(file: fixture_file_upload( Rails.root+'../fixtures/images/exif.jpeg'))
       u.save
       u.avatar.file_processing?.should == false
-      
+
       #u.avatar_url.should            =~ /medium\/exif.jpeg/
       #u.avatar_url(:original).should =~ /original\/exif.jpeg/
       #u.avatar_url(:thumb).should    =~ /thumb\/exif.jpeg/
     end
 
-    context "chatting" do 
+    context "chatting" do
       let(:sender) {  user('sender@springshot.com') }
       let(:target) {  user('target1@springshot.com') }
       let(:target2) { user('target2@springshot.com') }
@@ -28,20 +28,20 @@ RSpec.describe User, type: :model do
       let(:discussion) {
         c = sender.chat([target,target2], 'Hey guys')
         target2.reply( c, "What's up?")
-        c 
+        c
       }
 
 
-      before :all do 
+      before :all do
         Chat.destroy_all
       end
 
-      it "chatting a user returns a chat" do 
+      it "chatting a user returns a chat" do
         c = sender.chat(target, 'a private message')
         c.kind_of?(Chat).should be_truthy
       end
 
-      it "a user sees that she has new messages in a discussion" do 
+      it "a user sees that she has new messages in a discussion" do
         discussion.save! # invoke create hooks on ChatMessage for ChatMessageUser
         sender.new_messages?(discussion)[discussion.id].should == 1
         target2.new_messages?(discussion)[discussion.id].should == 0
@@ -57,7 +57,7 @@ RSpec.describe User, type: :model do
         target2.new_messages?[chat2.id].should == 2
       end
 
-      it "a user sees her new messages" do 
+      it "a user sees her new messages" do
         discussion.save!
 
         sender.read_messages.size.should == 1

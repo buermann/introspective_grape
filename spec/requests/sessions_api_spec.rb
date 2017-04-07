@@ -9,7 +9,7 @@ describe Dummy::Sessions, type: :request do
 
   let(:user) { User.last }
 
-  context :sign_in do 
+  context :sign_in do
 
     it "should set a user token on login" do
       post '/api/v1/sessions', { login: user.email, password: 'abc12345', token: true }
@@ -29,7 +29,7 @@ describe Dummy::Sessions, type: :request do
   end
 
   context :sign_out do
-    it "should reset a user's auth token" do 
+    it "should reset a user's auth token" do
       user.authentication_token = "1234567890"
       user.save!
       delete "/api/v1/sessions", { api_key: "1234567890" }
@@ -38,7 +38,7 @@ describe Dummy::Sessions, type: :request do
       user.authentication_token.should be_nil
     end
 
-    it "signing out an already signed-out user should look fine, right?" do 
+    it "signing out an already signed-out user should look fine, right?" do
       user.authentication_token = "1234567890"
       user.save!
       delete "/api/v1/sessions", { api_key: "1234567890" }

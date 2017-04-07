@@ -29,7 +29,7 @@ module IntrospectiveGrape::Filters
   end
 
   def simple_filters(klass, model, api_params)
-    @simple_filters ||= api_params.select {|p| p.is_a? Symbol }.select {|field| 
+    @simple_filters ||= api_params.select {|p| p.is_a? Symbol }.select {|field|
       filters.include?(:all) || filters.include?(field)
     }.map { |field|
       (klass.param_type(model,field) == DateTime ? ["#{field}_start", "#{field}_end"] : field.to_s)
@@ -58,7 +58,7 @@ module IntrospectiveGrape::Filters
     # timestamp, a Start and an End, to apply a date range.
     simple_filters(klass, model, api_params).each do |field|
       if timestamp_filter(klass,model,field)
-        terminal = field.ends_with?("_start") ? "initial" : "terminal" 
+        terminal = field.ends_with?("_start") ? "initial" : "terminal"
         dsl.optional field, type: klass.param_type(model,field), description: "Constrain #{field} by #{terminal} date."
       elsif identifier_filter(klass,model,field)
         dsl.optional field, type: Array[Integer], coerce_with: ->(val) { val.split(',') }, description: "Filter by a comma separated list of integers."

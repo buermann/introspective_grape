@@ -5,7 +5,7 @@ class UserLocation < AbstractAdapter
 
   validates_inclusion_of :detectable_type, in: %w(LocationBeacon LocationGps)
 
-  default_scope { includes(:detectable).order("created_at desc") } 
+  default_scope { includes(:detectable).order("created_at desc") }
 
   def coords=(c) # convenience method to set coordinates by an array of [lat,lng,alt]
     self.lat = c[0]
@@ -13,14 +13,14 @@ class UserLocation < AbstractAdapter
     self.alt = c[2]
   end
 
-  def beacon 
+  def beacon
     detectable.is_a?(LocationBeacon) ? detectable : {}
   end
 
-  def distance 
+  def distance
     if location.gps && lat && lng
       location.gps.distance_from(lat,lng)
-    else 
+    else
       nil
     end
   end

@@ -1,6 +1,6 @@
 class UserPolicy < ApplicationPolicy
 
-  def sessions? 
+  def sessions?
     true
   end
 

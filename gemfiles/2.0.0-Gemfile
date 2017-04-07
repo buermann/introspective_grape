@@ -17,6 +17,6 @@ gem 'coveralls', require: false
 # your gem to rubygems.org.
 
 group :development,:test do
-  gem 'rspec' 
+  gem 'rspec'
 #  gem 'byebug'
 end

@@ -28,7 +28,7 @@ class User < AbstractAdapter
   has_many :chat_users
   has_many :chats, through: :chat_users
   has_many :chat_message_users
-  has_many :messages, ->{ where('chat_messages.created_at >= chat_users.created_at and (chat_users.departed_at IS NULL OR chat_messages.created_at <= chat_users.departed_at)') }, through: :chats 
+  has_many :messages, ->{ where('chat_messages.created_at >= chat_users.created_at and (chat_users.departed_at IS NULL OR chat_messages.created_at <= chat_users.departed_at)') }, through: :chats
   include User::Chatter
 
   has_many :roles, dependent: :destroy, inverse_of: :user

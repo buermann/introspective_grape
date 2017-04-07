@@ -4,7 +4,7 @@ class LocationPolicy < ApplicationPolicy
   end
 
   def show?
-    @user 
+    @user
   end
 
   def update?

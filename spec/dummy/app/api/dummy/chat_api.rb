@@ -1,13 +1,13 @@
 class Dummy::ChatAPI < Grape::API
   formatter :json, IntrospectiveGrape::Formatter::CamelJson
 
-  before do 
+  before do
     authenticate!
   end
 
-  resource :chats do  
+  resource :chats do
 
-    desc "list the current user's existing chats" 
+    desc "list the current user's existing chats"
     get '/' do
       authorize Chat.new, :index?
       present current_user.chats.includes(:users), with: ChatEntity
@@ -103,6 +103,6 @@ class Dummy::ChatAPI < Grape::API
   class MessageEntity < Grape::Entity
     expose :id, :chat_id, :message
     expose :author, using: UserEntity
-  end 
+  end
 
 end

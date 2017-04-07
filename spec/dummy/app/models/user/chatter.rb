@@ -1,14 +1,14 @@
 module User::Chatter
 
   def message_query(chat_id, new = true)
-    messages.joins(:chat_message_users) 
+    messages.joins(:chat_message_users)
             .where('chat_message_users.user_id'=> id)
             .where(new ? {'chat_message_users.read_at'=>nil} : '')
             .where(chat_id ? {'chat_messages.chat_id'=> chat_id} : '')
             .order('') # or it will add an order by id clause that breaks the count query.
   end
 
-  def new_messages?(chat=nil) # returns a hash of chat_ids with new message counts 
+  def new_messages?(chat=nil) # returns a hash of chat_ids with new message counts
     chat_id = chat.kind_of?(Chat) ? chat.id : chat
     new = message_query(chat_id)
           .select("chat_messages.chat_id, count(chat_messages.id) as count")
@@ -30,7 +30,7 @@ module User::Chatter
     chat  = Chat.create(creator: self)
     chat.users.push users
     chat.messages.build(message: message, author: self)
-    chat.save! 
+    chat.save!
     chat
   end
 
@@ -51,7 +51,7 @@ module User::Chatter
       chat.users.push users
       chat.messages.build(chat: chat, author: self, message: "#{self.name} [[ADDED_USER_MESSAGE]] #{users.map(&:name).join(',')}")
       chat.save!
-    else 
+    else
       chat.errors[:base] << "Only current chat participants can add users."
       raise ActiveRecord::RecordInvalid.new(chat)
     end
