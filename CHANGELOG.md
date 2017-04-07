@@ -2,11 +2,9 @@
 0.2.9 04/06/2017
 ================
 
-Update to camel_snake_json >=0.0.5, which switches from monkey patching everything that includes Enumerable and uses refinements, and use the class methods instead so we can continue to ostensibly support JRuby.
+Update to camel_snake_json >=0.0.5, which switches from monkey patching everything that includes Enumerable to using refinements, like a good neighbor. Use the class methods instead so we can continue to ostensibly support JRuby, like a good neighbor.
 
 Simplify the logic in the CamelJson formatter for determining whether to parse the json representation of the object before camelizing it.
-
-Replace defensive calls using ActiveSupport's "try" with ruby 2+'s "&." safe navigation operator.
 
 
 0.2.8 01/22/2017
