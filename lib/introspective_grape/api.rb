@@ -14,8 +14,6 @@ module IntrospectiveGrape
     extend IntrospectiveGrape::Doc
     extend IntrospectiveGrape::SnakeParams
 
-    using CamelSnakeKeys
-
     # Allow files to be uploaded through ActionController:
     ActionController::Parameters::PERMITTED_SCALAR_TYPES.push Rack::Multipart::UploadedFile, ActionController::Parameters
 

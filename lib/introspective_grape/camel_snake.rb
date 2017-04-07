@@ -1,9 +1,6 @@
 require 'grape-swagger'
 require 'active_support/core_ext/module/aliasing'
 require 'active_support/inflector/methods'
-require 'camel_snake_keys'
-
-using CamelSnakeKeys
 
 if IntrospectiveGrape.config.camelize_parameters
   # Camelize the parameters in the swagger documentation.
