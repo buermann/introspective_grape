@@ -63,6 +63,14 @@ matrix:
       gemfile: gemfiles/Gemfile.rails.5.0.1
     - rvm: jruby-9.0.4.0
       gemfile: gemfiles/Gemfile.rails.master
+    - rvm: ruby-head
+      gemfile: gemfiles/Gemfile.rails.4.2.7.1
+    - rvm: ruby-head
+      gemfile: gemfiles/Gemfile.rails.4.2.7.1.new.swagger
+    - rvm: jruby-head
+      gemfile: gemfiles/Gemfile.rails.4.2.7.1
+    - rvm: jruby-head
+      gemfile: gemfiles/Gemfile.rails.4.2.7.1.new.swagger
   allow_failures:
     - rvm: ruby-head
     - rvm: jruby-head
