@@ -275,11 +275,11 @@ module IntrospectiveGrape
         # a /root/:rootId/branch/:branchId/leaf/:leafId path would have flat array like
         # [root,branch,leaf] representing the path structure and its models, used to
         # manipulate ActiveRecord relationships and params hashes and so on.
-        parent_model = routes.last&.model
+        parent_model = routes.last.try(:model)
         return routes if model == parent_model
 
         name       = reflection_name || model.name.underscore
-        reflection = parent_model&.reflections&.fetch(reflection_name)
+        reflection = parent_model.try(:reflections).try(:fetch,reflection_name)
         many       = parent_model && PLURAL_REFLECTIONS.include?( reflection.class ) ? true : false
         swaggerKey = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
 
@@ -385,7 +385,7 @@ module IntrospectiveGrape
       def param_type(model,f)
         # Translate from the AR type to the GrapeParam types
         f       = f.to_s
-        db_type = (model.try(:columns_hash)||{})[f]&.type
+        db_type = (model.try(:columns_hash)||{})[f].try(:type)
 
         # Check if it's a file attachment, look for an override class from the model,
         # check Pg2Ruby, use the database type, or fail over to a String:
