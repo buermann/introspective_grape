@@ -1,6 +1,6 @@
 require_relative 'base'
 require_relative '../../utils/key_transformations'
-require_relative '../../utils/json_expander'
+# require_relative '../../utils/json_expander'
 module IntrospectiveGrape
   module ErrorFormatter
     module Simple
@@ -16,7 +16,7 @@ module IntrospectiveGrape
           private
 
           def camelize_keys(object)
-            object = IntrospectiveGrape::Utils::JsonExpander.expand(object)
+            # object = IntrospectiveGrape::Utils::JsonExpander.expand(object)
             IntrospectiveGrape::Utils::KeyTransformations.camel_keys(object)
           end
 

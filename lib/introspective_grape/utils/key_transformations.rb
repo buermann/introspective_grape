@@ -31,7 +31,8 @@ module IntrospectiveGrape
       # support methods for deep transforming nested hashes and arrays
       def _deep_transform_keys_in_object(object, &block)
         case object
-        when Hash
+        when Hash, Grape::Entity
+          object = object.as_json if object.is_a?(Grape::Entity)
           object.each_with_object({}) do |(key, value), result|
             result[yield(key)] = _deep_transform_keys_in_object(value, &block)
           end
