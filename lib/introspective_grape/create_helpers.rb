@@ -15,7 +15,12 @@ module IntrospectiveGrape
       model = routes.first.model.new( dsl.send(:safe_params,params).permit(whitelist) )
       dsl.authorize model, :create?
       model.save!
-      find_leaves(routes, model.reload, params)
+
+      # reload the model with eager loading
+      default_includes = routes.first.klass.default_includes(routes.first.model)
+      model = model.class.includes(default_includes).find(model.id) if model.persisted?
+
+      find_leaves(routes, model, params)
     end
 
   end

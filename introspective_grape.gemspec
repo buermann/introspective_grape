@@ -20,14 +20,16 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '~> 2.0'
 
-  s.add_dependency "rails", '>= 3.0.0'
+  # not yet 5+ compatible
+  s.add_dependency "rails", '>= 3.0.0', '<5.0'
 
   s.add_dependency 'grape'          #, '~> 0.16.2'
   s.add_dependency 'grape-entity'   #, '< 0.5.0'
   s.add_dependency 'grape-swagger'  #, '~>0.11.0'
   s.add_dependency 'kaminari', '< 1.0' # There's a version 1.0.0 out there that breaks everything
   s.add_dependency 'grape-kaminari'
-  s.add_dependency 'pundit'
+  # Pundit 2.0 mysteriously made authorize a protected method...
+  s.add_dependency 'pundit', '<2.0'
   s.add_dependency 'camel_snake_keys', '>0.0.4'
 
   if RUBY_PLATFORM == 'java'

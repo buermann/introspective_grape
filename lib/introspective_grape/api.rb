@@ -225,8 +225,10 @@ module IntrospectiveGrape
           authorize @model, :update?
 
           @model.update_attributes!( safe_params(params).permit(klass.whitelist) )
+         
+          default_includes = routes.first.klass.default_includes(routes.first.model)
 
-          present klass.find_leaf(routes, @model.reload, params), with: "#{klass}::#{model}Entity".constantize
+          present klass.find_leaf(routes, @model.class.includes(default_includes).find(@model.id), params), with: "#{klass}::#{model}Entity".constantize
         end
       end
 
@@ -252,8 +254,9 @@ module IntrospectiveGrape
           # 2) For nested endpoints convert the params hash into Rails-compliant nested
           #    attributes, to be passed to the root instance for update. This keeps
           #    behavior consistent between bulk and single record updates.
+          default_includes = klass.default_includes(root.model)
+
           if params[root.key]
-            default_includes = routes.size > 1 ? [] : klass.default_includes(root.model)
             @model = root.model.includes( default_includes ).find(params[root.key])
           end
 
