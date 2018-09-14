@@ -3,7 +3,7 @@ require 'paperclip'
 class Image < ActiveRecord::Base
   belongs_to :imageable, polymorphic: true
 
-  has_attached_file :file, styles: {medium: "300x300>", thumb: "100x100"},
+  has_attached_file :file, #styles: {medium: "300x300>", thumb: "100x100"},
     url: "/system/:imageable_type/:imageable_id/:id/:style/:filename"
 
   validates_attachment :file, content_type: {content_type: ["image/jpeg", "image/png", "image/gif"]}

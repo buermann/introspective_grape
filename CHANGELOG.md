@@ -1,4 +1,14 @@
 
+0.3.5 09/14/2018
+================
+
+Restrict IntrospectiveGrape to Rails <5.0 and Pundit <2.0. We aren't Rails 5 compat until either schema_plus is or we find an alternative. Pundit 2.0 very strangely makes 'authorize' a protected method and we haven't made time to investigate.
+
+The big update in 0.3 is that the PUT/POST actions used to reload the model on presentation (hooks elsewhere may leave a model that's been updated out of sync with the database, so the overhead seems to be necessary) without using the default_includes for eager loading, causing some N+1 problems that could be alleviated.
+
+The general strategy of passing the params of a nested endpoint to the root model and then reloading it and burrowing down to the leaf for presentation, while simpler to implement, was really not optimal and creates a lot of unnecessary overhead like that.
+
+
 0.2.9 04/06/2017
 ================
 

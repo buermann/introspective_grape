@@ -254,10 +254,9 @@ module IntrospectiveGrape
           # 2) For nested endpoints convert the params hash into Rails-compliant nested
           #    attributes, to be passed to the root instance for update. This keeps
           #    behavior consistent between bulk and single record updates.
-          default_includes = klass.default_includes(root.model)
 
           if params[root.key]
-            @model = root.model.includes( default_includes ).find(params[root.key])
+            @model = root.model.includes( klass.default_includes(root.model) ).find(params[root.key])
           end
 
           if routes.size > 1
