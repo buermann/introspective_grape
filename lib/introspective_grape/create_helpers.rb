@@ -2,7 +2,7 @@ module IntrospectiveGrape
   module CreateHelpers
 
     def add_new_records_to_root_record(dsl, routes, params, model)
-      dsl.authorize model, :create?
+      dsl.send(:authorize, model, :create?)
       ActiveRecord::Base.transaction do
         old = find_leaves(routes, model, params)
         model.update_attributes( dsl.send(:safe_params,params).permit(whitelist) )
@@ -13,7 +13,7 @@ module IntrospectiveGrape
 
     def create_new_record(dsl, routes, params)
       model = routes.first.model.new( dsl.send(:safe_params,params).permit(whitelist) )
-      dsl.authorize model, :create?
+      dsl.send(:authorize, model, :create?)
       model.save!
 
       # reload the model with eager loading

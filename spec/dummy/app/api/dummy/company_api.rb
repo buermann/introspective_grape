@@ -1,5 +1,7 @@
+require 'byebug'
 class Dummy::CompanyAPI < IntrospectiveGrape::API
   paginate
+  @@pagination = {}
 
   restful Company, [:id, :name, :short_name, :gizmos, :widgets, :sprockets] do
 

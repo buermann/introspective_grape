@@ -24,15 +24,15 @@ describe Dummy::ProjectAPI, type: :request do
 
   context "As a super admin" do
     it "should return a list of all projects" do
-      get '/api/v1/projects', per_page: 10, offset: 0
-      response.should be_success
+      get '/api/v1/projects', params: { per_page: 10, offset: 0 }
+      response.should be_successful
       json.length.should == Project.count
       json.map{|c| c['id'].to_i}.include?(project.id).should == true
     end
 
     it "should return the specified project" do
       get "/api/v1/projects/#{project.id}"
-      response.should be_success
+      response.should be_successful
       json['name'].should == project.name
     end
 
@@ -56,8 +56,8 @@ describe Dummy::ProjectAPI, type: :request do
           p = {
             name: 'New Team', team_users_attributes: [{ user_id: @u1.id }, { user_id: @u2.id }]
           }
-          post "/api/v1/projects/#{project.id}/teams", p
-          response.should be_success
+          post "/api/v1/projects/#{project.id}/teams", params: p
+          response.should be_successful
           Team.last.name.should == 'New Team'
           Team.last.users.to_a.should == [@u1,@u2]
         end
@@ -66,8 +66,8 @@ describe Dummy::ProjectAPI, type: :request do
           p = { team_users_attributes: [
             { user_id: @u1.id }, { user_id: @u2.id }
           ] }
-          put "/api/v1/projects/#{project.id}/teams/#{@team.id}", p
-          response.should be_success
+          put "/api/v1/projects/#{project.id}/teams/#{@team.id}", params: p
+          response.should be_successful
 
           Team.last.users.to_a.should == [@u1,@u2]
         end
@@ -78,8 +78,8 @@ describe Dummy::ProjectAPI, type: :request do
           p = { team_users_attributes: [
             { id: @team.team_users.where(user_id:@u1.id).first.id, _destroy: 1 }
           ] }
-          put "/api/v1/projects/#{project.id}/teams/#{@team.id}", p
-          response.should be_success
+          put "/api/v1/projects/#{project.id}/teams/#{@team.id}", params: p
+          response.should be_successful
           Team.last.users.to_a.should == [@u2]
         end
       end
@@ -87,8 +87,8 @@ describe Dummy::ProjectAPI, type: :request do
       context "edit a project team via nested routes" do
         it "should add a team member" do
           p = { user_id: @u1.id }
-          post "/api/v1/projects/#{project.id}/teams/#{@team.id}/team_users", p
-          response.should be_success
+          post "/api/v1/projects/#{project.id}/teams/#{@team.id}/team_users", params: p
+          response.should be_successful
           Team.last.users.to_a.should == [@u1]
         end
 
@@ -97,7 +97,7 @@ describe Dummy::ProjectAPI, type: :request do
           @team.save!
           id = @team.team_users.where(user_id:@u1.id).first.id
           delete "/api/v1/projects/#{project.id}/teams/#{@team.id}/team_users/#{id}"
-          response.should be_success
+          response.should be_successful
           Team.last.users.to_a.should == [@u2]
         end
       end
@@ -118,8 +118,8 @@ describe Dummy::ProjectAPI, type: :request do
     end
 
     it "should return a list of all the company's projects" do
-      get '/api/v1/projects', offset: 0
-      response.should be_success
+      get '/api/v1/projects', params: { offset: 0 }
+      response.should be_successful
       json.length.should == 2
       json.map{|c| c['name']}.include?("Manufacture Sprockets").should == true
       json.map{|c| c['name']}.include?("Disassemble Sprockets").should == true
@@ -140,8 +140,8 @@ describe Dummy::ProjectAPI, type: :request do
     end
 
     it "should return a list of all the project admin's projects" do
-      get '/api/v1/projects', offset: 0
-      response.should be_success
+      get '/api/v1/projects', params: { offset: 0 }
+      response.should be_successful
       json.length.should == 1
       json.map{|c| c['name']}.include?("Manufacture Sprockets").should == true
       json.map{|c| c['name']}.include?("Disassemble Sprockets").should == false
@@ -156,7 +156,7 @@ describe Dummy::ProjectAPI, type: :request do
 
     it "should return the project API's declared default paginated results" do
       get '/api/v1/projects'
-      response.should be_success
+      response.should be_successful
       json.length.should == 2
       json.first['id'].should eq Project.all[2].id
       json.second['id'].should eq Project.all[3].id
@@ -164,15 +164,15 @@ describe Dummy::ProjectAPI, type: :request do
     end
 
     it "should return the request number of results" do
-      get '/api/v1/projects', per_page: 9, offset: 9
-      response.should be_success
+      get '/api/v1/projects', params: { per_page: 9, offset: 9 }
+      response.should be_successful
       json.size.should == 9
       json.map {|j| j['id']}.should eq Project.all[9..17].map(&:id)
       response.headers.slice("X-Total", "X-Total-Pages", "X-Per-Page", "X-Page", "X-Next-Page", "X-Prev-Page", "X-Offset").values.should eq ["20", "2", "9", "1", "2", "", "9"]
     end
 
     it "should respect the maximum number of results" do
-      get '/api/v1/projects', per_page: 20, offset: 0
+      get '/api/v1/projects', params: { per_page: 20, offset: 0 }
       response.code.should eq "400"
       json['error'].should eq "per_page must be less than 10"
     end

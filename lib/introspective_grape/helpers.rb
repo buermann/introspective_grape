@@ -5,6 +5,12 @@ module IntrospectiveGrape::Helpers
     @authentication_method = method
   end
 
+  attr_accessor :pagination
+
+  def paginate(args={})
+    @pagination = args
+  end
+
   def authentication_method(context)
     # Default to "authenticate!" or as grape docs once suggested, "authorize!"
     if @authentication_method
@@ -14,14 +20,6 @@ module IntrospectiveGrape::Helpers
     elsif context.respond_to?('authorize!')
       'authorize!'
     end
-  end
-
-  def paginate(args={})
-    @pagination = args
-  end
-
-  def pagination
-    @pagination
   end
 
   def exclude_actions(model, *args)

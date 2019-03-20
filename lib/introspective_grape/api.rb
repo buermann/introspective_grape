@@ -1,12 +1,18 @@
 require 'action_controller'
-require 'grape-kaminari'
 require 'introspective_grape/validators'
+require 'kaminari'
+require "grape-kaminari"
+#require "kaminari/grape"
+require 'byebug'
+#require 'api-pagination'
 
 class IntrospectiveGrapeError < StandardError
 end
 
 module IntrospectiveGrape
   class API < Grape::API
+    cattr_accessor :pagination
+
     extend IntrospectiveGrape::Helpers
     extend IntrospectiveGrape::CreateHelpers
     extend IntrospectiveGrape::Filters
@@ -140,8 +146,8 @@ module IntrospectiveGrape
         namespace = routes[0..-2].map{|p| "#{p.name.pluralize}/:#{p.swaggerKey}/" }.join + routes.last.name.pluralize
 
         resource namespace do
-          convert_nested_params_hash(self, routes)
-          define_restful_api(self, routes, model, api_params)
+          IntrospectiveGrape::API.convert_nested_params_hash(self, routes)
+          IntrospectiveGrape::API.define_restful_api(self, routes, model, api_params)
         end
       end
 
@@ -179,9 +185,12 @@ module IntrospectiveGrape
 
           records = records.map{|r| klass.find_leaves( routes, r, params ) }.flatten.compact.uniq
 
-          # paginate the records using Kaminari
-          records = paginate(Kaminari.paginate_array(records)) if klass.pagination
-          present records, with: "#{klass}::#{model}Entity".constantize
+byebug
+					if klass.pagination
+         		present paginate(Kaminari.paginate_array(records)), with: "#{klass}::#{model}Entity".constantize
+					else
+         		present records, with: "#{klass}::#{model}Entity".constantize
+					end
         end
       end
 
