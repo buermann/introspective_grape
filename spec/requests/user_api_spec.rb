@@ -156,7 +156,6 @@ describe Dummy::UserAPI, type: :request do
 
       put "/api/v1/users/#{user.id}", params
 
-      p response.body
       response.should be_success
       json['avatar_url'].should eq Image.last.file.url(:medium)
       user.avatar.should     eq Image.last
@@ -168,7 +167,6 @@ describe Dummy::UserAPI, type: :request do
 
       post "/api/v1/users/#{user.id}/avatars", params
 
-      p response.body
       response.should be_success
       user.avatar.should     == Image.last
       user.avatar_url.should == Image.last.file.url(:medium)
