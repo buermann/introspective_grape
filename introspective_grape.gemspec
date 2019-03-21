@@ -45,7 +45,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'devise'
   #s.add_development_dependency 'devise-async'
   s.add_development_dependency 'paperclip', ">= 5.2.0" #'< 5.0'
-  s.add_development_dependency 'machinist'
+  s.add_development_dependency 'machinist_redux'
   s.add_development_dependency 'simplecov'
   s.add_development_dependency 'rufus-mnemo'
 

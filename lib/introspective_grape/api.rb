@@ -7,6 +7,7 @@ end
 
 module IntrospectiveGrape
   class API < Grape::API
+    include Grape::Kaminari
     extend IntrospectiveGrape::Helpers
     extend IntrospectiveGrape::CreateHelpers
     extend IntrospectiveGrape::Filters
@@ -125,6 +126,34 @@ module IntrospectiveGrape
         end
       end
 
+      def convert_nested_params_hash(dsl, routes)
+        root  = routes.first
+        klass = root.klass
+        dsl.after_validation do
+          # After Grape validates its parameters:
+          # 1) Find the root model instance for the API if its passed (implicitly either
+          #    an update/destroy on the root node or it's a nested route
+          # 2) For nested endpoints convert the params hash into Rails-compliant nested
+          #    attributes, to be passed to the root instance for update. This keeps
+          #    behavior consistent between bulk and single record updates.
+
+          if params[root.key]
+            @model = root.model.includes( klass.default_includes(root.model) ).find(params[root.key])
+          end
+
+          if routes.size > 1
+            nested_attributes = klass.build_nested_attributes(routes[1..-1], params.except(root.key,:api_key) )
+            @params.merge!( nested_attributes ) if nested_attributes.kind_of?(Hash)
+          end
+        end
+      end
+
+      def define_restful_api(dsl, routes, model, api_params)
+        # declare index, show, update, create, and destroy methods:
+        API_ACTIONS.each do |action|
+          send("define_#{action}", dsl, routes, model, api_params) unless exclude_actions(model).include?(action)
+        end
+      end
 
       def define_endpoints(routes,api_params)
         # De-reference these as local variables from their class scope, or when we make
@@ -140,15 +169,8 @@ module IntrospectiveGrape
         namespace = routes[0..-2].map{|p| "#{p.name.pluralize}/:#{p.swaggerKey}/" }.join + routes.last.name.pluralize
 
         resource namespace do
-          IntrospectiveGrape::API.convert_nested_params_hash(self, routes)
-          IntrospectiveGrape::API.define_restful_api(self, routes, model, api_params)
-        end
-      end
-
-      def define_restful_api(dsl, routes, model, api_params)
-        # declare index, show, update, create, and destroy methods:
-        API_ACTIONS.each do |action|
-          send("define_#{action}", dsl, routes, model, api_params) unless exclude_actions(model).include?(action)
+          convert_nested_params_hash(self, routes)
+          define_restful_api(self, routes, model, api_params)
         end
       end
 
@@ -241,28 +263,6 @@ module IntrospectiveGrape
         dsl.delete ":#{routes.last.swaggerKey}" do
           authorize @model, :destroy?
           present status: (klass.find_leaf(routes, @model, params).destroy ? true : false)
-        end
-      end
-
-      def convert_nested_params_hash(dsl, routes)
-        root  = routes.first
-        klass = root.klass
-        dsl.after_validation do
-          # After Grape validates its parameters:
-          # 1) Find the root model instance for the API if its passed (implicitly either
-          #    an update/destroy on the root node or it's a nested route
-          # 2) For nested endpoints convert the params hash into Rails-compliant nested
-          #    attributes, to be passed to the root instance for update. This keeps
-          #    behavior consistent between bulk and single record updates.
-
-          if params[root.key]
-            @model = root.model.includes( klass.default_includes(root.model) ).find(params[root.key])
-          end
-
-          if routes.size > 1
-            nested_attributes = klass.build_nested_attributes(routes[1..-1], params.except(root.key,:api_key) )
-            @params.merge!( nested_attributes ) if nested_attributes.kind_of?(Hash)
-          end
         end
       end
 
