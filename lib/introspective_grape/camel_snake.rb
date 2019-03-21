@@ -20,7 +20,7 @@ if IntrospectiveGrape.config.camelize_parameters
     module CreateCamelizedDocumentationClass
       private
       def create_documentation_class
-        doc = create_documentation_class_without_camelized
+        doc = super
         doc.class_eval do
           doc.singleton_class.send(:prepend, ParseParamsWithCamelized)
         end
