@@ -7,7 +7,6 @@ end
 
 module IntrospectiveGrape
   class API < Grape::API
-    include Grape::Kaminari
     extend IntrospectiveGrape::Helpers
     extend IntrospectiveGrape::CreateHelpers
     extend IntrospectiveGrape::Filters
