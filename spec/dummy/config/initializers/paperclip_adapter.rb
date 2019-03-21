@@ -1,6 +1,6 @@
 module Paperclip
   class HashUploadedFileAdapter < AbstractAdapter
-    def initialize(target)
+    def initialize(target, args)
       @tempfile, @content_type, @size = target['tempfile'], target['type'], target['tempfile'].size
       @original_filename = target['filename']
     end
