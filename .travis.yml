@@ -21,8 +21,8 @@ gemfile:
   - gemfiles/Gemfile.rails.4.2.7.1
   - gemfiles/Gemfile.rails.4.2.7.1.new.swagger
   - gemfiles/Gemfile.rails.4.2.8
-#  - gemfiles/Gemfile.rails.5.0.1
-#  - gemfiles/Gemfile.rails.master
+  - gemfiles/Gemfile.rails.5.0.1
+  - gemfiles/Gemfile.rails.master
 
 matrix:
   exclude:

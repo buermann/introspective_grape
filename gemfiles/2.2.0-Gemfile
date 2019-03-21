@@ -6,7 +6,7 @@ source 'https://rubygems.org'
 
 gemspec :path => '../'
 
-gem 'grape'
+gem 'grape', '< 1.0.0'
 gem 'grape-swagger'
 gem 'coveralls', require: false
 
