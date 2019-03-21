@@ -5,7 +5,7 @@ describe GrapeSwagger, type: :request do
 
     it "should render swagger docs for the api" do
       get '/api/v1/swagger_doc'
-      response.should be_success
+      response.should be_successful
       json =  JSON.parse( response.body )
       if Gem::Version.new( GrapeSwagger::VERSION ) <= Gem::Version.new('0.11.0')
         json['apiVersion'].should == '0.1'

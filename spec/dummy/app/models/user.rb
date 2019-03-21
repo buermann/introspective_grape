@@ -33,8 +33,8 @@ class User < AbstractAdapter
 
   has_many :roles, dependent: :destroy, inverse_of: :user
   accepts_nested_attributes_for :roles, allow_destroy: true
-  has_many :admin_companies, through: :roles, source: :ownable, source_type: Company
-  has_many :admin_projects,  through: :roles, source: :ownable, source_type: Project
+  has_many :admin_companies, through: :roles, source: :ownable, source_type: 'Company'
+  has_many :admin_projects,  through: :roles, source: :ownable, source_type: 'Project'
 
   def all_admin_projects # aggregate companies' projects with project admin roles
     (admin_companies.map(&:projects)+admin_projects).flatten
