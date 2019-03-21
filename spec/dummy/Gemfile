@@ -1,18 +1,20 @@
 source 'https://rubygems.org'
-gem 'rails', '<5.0'
+gem 'rails'
 
 #gem 'byebug'
-#gem 'camel_snake_keys'
+gem 'camel_snake_keys'
 
+gem 'devise'
 gem 'delayed_paperclip'
 #gem 'devise-async'
 
 gem 'grape'
 gem 'grape-entity'
-gem 'grape-kaminari'
+gem 'grape-kaminari', '<1.8.0'
 gem 'grape-swagger'
+gem 'introspective_grape', git: 'https://github.com/buermann/introspective_grape', branch: 'rails.5'
 
 gem 'paperclip'
 gem 'pundit'
 
-gem 'sqlite3'
+gem 'sqlite3', '< 1.4.0'

@@ -140,8 +140,8 @@ module IntrospectiveGrape
         namespace = routes[0..-2].map{|p| "#{p.name.pluralize}/:#{p.swaggerKey}/" }.join + routes.last.name.pluralize
 
         resource namespace do
-          convert_nested_params_hash(self, routes)
-          define_restful_api(self, routes, model, api_params)
+          IntrospectiveGrape::API.convert_nested_params_hash(self, routes)
+          IntrospectiveGrape::API.define_restful_api(self, routes, model, api_params)
         end
       end
 
