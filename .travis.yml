@@ -20,9 +20,12 @@ gemfile:
 #  - gemfiles/Gemfile.rails.4.2.7.1
 #  - gemfiles/Gemfile.rails.4.2.7.1.new.swagger
 #  - gemfiles/Gemfile.rails.4.2.8
-  - gemfiles/Gemfile.rails.5.0.0
+#  - gemfiles/Gemfile.rails.5.0.0
   - gemfiles/Gemfile.rails.5.0.1
+  - gemfiles/Gemfile.rails.5.1.0
+  - gemfiles/Gemfile.rails.5.2.0
   - gemfiles/Gemfile.rails.master
+  - gemfiles/Gemfile.6.0.0.beta1
 
 matrix:
   exclude:
@@ -44,6 +47,7 @@ matrix:
     - rvm: jruby-9.0.4.0
       gemfile: gemfiles/Gemfile.rails.master
   allow_failures:
+    - gemfile: gemfiles/Gemfile.6.0.0.beta1
     - rvm: ruby-head
     - rvm: jruby-head
 
