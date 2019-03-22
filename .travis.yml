@@ -25,7 +25,7 @@ gemfile:
   - gemfiles/Gemfile.rails.5.1.0
   - gemfiles/Gemfile.rails.5.2.0
   - gemfiles/Gemfile.rails.master
-  - gemfiles/Gemfile.6.0.0.beta1
+  - gemfiles/Gemfile.6.0.0.beta
 
 matrix:
   exclude:
