@@ -17,4 +17,5 @@ gem 'introspective_grape',  git: 'https://github.com/buermann/introspective_grap
 gem 'paperclip'
 gem 'pundit'
 
+gem 'rack-cors'
 gem 'sqlite3', '< 1.4.0'
