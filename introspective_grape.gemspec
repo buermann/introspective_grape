@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n").sort
   s.test_files    = `git ls-files -- spec/*`.split("\n")
 
-  s.required_ruby_version = '~> 2.1'
+  s.required_ruby_version = '>= 2.3'
 
   s.add_dependency "rails", '> 5.0.0'
 
