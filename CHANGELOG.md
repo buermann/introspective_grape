@@ -1,9 +1,13 @@
 
-0.3.6 09/14/2018
+0.3.7 03/25/2019
 ================
 
-Updated to support Rails 5+
+Updated to support Grape <~ 1.1.0.
 
+0.3.6 03/23/2019
+================
+
+Updated to support Rails 5+.
 
 
 0.3.5 09/14/2018
