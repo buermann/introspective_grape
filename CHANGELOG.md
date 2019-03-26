@@ -1,3 +1,8 @@
+0.3.7 03/26/2019
+================
+
+Updated to support Grape ~> 1.2.0. Ruby 2.2 no longer supported.
+
 
 0.3.7 03/25/2019
 ================
