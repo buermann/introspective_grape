@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gemspec :path => '../'
 
 gem 'rails', '5.0.0'
-gem 'grape', '< 1.0.0'
+gem 'grape'
 gem 'grape-swagger'
 gem 'nokogiri'
 gem 'coveralls', require: false
