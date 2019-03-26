@@ -5,7 +5,7 @@ class Dummy::CompanyAPI < IntrospectiveGrape::API
 
     desc "Test default values in an extra endpoint"
     params do
-      optional :boolean_default, type: Boolean, default: false
+      optional :boolean_default, type: Virtus::Attribute::Boolean, default: false
       optional :string_default, type: String, default: "foo"
       optional :integer_default, type: Integer, default: 123
     end

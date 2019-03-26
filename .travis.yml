@@ -7,20 +7,12 @@ script:
   - bundle exec rspec
 
 rvm:
-  #  - 2.0.0
-  # - 2.1.0
-  - 2.2.2
   - 2.3.1
   - 2.4.0
+  - 2.5.0
   - ruby-head
   - jruby-head
 gemfile:
-#  - gemfiles/Gemfile.rails.3.2.22
-#  - gemfiles/Gemfile.rails.4.1.13
-#  - gemfiles/Gemfile.rails.4.2.7.1
-#  - gemfiles/Gemfile.rails.4.2.7.1.new.swagger
-#  - gemfiles/Gemfile.rails.4.2.8
-#  - gemfiles/Gemfile.rails.5.0.0
   - gemfiles/Gemfile.rails.5.0.1
   - gemfiles/Gemfile.rails.5.1.0
   - gemfiles/Gemfile.rails.5.2.0
@@ -28,19 +20,6 @@ gemfile:
 
 matrix:
   exclude:
-    # We'll have to back up to grape-swagger 0.11 for earlier rubies.
-    - rvm: 2.0.0
-      gemfile: gemfiles/Gemfile.rails.5.0.1
-    - rvm: 2.0.0
-      gemfile: gemfiles/Gemfile.rails.master
-    - rvm: 2.1.0
-      gemfile: gemfiles/Gemfile.rails.5.0.1
-    - rvm: 2.1.0
-      gemfile: gemfiles/Gemfile.rails.master
-    - rvm: 2.2.0
-      gemfile: gemfiles/Gemfile.rails.5.0.1
-    - rvm: 2.2.0
-      gemfile: gemfiles/Gemfile.rails.master
     - rvm: jruby-9.0.4.0
       gemfile: gemfiles/Gemfile.rails.5.0.1
     - rvm: jruby-9.0.4.0

@@ -6,7 +6,7 @@ class IntrospectiveGrapeError < StandardError
 end
 
 module IntrospectiveGrape
-  class API < Grape::API
+  class API < Grape::API::Instance
     extend IntrospectiveGrape::Helpers
     extend IntrospectiveGrape::CreateHelpers
     extend IntrospectiveGrape::Filters

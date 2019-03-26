@@ -10,11 +10,12 @@ gem 'delayed_paperclip'
 
 gem 'grape'
 gem 'grape-entity'
-gem 'grape-kaminari', '<1.8.0'
+gem 'grape-kaminari'
 gem 'grape-swagger'
-gem 'introspective_grape', git: 'https://github.com/buermann/introspective_grape', branch: 'rails.5'
+gem 'introspective_grape',  git: 'https://github.com/buermann/introspective_grape', branch: 'grape-1.2'
 
 gem 'paperclip'
 gem 'pundit'
 
+gem 'rack-cors'
 gem 'sqlite3', '< 1.4.0'

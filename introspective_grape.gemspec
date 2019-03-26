@@ -18,12 +18,12 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split("\n").sort
   s.test_files    = `git ls-files -- spec/*`.split("\n")
 
-  s.required_ruby_version = '~> 2.1'
+  s.required_ruby_version = '>= 2.3'
 
   s.add_dependency "rails", '> 5.0.0'
 
   # grape 1.0.0 breaks the pagination solution
-  s.add_dependency 'grape', '< 1.2.0'
+  s.add_dependency 'grape', '~> 1.2.0'
   s.add_dependency 'grape-entity'
   s.add_dependency 'grape-swagger'
   s.add_dependency 'kaminari', '< 1.0' # version 1.0.0 breaks

@@ -1,6 +1,8 @@
 module ApiHelpers
   def current_user
     params[:api_key].present? && @user = User.find_by_authentication_token(params[:api_key])
+    # for testing in situ
+    #@user = User.find_or_create_by(email: 'test@test.com', superuser: true, authentication_token: '1234567890', first_name: "First", last_name: "Last")
   end
 
   def authenticate!
