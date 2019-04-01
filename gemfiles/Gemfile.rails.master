@@ -4,6 +4,7 @@ gemspec :path => '../'
 
 gem 'rails'
 gem 'grape'
+gem 'grape-kaminari', :github => 'alexey-klimuk/grape-kaminari'
 gem 'grape-swagger'
 gem 'nokogiri'
 gem 'coveralls', require: false
