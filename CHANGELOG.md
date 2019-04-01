@@ -1,3 +1,18 @@
+
+0.3.9 04/01/2019
+================
+
+Add a note to the README that pagination will have to be supported via alexey-klimuk's fork of grape-kaminari from years ago because the middleware support gems have stopped being maintained, and rubygems doesn't support targeting github branches when adding dependencies.
+
+gem 'grape-kaminari', :github => 'alexey-klimuk/grape-kaminari'
+
+Probably we'll just fork it if nobody else can be bothered.
+
+0.3.8 03/27/2019
+================
+
+Support the latest Grape.
+
 0.3.7 03/26/2019
 ================
 

@@ -174,7 +174,7 @@ describe Dummy::ProjectAPI, type: :request do
     it "should respect the maximum number of results" do
       get '/api/v1/projects', params: { per_page: 20, offset: 0 }
       response.code.should eq "400"
-      json['error'].should eq "per_page must be less than 10"
+      json['error'].should eq "per_page must be less than or equal 10"
     end
   end
 

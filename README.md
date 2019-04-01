@@ -40,6 +40,7 @@ can speak in their own idioms.
 In your Gemfile:
 
 ```
+gem 'grape-kaminari', :github => 'alexey-klimuk/grape-kaminari' # some middleware has fallen into deep disrepair
 gem 'introspective_grape'
 ```
 

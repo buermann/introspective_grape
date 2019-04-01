@@ -1,4 +1,5 @@
 require 'action_controller'
+require 'kaminari'
 require 'grape-kaminari'
 require 'introspective_grape/validators'
 
