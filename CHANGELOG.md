@@ -1,3 +1,7 @@
+0.4.1 10/20/2020
+================
+
+We can't expect to ever release a 1.0 if the configuration object doesn't actually persist from the initializer.
 
 0.4.0 10/20/2020
 ================
