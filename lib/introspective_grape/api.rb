@@ -250,7 +250,12 @@ module IntrospectiveGrape
          
           default_includes = routes.first.klass.default_includes(routes.first.model)
 
-          present klass.find_leaf(routes, @model.class.includes(default_includes).find(@model.id), params), with: "#{klass}::#{model}Entity".constantize
+          if IntrospectiveGrape.config.skip_object_reload
+            present klass.find_leaf(routes, @model, params), with: "#{klass}::#{model}Entity".constantize
+          else
+            default_includes = routes.first.klass.default_includes(routes.first.model)
+            present klass.find_leaf(routes, @model.class.includes(default_includes).find(@model.id), params), with: "#{klass}::#{model}Entity".constantize
+          end
         end
       end
 

@@ -1,4 +1,9 @@
 
+0.4.0 10/20/2020
+================
+
+Add an `IntrospectiveGrape.config.skip_object_reload = true` option.
+
 0.3.9 04/01/2019
 ================
 

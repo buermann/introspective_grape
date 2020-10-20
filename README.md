@@ -49,6 +49,8 @@ And bundle install.
 
 ## Grape Configuration
 
+### Camelization
+
 IntrospectiveGrape's default behavior is to camelize all outputs and snake case all inputs. To camel case all your json output you'll need to use its formatter in your API:
 
 ```
@@ -60,6 +62,18 @@ It also defaults to monkey patching Grape::Swagger to camelize the API's paramet
 You can disable this behavior by setting `IntrospectiveGrape.config.camelize_parameters = false`.
 
 To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method with the `using CamelSnakeKeys` refinement.
+
+### Reloading an object after an update request
+
+By default the gem reloads the object instance before presenting the updated model, a lazy but
+effective workaround to updates that may not propagate in the working instance due to actions
+a user may take in hooks, or some updates to has_many :through associations. We want to put up
+APIs with haste rather than digging our way out of tricky minutae that can be handled later as
+technical debt.
+
+This behavior can be disabled by setting `IntrospectiveGrape.config.skip_object_reload = true`,
+when you have time for technical debt you can toggle it and work on fixing broken tests (you
+did take the time to write comprehensive test coverage, didn't you?).
 
 ## Authentication and authorization
 

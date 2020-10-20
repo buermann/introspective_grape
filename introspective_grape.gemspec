@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", '> 5.0.0'
 
   # grape 1.0.0 breaks the pagination solution
-  s.add_dependency 'grape', '~> 1.2.0'
+  s.add_dependency 'grape', ['~> 1.2.0', '< 1.2.5']
   s.add_dependency 'grape-entity'
   s.add_dependency 'grape-swagger'
   s.add_dependency 'kaminari' #, '< 1.0' # version 1.0.0 breaks

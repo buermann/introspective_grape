@@ -13,6 +13,6 @@ module IntrospectiveGrape
   end
 
   def self.config
-    @config = OpenStruct.new(camelize_parameters: true)
+    @config = OpenStruct.new(camelize_parameters: true, skip_object_reload: false)
   end
 end
