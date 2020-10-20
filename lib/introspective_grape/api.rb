@@ -248,8 +248,6 @@ module IntrospectiveGrape
 
           @model.update_attributes!( safe_params(params).permit(klass.whitelist) )
          
-          default_includes = routes.first.klass.default_includes(routes.first.model)
-
           if IntrospectiveGrape.config.skip_object_reload
             present klass.find_leaf(routes, @model, params), with: "#{klass}::#{model}Entity".constantize
           else
