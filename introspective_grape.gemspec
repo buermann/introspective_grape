@@ -20,11 +20,8 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 2.3'
 
-  s.add_dependency "rails", '> 5.0.0'
-  # grape < 1.3.0 is incompatible with rack 2.1.0
-  s.add_dependency "rack", '< 2.0.9'
-
-  # grape 1.0.0 breaks the pagination solution
+  s.add_runtime_dependency "rails", '> 5.0.0'
+  s.add_runtime_dependency "rack", '< 2.0.9' # grape < 1.3.0 is incompatible with rack 2.1.0
   s.add_runtime_dependency 'grape', ['~> 1.2.0', '< 1.2.5']
   s.add_runtime_dependency 'grape-entity'
   s.add_runtime_dependency 'grape-swagger'
