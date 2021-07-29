@@ -25,14 +25,14 @@ Gem::Specification.new do |s|
   s.add_dependency "rack", '< 2.0.9'
 
   # grape 1.0.0 breaks the pagination solution
-  s.add_dependency 'grape', ['~> 1.2.0', '< 1.2.5']
-  s.add_dependency 'grape-entity'
-  s.add_dependency 'grape-swagger'
-  s.add_dependency 'kaminari' #, '< 1.0' # version 1.0.0 breaks
+  s.add_runtime_dependency 'grape', ['~> 1.2.0', '< 1.2.5']
+  s.add_runtime_dependency 'grape-entity'
+  s.add_runtime_dependency 'grape-swagger'
+  s.add_runtime_dependency 'kaminari' #, '< 1.0' # version 1.0.0 breaks
   #s.add_dependency 'grape-kaminari', :github => 'alexey-klimuk/grape-kaminari'
   # Pundit 2.0 mysteriously made authorize a protected method...
-  s.add_dependency 'pundit' #, '<2.0'
-  s.add_dependency 'camel_snake_keys', '>0.0.4'
+  s.add_runtime_dependency 'pundit' #, '<2.0'
+  s.add_runtime_dependency 'camel_snake_keys', '>0.0.4'
 
   if RUBY_PLATFORM == 'java'
     #s.add_development_dependency "jdbc-sqlite3"
