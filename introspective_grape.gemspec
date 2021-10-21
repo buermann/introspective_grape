@@ -41,16 +41,20 @@ Gem::Specification.new do |s|
     s.add_development_dependency "sqlite3" #, '<1.4.0' #'< 1.3.14'
   end
 
-  #s.add_development_dependency "byebug"
-  #s.add_development_dependency "rb-readline"
+  # testing gems
   s.add_development_dependency "rspec-rails", '>= 3.0'
-  s.add_development_dependency 'devise'
   s.add_development_dependency 'coveralls_reborn'
-  s.add_development_dependency 'byebug'
-  #s.add_development_dependency 'devise-async'
-  s.add_development_dependency 'paperclip', ">= 5.2.0" #'< 5.0'
-  s.add_development_dependency 'machinist_redux'
   s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'bundler-audit'
+  s.add_development_dependency 'brakeman'
+  s.add_development_dependency 'rubocop'
+  s.add_development_dependency 'byebug'
+  s.add_development_dependency 'machinist_redux'
+
+
+  # dummy app dependencies
+  s.add_development_dependency 'paperclip'
   s.add_development_dependency 'rufus-mnemo'
+  s.add_development_dependency 'devise'
 
 end
