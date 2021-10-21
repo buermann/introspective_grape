@@ -3,14 +3,12 @@
 [![Gem Version][GV img]][Gem Version]
 [![Build Status][BS img]][Build Status]
 [![Coverage Status][CS img]][Coverage Status]
+![Test Coverage](https://github.com/buermann/introspective_grape/actions/workflows/verify/badge.svg)
 
 [Gem Version]: https://rubygems.org/gems/introspective_grape
-[Build Status]: https://travis-ci.org/buermann/introspective_grape
-[travis pull requests]: https://travis-ci.org/buermann/introspective_grape/pull_requests
 [Coverage Status]: https://coveralls.io/r/buermann/introspective_grape
 
 [GV img]: https://badge.fury.io/rb/introspective_grape.png
-[BS img]: https://travis-ci.org/buermann/introspective_grape.png
 [CS img]: https://coveralls.io/repos/buermann/introspective_grape/badge.png?branch=master
 
 
