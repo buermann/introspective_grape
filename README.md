@@ -2,7 +2,6 @@
 
 [![Gem Version][GV img]][Gem Version]
 [![Build Status][BS img]][Build Status]
-[![Dependency Status][DS img]][Dependency Status]
 [![Coverage Status][CS img]][Coverage Status]
 
 [Gem Version]: https://rubygems.org/gems/introspective_grape
