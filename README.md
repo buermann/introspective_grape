@@ -1,7 +1,6 @@
 # IntrospectiveGrape
 
 [![Gem Version][GV img]][Gem Version]
-[![Build Status][BS img]][Build Status]
 [![Coverage Status][CS img]][Coverage Status]
 ![Test Coverage](https://github.com/buermann/introspective_grape/actions/workflows/verify/badge.svg)
 
