@@ -38,7 +38,7 @@ module IntrospectiveGrape
     # types for the attributes specified in a hash:
     #
     #  def self.grape_param_types
-    #   { "<attribute name>" => Virtus::Attribute::Boolean,
+    #   { "<attribute name>" => Grape::API::Boolean,
     #     "<attribute name>" => Integer,
     #     "<attribute name>" => String }
     #  end
