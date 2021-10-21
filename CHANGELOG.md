@@ -17,7 +17,6 @@ to
   ``` use :pagination, per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0```
 
 
-
 0.4.1 10/20/2020
 ================
 
