@@ -190,7 +190,7 @@ types for the attributes specified in a hash, e.g.:
    def self.grape_param_types
     { "<attribute name 1>" => String,
       "<attribute name 2>" => Integer,
-      "<attribute name 3>" => Virtus::Attribute::Boolean }
+      "<attribute name 3>" => Grape::API::Boolean }
    end
 ```
 

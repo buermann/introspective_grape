@@ -1,5 +1,6 @@
 require 'action_controller'
 require 'kaminari'
+require 'byebug'
 require 'grape-kaminari'
 require 'introspective_grape/validators'
 
@@ -14,6 +15,7 @@ module IntrospectiveGrape
     extend IntrospectiveGrape::Traversal
     extend IntrospectiveGrape::Doc
     extend IntrospectiveGrape::SnakeParams
+    include Grape::Kaminari
 
     # Allow files to be uploaded through ActionController:
     ActionController::Parameters::PERMITTED_SCALAR_TYPES.push Rack::Multipart::UploadedFile, ActionController::Parameters
@@ -161,21 +163,20 @@ module IntrospectiveGrape
         # calls to "nest_routes".
         routes     = routes.clone
         api_params = api_params.clone
-
-        model     = routes.last.model || return
+        model      = routes.last.model || return
 
         # We define the param keys for ID fields in camelcase for swagger's URL substitution,
         # they'll come back in snake case in the params hash, the API as a whole is agnostic:
         namespace = routes[0..-2].map{|p| "#{p.name.pluralize}/:#{p.swaggerKey}/" }.join + routes.last.name.pluralize
 
+        klass      = self # the 'resource' block changes the context to the Grape::API::Instance...
         resource namespace do
-          convert_nested_params_hash(self, routes)
-          define_restful_api(self, routes, model, api_params)
+          klass.convert_nested_params_hash(self, routes)
+          klass.define_restful_api(self, routes, model, api_params)
         end
       end
 
       def define_index(dsl, routes, model, api_params)
-        include Grape::Kaminari
         root  = routes.first
         klass = routes.first.klass
         name  = routes.last.name.pluralize
@@ -186,9 +187,9 @@ module IntrospectiveGrape
         end
         dsl.params do
           klass.declare_filter_params(self, klass, model, api_params)
-        end
-        if klass.pagination
-          paginate per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0
+          if klass.pagination
+            use :pagination, per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0
+          end
         end
         dsl.get '/' do
           # Invoke the policy for the action, defined in the policy classes for the model:
@@ -196,9 +197,7 @@ module IntrospectiveGrape
 
           # Nested route indexes need to be scoped by the API's top level policy class:
           records = policy_scope( root.model.includes(klass.default_includes(root.model)) )
-
           records = klass.apply_filter_params(klass, model, api_params, params, records)
-
           records = records.map{|r| klass.find_leaves( routes, r, params ) }.flatten.compact.uniq
 
           # paginate the records using Kaminari
@@ -208,7 +207,7 @@ module IntrospectiveGrape
       end
 
       def define_show(dsl, routes, model, _api_params)
-        name = routes.last.name.singularize
+        name  = routes.last.name.singularize
         klass = routes.first.klass
         dsl.desc "retrieve a #{name}" do
           detail klass.show_documentation || "returns details on a #{name}"
@@ -247,7 +246,7 @@ module IntrospectiveGrape
           authorize @model, :update?
 
           @model.update_attributes!( safe_params(params).permit(klass.whitelist) )
-         
+
           if IntrospectiveGrape.config.skip_object_reload
             present klass.find_leaf(routes, @model, params), with: "#{klass}::#{model}Entity".constantize
           else

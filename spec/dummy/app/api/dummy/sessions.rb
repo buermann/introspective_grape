@@ -1,4 +1,4 @@
-class Dummy::Sessions < Grape::API
+class Dummy::Sessions < Grape::API #::Instance
 
   resource :sessions do
 

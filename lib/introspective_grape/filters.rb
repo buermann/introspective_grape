@@ -61,7 +61,7 @@ module IntrospectiveGrape::Filters
         terminal = field.ends_with?("_start") ? "initial" : "terminal"
         dsl.optional field, type: klass.param_type(model,field), description: "Constrain #{field} by #{terminal} date."
       elsif identifier_filter(klass,model,field)
-        dsl.optional field, type: Array[Integer], coerce_with: ->(val) { val.split(',') }, description: "Filter by a comma separated list of integers."
+        dsl.optional field, type: Array[String], coerce_with: ->(val) { val.split(',') }, description: "Filter by a comma separated list of unique identifiers."
       else
         dsl.optional field, type: klass.param_type(model,field), description: "Filter on #{field} by value."
       end

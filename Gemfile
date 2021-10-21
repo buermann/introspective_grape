@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'grape-kaminari', :github => 'alexey-klimuk/grape-kaminari'
+gem 'grape-kaminari' #, :github => 'alexey-klimuk/grape-kaminari'
 
 gem 'coveralls', require: false
 

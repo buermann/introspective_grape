@@ -70,7 +70,7 @@ class User < AbstractAdapter
   end
 
   def self.grape_param_types
-    { "skip_confirmation_email" => Virtus::Attribute::Boolean }
+    { "skip_confirmation_email" => Grape::API::Boolean }
   end
 
   def skip_confirmation_email=(s)

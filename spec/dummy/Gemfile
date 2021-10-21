@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
-gem 'rails'
+gem 'rails', '5.2.6'
 
-#gem 'byebug'
+gem 'byebug'
 gem 'camel_snake_keys'
 
 gem 'devise'
@@ -12,10 +12,11 @@ gem 'grape'
 gem 'grape-entity'
 gem 'grape-kaminari'
 gem 'grape-swagger'
-gem 'introspective_grape',  git: 'https://github.com/buermann/introspective_grape', branch: 'grape-1.2'
+gem 'grape-swagger-entity'
+gem 'introspective_grape', path: '~/Dropbox/contrib/introspective_grape'
 
 gem 'paperclip'
 gem 'pundit'
 
 gem 'rack-cors'
-gem 'sqlite3', '< 1.4.0'
+gem 'sqlite3'

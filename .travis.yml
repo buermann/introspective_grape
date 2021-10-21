@@ -7,15 +7,13 @@ script:
   - bundle exec rspec
 
 rvm:
-  - 2.3.1
   - 2.4.0
   - 2.5.0
+  - 2.6.2
   - ruby-head
   - jruby-head
 gemfile:
-  - gemfiles/Gemfile.rails.5.0.1
-  - gemfiles/Gemfile.rails.5.1.0
-  - gemfiles/Gemfile.rails.5.2.0
+  - gemfiles/Gemfile.rails.5.2.6
   - gemfiles/Gemfile.rails.master
 
 matrix:

@@ -1,8 +1,13 @@
-class DummyAPI < Grape::API
+require 'byebug'
+require 'grape-kaminari'
+class DummyAPI < Grape::API #::Instance
+  include Grape::Kaminari
+
   version 'v1', using: :path
   format    :json
   formatter :json, IntrospectiveGrape::Formatter::CamelJson
   default_format :json
+
 
   include ErrorHandlers
   helpers PermissionsHelper
@@ -32,7 +37,8 @@ class DummyAPI < Grape::API
 
   # Mount every api endpoint under app/api/dummy/.
   Dir.glob(Rails.root+"app"+"api"+'dummy'+'*.rb').each do |f|
-    api = "Dummy::#{File.basename(f, '.rb').camelize.sub(/Api$/,'API')}".constantize
+    api = "Dummy::#{File.basename(f, '.rb').camelize.sub(/Api$/,'API')}"
+    api = api.constantize
     mount api if api.respond_to? :endpoints
   end
 

@@ -1,3 +1,23 @@
+0.5.0 10/20/2021
+================
+
+Bring support up to Rails 5.2.6 and ruby 2.6.2.
+
+All Virtus::Attribute::Boolean parameters should be declared Grape::API::Boolean instead.
+
+Change the filters on unique identifiers to Array[String] to support non-integer indeces,
+which is backwards compat with Array[Integer] as ActiveRecord's find coerces strings properly.
+
+Update Kaminari pagination declarations from
+
+  ``` paginate per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0```
+
+to
+
+  ``` use :pagination, per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0```
+
+
+
 0.4.1 10/20/2020
 ================
 

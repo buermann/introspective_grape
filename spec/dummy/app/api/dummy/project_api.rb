@@ -1,4 +1,5 @@
 class Dummy::ProjectAPI < IntrospectiveGrape::API
+  include Grape::Kaminari
 
   default_includes Project, :owner, :admins, :user_project_jobs, project_jobs: [:job], teams: [:team_users]
   default_includes Team, :team_users
