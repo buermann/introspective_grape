@@ -2,7 +2,7 @@
 
 [![Gem Version][GV img]][Gem Version]
 [![Coverage Status][CS img]][Coverage Status]
-![Test Coverage](https://github.com/buermann/introspective_grape/actions/workflows/verify/badge.svg)
+![Tests](https://github.com/buermann/introspective_grape/actions/workflows/verify.yml/badge.svg)
 
 [Gem Version]: https://rubygems.org/gems/introspective_grape
 [Coverage Status]: https://coveralls.io/r/buermann/introspective_grape
