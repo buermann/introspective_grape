@@ -2,9 +2,11 @@
 
 [![Gem Version][GV img]][Gem Version]
 [![Coverage Status][CS img]][Coverage Status]
-[![Tests](https://github.com/buermann/introspective_grape/actions/workflows/test.yml/badge.svg)|(https://github.com/buermann/introspective_grape/actions)][Tests]
-[![Lints](https://github.com/buermann/introspective_grape/actions/workflows/lint.yml/badge.svg)|(https://github.com/buermann/introspective_grape/actions)][Lints]
+[![Tests](https://github.com/buermann/introspective_grape/actions/workflows/test.yml/badge.svg)][Tests]
+[![Lints](https://github.com/buermann/introspective_grape/actions/workflows/lint.yml/badge.svg)][Lints]
 
+[Tests]: https://github.com/buermann/introspective_grape/actions
+[Lints]: https://github.com/buermann/introspective_grape/actions
 [Gem Version]: https://rubygems.org/gems/introspective_grape
 [Coverage Status]: https://coveralls.io/r/buermann/introspective_grape
 
