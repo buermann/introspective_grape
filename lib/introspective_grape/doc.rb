@@ -1,9 +1,9 @@
 module IntrospectiveGrape
   module Doc
-    def index_documentation; end
-    def show_documentation; end
-    def create_documentation; end
-    def update_documentation; end
-    def destroy_documentation; end
+    define_method(:index_documentation) {}
+    define_method(:show_documentation) {}
+    define_method(:create_documentation) {}
+    define_method(:update_documentation) {}
+    define_method(:destroy_documentation) {}
   end
 end

@@ -8,10 +8,10 @@ if IntrospectiveGrape.config.camelize_parameters
     module ParseParamsWithCamelized
       def parse_params(params, path, method, _options = {})
         parsed_params = parse_params_without_camelized(params, path, method)
-        parsed_params.each_with_index do |param|
+        parsed_params.each do |param|
           param[:name] = param[:name]
-            .camelize(:lower)
-            .gsub(/Destroy/,'_destroy')
+                         .camelize(:lower)
+                         .gsub(/Destroy/,'_destroy')
         end
         super(params, path, method, _options = {})
       end
@@ -19,6 +19,7 @@ if IntrospectiveGrape.config.camelize_parameters
 
     module CreateCamelizedDocumentationClass
       private
+
       def create_documentation_class
         doc = super
         doc.class_eval do

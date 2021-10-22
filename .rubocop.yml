@@ -8,18 +8,46 @@ AllCops:
 Metrics/BlockLength:
   Max: 30
 
-Layout/LineLength:
-  Max: 120
-
 Metrics/MethodLength:
   Max: 30
 
-Style/Documentation:
+Layout/EndOfLine:
+  Enabled: false
+
+Layout/ExtraSpacing:
   Enabled: false
 
 Layout/HashAlignment:
   Enabled: false
 
-Layout/EndOfLine:
+Layout/LineLength:
+  Max: 180
+
+# I like to space repeated grammars out tabulated, defund these cops
+Layout/SpaceAroundEqualsInParameterDefault:
+  Enabled: false
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: false
+
+Layout/SpaceInsideParens:
+  Enabled: false
+
+Layout/SpaceAroundOperators:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/RaiseArgs:
+  Enabled: false
+
+Style/RedundantBegin:
   Enabled: false
 
