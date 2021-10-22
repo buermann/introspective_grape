@@ -58,7 +58,7 @@ This also monkey patches Grape::Swagger to camelize your API's self-documentatio
 
 To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method with the `using CamelSnakeKeys` refinement.
 
-If you need to disable all camel-snake transliteration set `IntrospectiveGrape.config.camelize_parameters = false` down in `config/initializers` and do not `require` or `formatter` in those patches.
+If you need to disable all camel-snake transliteration set `IntrospectiveGrape.config.camelize_parameters = false` down in `config/initializers` and do not `require` or `formatter` those patches.
 
 ## Authentication and authorization
 
@@ -73,7 +73,7 @@ Pundit authorization is invoked against index?, show?, update?, create?, and des
 The joke goes that you may find you need to allow an unauthenticated user to attempt a log in, which can be handled with something like:
 
 ```
- def authorize!
+  def authorize!
     unauthorized! unless current_user || login_request?
   end
 
@@ -104,6 +104,7 @@ class MyModelAPI < IntrospectiveGrape::API
     expose :nested, using: <NestedModel>Entity>
   end
 end
+
 ```
 
 This would set up all the basic RESTFUL actions with nested routes for the associated model and its association, providing a good deal of flexibility for API consumers out of the box.
@@ -145,9 +146,11 @@ class MyModelAPI < IntrospectiveGrape::API
 end
 ```
 
+Please note, again, that the nested Grape::Entity is declared before its parent.
+
 ## Skipping a Presence Validation for a Required Field
 
-If a model has, say, a procedurally generated default for a not-null field
+If a model has, say, a procedurally generated default for a not-null field in the database
 `skip_presence_validations` will make IntrospectiveGrape declare the parameter
 optional rather than required.
 
@@ -156,15 +159,19 @@ optional rather than required.
 By default any association included in the strong params argument will have all
 RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
 be excluded (or conversely included) with the `exclude_actions` (or `include_actions`)
-declarations in the API class. You can also include or exclude :all or :none as shorthand.
+declarations in the API class.
+
+You can also include or exclude :all or :none as shorthand.
 
 ## Eager Loading
 
 Declaring `default_includes` on an activerecord class will tell IntrospectiveGrape which associations to eager load when fetching a collection or instance.
 
+If you can diagnose an N+1 problem then this ought to fix it.
+
 ## Pagination
 
-The index action by default will not be paginated. Simply declare `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
+The index action by default will not be paginated. Simply declaring `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
 
 ## Validating Virtual Attributes and Overriding Grape Validations
 
