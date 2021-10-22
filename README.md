@@ -237,15 +237,14 @@ class MyModelAPI < IntrospectiveGrape::API
 end
 ```
 
-Multiple values can be specified at once for Integer attributes that end in "id" (i.e.
+Multiple values can be queried for at once for attributes that end in "id" (i.e.
 conventional primary and foreign keys) by passing a comma separated list of IDs.
 
 For timestamp attributes it will generate `<name_of_timestamp>_start` and
 `<name_of_timestamp>_end` range constraints.
 
 There is also a special "filter" filter that accepts a JSON hash of attributes and values:
-this allows more complex filtering if one is familiar with ActiveRecord's query conventions,
-a special for you full-stack developers.
+this allows more complex filtering if one is familiar with ActiveRecord's query conventions.
 
 ### Overriding Filter Queries
 
@@ -288,11 +287,11 @@ class MyModel
 end
 ```
 
-### Performance Tuning: IntrospectiveGrape defaults to reloading the object after updates!
+### Performance Tuning: IntrospectiveGrape defaults to reloading an object after any update!
 
 By default the gem reloads the object instance before presenting the updated model, a lazy but
 effective workaround to updates that may not propagate in the working instance due to actions
-a user may take in hooks, or some updates to has_many :through associations. We want to put up
+a user may take in hooks or some updates to has_many :through associations. We want to put up
 APIs with haste rather than digging our way out of tricky minutae that can be handled later as
 technical debt.
 
@@ -300,13 +299,13 @@ This behavior can be disabled by setting `IntrospectiveGrape.config.skip_object_
 when you have time for technical debt you can toggle it and work on fixing broken tests (you
 did take the time to write comprehensive test coverage, didn't you?).
 
-It is presently only an application wide configuration setting, which would be trivial to make
-more atomistic.
+It is presently only an application wide configuration setting, not having made much use of it
+myself, but would be trivial to make more atomistic.
 
 ## Documenting Endpoints
 
 If you wish to provide additional documentation for end points you can define
-`self.<action>_documentation` class methods in the API class (or extend them
+`self.<index,show,update,create,destroy>_documentation` class methods in the API class (or extend them
 from a documentation module, which would be preferable).
 
 ## Grape Hooks - The Precedence of Declaration Matters
@@ -316,17 +315,20 @@ RESTful actions defined by IntrospectiveGrape you need to declare any hooks befo
 `restful` declaration, rather than inside its block, where the hook will only apply to
 your own subsequently declared endpoints.
 
-
 ## Dependencies
 
-Tool                  | Description
---------------------- | -----------
-[Grape]               | An opinionated micro-framework for creating REST-like APIs in Ruby
-[GrapeEntity]         | Adds Entity support to API frameworks, such as Grape.
-[GrapeSwagger]        | Swagger docs.
-[GrapeKaminari]       | Pagination.
-[Pundit]              | Minimal authorization through OO design and pure Ruby classes
+Tool                    | Description
+---------------------   | -----------
+[Rails]                 | A web-application framework using a Model-View-Controller pattern
+[SchemaValidations]     | Automatically defining validations based on the database schema
+[Grape]                 | An opinionated micro-framework for creating REST-like APIs in Ruby
+[GrapeEntity]           | Adds Entity support to API frameworks, such as Grape.
+[GrapeSwagger]          | Swagger docs.
+[GrapeKaminari]         | Pagination.
+[Pundit]                | Minimal authorization through OO design and pure Ruby classes
 
+[Rails]:         https://github.com/rails/rails
+[SchemaValidations]: https://github.com/SchemaPlus/schema_validations
 [Grape]:         https://github.com/ruby-grape/grape
 [GrapeEntity]:   https://github.com/ruby-grape/grape-entity
 [GrapeSwagger]:  https://github.com/ruby-grape/grape-swagger
