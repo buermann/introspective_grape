@@ -4,6 +4,7 @@ AllCops:
     - 'spec/**/*'
     - 'db/**/*'
     - 'Gemfile'
+    - 'vendor/**/*' # or vendor/bundle/**/*
 
 Metrics/BlockLength:
   Max: 30
