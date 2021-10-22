@@ -161,13 +161,23 @@ RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
 be excluded (or conversely included) with the `exclude_actions` (or `include_actions`)
 declarations in the API class.
 
-You can also include or exclude :all or :none as shorthand.
+```
+  include_actions NestedModel, <:index,:show,:create,:update,:destroy>
+```
+
+You can also include or exclude `:all` or `:none` on the association as shorthand.
 
 ## Eager Loading
 
 Declaring `default_includes` on an activerecord class will tell IntrospectiveGrape which associations to eager load when fetching a collection or instance.
 
 If you can diagnose an N+1 problem then this ought to fix it.
+
+You can also eager load nested associations, if necessary:
+
+```
+  default_includes NestedModel, <associations for eager loading>
+```
 
 ## Pagination
 
