@@ -13,18 +13,20 @@
 [GV img]: https://badge.fury.io/rb/introspective_grape.png
 [CS img]: https://coveralls.io/repos/buermann/introspective_grape/badge.png?branch=master
 
-IntrospectiveGrape is a Rails Plugin for DRYing up Grape APIs by laying out simple
+IntrospectiveGrape is a rails plugin for DRYing up Grape APIs by laying out simple
 RESTful defaults based on the model definitions and, via
 [SchemaPlusValidations](https://github.com/SchemaPlus/schema_validations), your database schema.
 
-SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5.x. We're working on it.
+(SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5, so so is
+IntrospectiveGrape. Which is too bad, I don't know how anybody with a SQL database gets by
+without it! We're working on it when we get the chance.)
 
 IntrospectiveGrape provides handling for deeply nested relations according to the models'
 `accepts_nested_attributes_for` declarations, generating all the necessary
 boilerplate for flexible and consistent bulk endpoints on plural associations,
 and building nested routes for the same.
 
-To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelizes outputs, including in your swagger docs.
+To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelizes outputs, all the way through to your swagger docs.
 
 ## Documentation
 
@@ -78,7 +80,9 @@ The joke goes that you may find you need to allow an unauthenticated user to att
   end
 ```
 
-## Generate End Points for Models
+## Generating End Points for Models
+
+IntrospectiveGrape's parameterization of a model begins with the `restful` declaration, which expects an array of parameters that can be passed on to the model for update and create actions, including its nested models.
 
 The simplest app/api/v1/my_model_api.rb with the broadest functionality would look like:
 
@@ -103,11 +107,11 @@ This would set up all the basic RESTFUL actions with nested routes for the assoc
 
 IntrospectiveGrape looks in the MyModelAPI class for grape-entity definitions. If you prefer to define your entities elsewhere you could inherit them here instead.
 
-Note that nested entities must be defined before their parents.
+NOTE: Nested entities must be defined before their parents, inside-out, or you'll run into loading errors.
 
 ## Customizing End Points
 
-Many simple customizations are available to carve out from the default behaviors:
+Many simple customizations are available to carve out behaviors from the expansive defaults:
 
 ```
 class MyModelAPI < IntrospectiveGrape::API
@@ -124,7 +128,7 @@ class MyModelAPI < IntrospectiveGrape::API
   filter_on :param
 
   restful MyModel, [:strong, :param, :fields, :and, { nested_model_attributes: [:nested,:fields, :_destroy] }] do
-    # Add additional end points to the model's namespace
+    # Here you can add additional end points to the model's namespace, or customize one you've recently excluded so you can implement a caching strategy.
   end
 
   class <NestedModel>Entity < Grape::Entity
@@ -138,7 +142,6 @@ class MyModelAPI < IntrospectiveGrape::API
 end
 ```
 
-
 ## Skipping a Presence Validation for a Required Field
 
 If a model has, say, a procedurally generated default for a not-null field
@@ -149,7 +152,7 @@ optional rather than required.
 
 By default any association included in the strong params argument will have all
 RESTful (`:index,:show,:create,:update, :destroy`) endpoints defined. These can
-be excluded (or conversely included) with the `exclude_actions` or `include_actions`
+be excluded (or conversely included) with the `exclude_actions` (or `include_actions`)
 declarations in the API class. You can also include or exclude :all or :none as shorthand.
 
 ## Eager Loading
@@ -158,12 +161,12 @@ Declaring `default_includes` on an activerecord class will tell IntrospectiveGra
 
 ## Pagination
 
-The index action by default will not be paginated, simply declared `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
+The index action by default will not be paginated. Simply declare `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
 
 ## Validating Virtual Attributes and Overriding Grape Validations
 
-To define a Grape param type for a virtual attribute or override the defaut param
-type from database introspection, define a class method in the model with the param
+To define a Grape param type for a virtual attribute or override the defaut param type
+from database introspection, define a class method in the model with the param
 types for the attributes specified in a hash, e.g.:
 
 ```
@@ -185,6 +188,8 @@ class method ("grape_validations") that will be applied to that field's param de
   end
 ```
 
+Many bespoke behaviors can be relegated to the model via virtual attributes in this way.
+
 ## Validating JSON Parameters
 
 IntrospectiveGrape provides the following custom grape validators for JSON string parameters:
@@ -196,7 +201,7 @@ json_hash: true  # validates that the JSON string parses and returns a Hash
 ```
 
 
-## Filtering and Searching
+## Filtering and Searching on GET :index
 
 Simple filters on field values (and start and end values for timestamps) can be added with the `filter_on` declaration. Declaring `filter_on :all` will add filters for every attribute of the model.
 
@@ -213,11 +218,14 @@ For timestamp attributes it will generate `<name_of_timestamp>_start` and
 `<name_of_timestamp>_end` range constraints.
 
 There is also a special "filter" filter that accepts a JSON hash of attributes and values:
-this allows more complex filtering if one is familiar with ActiveRecord's query conventions.
+this allows more complex filtering if one is familiar with ActiveRecord's query conventions,
+a special for you full-stack developers.
 
 ### Overriding Filter Queries
 
-If, e.g., a field is some sort of complex composite rather than a simple field value you can override the default behavior (`where(field: params[field])`) by adding a query method on the model class:
+If, e.g., a field is some sort of complex composite rather than a simple field value you can
+override the default behavior (`where(field: params[field])`) by adding a query method on the
+model class:
 
 ```
 class MyAPI < IntrospectiveGrape::API
@@ -272,9 +280,10 @@ more atomistic.
 ## Documenting Endpoints
 
 If you wish to provide additional documentation for end points you can define
-`self.<action>_documentation` class methods in the API class (or extend them from a module).
+`self.<action>_documentation` class methods in the API class (or extend them
+from a documentation module, which would be preferable).
 
-## Grape Hooks
+## Grape Hooks - The Precedence of Declaration Matters
 
 Grape only applies hooks in the order they were declared, so to hook into the default
 RESTful actions defined by IntrospectiveGrape you need to declare any hooks before the
