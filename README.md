@@ -15,7 +15,7 @@
 
 IntrospectiveGrape is a rails plugin for DRYing up
 [Grape APIs](https://github.com/ruby-grape/grape) by laying out simple
-RESTful defaults based on the introspection of your database by
+(or, if you like, very complex) RESTful defaults based on the introspection of your database by
 [SchemaPlusValidations](https://github.com/SchemaPlus/schema_validations).
 
 IntrospectiveGrape provides handling for deeply nested relations according to the models'
@@ -23,8 +23,7 @@ IntrospectiveGrape provides handling for deeply nested relations according to th
 boilerplate for flexible and consistent bulk endpoints on plural associations,
 and building nested routes for the same.
 
-It relies on Kaminari for pagination and Pundit for authorization, both of which are
-semi-optional.
+It relies on [Kaminari](https://github.com/kaminari/kaminari) for pagination and [Pundit](https://github.com/varvet/pundit) for authorization, both of which are semi-optional.
 
 SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5, and thus so is
 IntrospectiveGrape. Which is too bad! I don't know how anybody with a SQL database gets by
