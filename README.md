@@ -13,64 +13,47 @@
 [GV img]: https://badge.fury.io/rb/introspective_grape.png
 [CS img]: https://coveralls.io/repos/buermann/introspective_grape/badge.png?branch=master
 
-
 IntrospectiveGrape is a Rails Plugin for DRYing up Grape APIs by laying out simple
-RESTful defaults based on the model definitions. If you use a schema validator
-like [SchemaPlus](https://github.com/SchemaPlus/schema_plus) it will, by
-extension, define your endpoints according to your database schema.
+RESTful defaults based on the model definitions and, via
+[SchemaPlusValidations](https://github.com/SchemaPlus/schema_validations), your database schema.
 
-It provides handling for deeply nested relations according to the models'
+SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5.x. We're working on it.
+
+IntrospectiveGrape provides handling for deeply nested relations according to the models'
 `accepts_nested_attributes_for` declarations, generating all the necessary
 boilerplate for flexible and consistent bulk endpoints on plural associations,
 and building nested routes for the same.
 
-It also snake cases everything coming in and camelizes parameters in your swagger docs
-by default if you `require 'introspective_grape/camel_snake'` in your API.
-This behavior can be disabled.
-
-In addition it provides a `IntrospectiveGrape::Formatter::CamelJson` json formatter to
-recursively camelize the keys of all your outputs, so ruby and javascript developers
-can speak in their own idioms.
+To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelizes outputs, including in your swagger docs.
 
 ## Documentation
 
 In your Gemfile:
 
 ```
-gem 'grape-kaminari', :github => 'alexey-klimuk/grape-kaminari' # some middleware has fallen into deep disrepair
 gem 'introspective_grape'
 ```
 
 And bundle install.
 
-
 ## Grape Configuration
 
 ### Camelization
 
-IntrospectiveGrape's default behavior is to camelize all outputs and snake case all inputs. To camel case all your json output you'll need to use its formatter in your API:
+To camelcase your JSON outputs you'll need to use IntrospectiveGrape's formatter in your API:
 
 ```
-formatter :json, IntrospectiveGrape::Formatter::CamelJson
+require 'introspective_grape/camel_snake'
+class MyAPI < Grape::API
+  formatter :json, IntrospectiveGrape::Formatter::CamelJson
+end
 ```
 
-It also defaults to monkey patching Grape::Swagger to camelize the API's parameters in the swagger docs and, vice-versa, snake casing the parameters that are sent to your API.
-
-You can disable this behavior by setting `IntrospectiveGrape.config.camelize_parameters = false`.
+This also monkey patches Grape::Swagger to camelize your API's self-documentation, while snakecasing parameters passed to your API.
 
 To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method with the `using CamelSnakeKeys` refinement.
 
-### Reloading an object after an update request
-
-By default the gem reloads the object instance before presenting the updated model, a lazy but
-effective workaround to updates that may not propagate in the working instance due to actions
-a user may take in hooks, or some updates to has_many :through associations. We want to put up
-APIs with haste rather than digging our way out of tricky minutae that can be handled later as
-technical debt.
-
-This behavior can be disabled by setting `IntrospectiveGrape.config.skip_object_reload = true`,
-when you have time for technical debt you can toggle it and work on fixing broken tests (you
-did take the time to write comprehensive test coverage, didn't you?).
+You can disable this behavior by setting `IntrospectiveGrape.config.camelize_parameters = false` down in `config/initializers`.
 
 ## Authentication and authorization
 
@@ -270,6 +253,21 @@ class MyModel
   end
 end
 ```
+
+### Performance Tuning: IntrospectiveGrape defaults to reloading the object after updates!
+
+By default the gem reloads the object instance before presenting the updated model, a lazy but
+effective workaround to updates that may not propagate in the working instance due to actions
+a user may take in hooks, or some updates to has_many :through associations. We want to put up
+APIs with haste rather than digging our way out of tricky minutae that can be handled later as
+technical debt.
+
+This behavior can be disabled by setting `IntrospectiveGrape.config.skip_object_reload = true`,
+when you have time for technical debt you can toggle it and work on fixing broken tests (you
+did take the time to write comprehensive test coverage, didn't you?).
+
+It is presently only an application wide configuration setting, which would be trivial to make
+more atomistic.
 
 ## Documenting Endpoints
 

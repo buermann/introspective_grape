@@ -30,6 +30,7 @@ if IntrospectiveGrape.config.camelize_parameters
     end
 
     Grape::API::Instance.singleton_class.send(:prepend, CreateCamelizedDocumentationClass)
+
   else
     module CallWithCamelized
       def call(*args)
