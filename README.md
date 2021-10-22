@@ -13,7 +13,7 @@
 [GV img]: https://badge.fury.io/rb/introspective_grape.png
 [CS img]: https://coveralls.io/repos/buermann/introspective_grape/badge.png?branch=master
 
-IntrospectiveGrape is a rails plugin for DRYing up [Grape APIs|https://github.com/ruby-grape/grape] by laying out simple
+IntrospectiveGrape is a rails plugin for DRYing up [Grape APIs|(https://github.com/ruby-grape/grape)] by laying out simple
 RESTful defaults based on the model definitions and, via
 [SchemaPlusValidations](https://github.com/SchemaPlus/schema_validations), your database schema.
 
