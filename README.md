@@ -183,7 +183,13 @@ You can also eager load nested associations, if necessary:
 
 The index action by default will not be paginated. Simply declaring `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
 
+This will likewise add Kaminari's "X-" pagination headers to the response.
+
 ## Validating Virtual Attributes and Overriding Grape Validations
+
+Sometimes you need to break out of IntrospectiveGrape to handle behavior that is outside
+its scope, sometimes you just need to add an override or virtual attribute on the
+represented model to handled that behavior. Consider the latter first!
 
 To define a Grape param type for a virtual attribute or override the defaut param type
 from database introspection, define a class method in the model with the param
