@@ -13,20 +13,24 @@
 [GV img]: https://badge.fury.io/rb/introspective_grape.png
 [CS img]: https://coveralls.io/repos/buermann/introspective_grape/badge.png?branch=master
 
-IntrospectiveGrape is a rails plugin for DRYing up [Grape APIs](https://github.com/ruby-grape/grape) by laying out simple
-RESTful defaults based on the model definitions and, via
-[SchemaPlusValidations](https://github.com/SchemaPlus/schema_validations), your database schema.
-
-(SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5, so so is
-IntrospectiveGrape. Which is too bad, I don't know how anybody with a SQL database gets by
-without it! We're working on it when we get the chance.)
+IntrospectiveGrape is a rails plugin for DRYing up
+[Grape APIs](https://github.com/ruby-grape/grape) by laying out simple
+RESTful defaults based on the introspection of your database by
+[SchemaPlusValidations](https://github.com/SchemaPlus/schema_validations).
 
 IntrospectiveGrape provides handling for deeply nested relations according to the models'
 `accepts_nested_attributes_for` declarations, generating all the necessary
 boilerplate for flexible and consistent bulk endpoints on plural associations,
 and building nested routes for the same.
 
-To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelizes outputs, all the way through to your swagger docs.
+It relies on Kaminari for pagination and Pundit for authorization, both of which are
+semi-optional.
+
+SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5, and thus so is
+IntrospectiveGrape. Which is too bad! I don't know how anybody with a SQL database gets by
+without it. We're working on it when we get the chance.
+
+To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelize outputs, all the way through to your swagger docs.
 
 ## Documentation
 
@@ -55,7 +59,7 @@ This also monkey patches Grape::Swagger to camelize your API's self-documentatio
 
 To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method with the `using CamelSnakeKeys` refinement.
 
-You can disable this behavior by setting `IntrospectiveGrape.config.camelize_parameters = false` down in `config/initializers`.
+If you need to disable all camel-snake transliteration set `IntrospectiveGrape.config.camelize_parameters = false` down in `config/initializers` and do not `require` or `formatter` in those patches.
 
 ## Authentication and authorization
 
