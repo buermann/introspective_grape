@@ -11,7 +11,7 @@ if IntrospectiveGrape.config.camelize_parameters
         parsed_params.each do |param|
           param[:name] = param[:name]
                          .camelize(:lower)
-                         .gsub(/Destroy/,'_destroy')
+                         .gsub(/Destroy/, '_destroy')
         end
         super(params, path, method, _options = {})
       end

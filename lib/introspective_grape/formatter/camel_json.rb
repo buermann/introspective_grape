@@ -9,9 +9,8 @@ module IntrospectiveGrape
           # We only need to parse(object.to_json) like this if it isn't already
           # a native hash (or array of them), i.e. we have to parse Grape::Entities
           # and other formatter facades:
-          unless (object.is_a?(Array) && object.first.is_a?(Hash)) || object.is_a?(Hash)
-            object = JSON.parse(object.to_json) if object.respond_to?(:to_json)
-          end
+          has_hash = (object.is_a?(Array) && object.first.is_a?(Hash)) || object.is_a?(Hash)
+          object   = JSON.parse(object.to_json) if object.respond_to?(:to_json) && !has_hash
           CamelSnakeKeys.camel_keys(object)
         end
 

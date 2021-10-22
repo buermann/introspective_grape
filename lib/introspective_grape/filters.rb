@@ -32,7 +32,7 @@ module IntrospectiveGrape
     def simple_filters(klass, model, api_params)
       @simple_filters ||= api_params.select {|p| p.is_a? Symbol }.select {|field|
         filters.include?(:all) || filters.include?(field)
-      }.map { |field|
+      }.map {|field|
         (klass.param_type(model, field) == DateTime ? ["#{field}_start", "#{field}_end"] : field.to_s)
       }.flatten
     end
@@ -74,7 +74,8 @@ module IntrospectiveGrape
 
       return unless filters.exclude?(:all) && filters.exclude?(:filter)
 
-      dsl.optional :filter, type: String, description: "JSON of conditions for query. If you're familiar with ActiveRecord's query conventions you can build more complex filters, e.g. against included child associations, e.g. {\"&lt;association_name&gt;_&lt;parent&gt;\":{\"field\":\"value\"}}"
+      dsl.optional :filter, type: String,
+        description: "JSON of conditions for query.  If you're familiar with ActiveRecord's query conventions you can build more complex filters, i.e. against included child associations, e.g.: {\"&lt;association_name&gt;_&lt;parent&gt;\":{\"field\":\"value\"}}"
     end
 
     def apply_simple_filter(klass, model, params, records, field)

@@ -71,9 +71,8 @@ module IntrospectiveGrape
       # end
 
       def restful(model, strong_params=[], routes=[])
-        if model.respond_to?(:attribute_param_types)
-          raise IntrospectiveGrapeError.new("#{model.name}'s attribute_param_types class method needs to be changed to grape_param_types")
-        end
+        raise IntrospectiveGrapeError.new("#{model.name}'s attribute_param_types class method needs to be changed to grape_param_types") if model.respond_to?(:attribute_param_types)
+
         # Recursively define endpoints for the model and any nested models.
         #
         # model: the model class for the API
@@ -86,7 +85,7 @@ module IntrospectiveGrape
         begin ActiveRecord::Migration.check_pending! rescue return end
 
         # normalize the whitelist to symbols
-        strong_params.map!{|f| f.is_a?(String) ? f.to_sym : f }
+        strong_params.map! {|f| f.is_a?(String) ? f.to_sym : f }
         # default to a flat representation of the model's attributes if left unspecified
         strong_params = strong_params.blank? ? model.attribute_names.map(&:to_sym) - %i[id updated_at created_at] : strong_params
 
@@ -142,7 +141,7 @@ module IntrospectiveGrape
           @model = root.model.includes( klass.default_includes(root.model) ).find(params[root.key]) if params[root.key]
 
           if routes.size > 1
-            nested_attributes = klass.build_nested_attributes(routes[1..], params.except(root.key,:api_key) )
+            nested_attributes = klass.build_nested_attributes(routes[1..], params.except(root.key, :api_key) )
             @params.merge!( nested_attributes ) if nested_attributes.is_a?(Hash)
           end
         end
@@ -165,7 +164,7 @@ module IntrospectiveGrape
 
         # We define the param keys for ID fields in camelcase for swagger's URL substitution,
         # they'll come back in snake case in the params hash, the API as a whole is agnostic:
-        namespace = routes[0..-2].map {|p| "#{p.name.pluralize}/:#{p.swaggerKey}/" }.join + routes.last.name.pluralize
+        namespace = routes[0..-2].map {|p| "#{p.name.pluralize}/:#{p.swagger_key}/" }.join + routes.last.name.pluralize
 
         klass      = self # the 'resource' block changes the context to the Grape::API::Instance...
         resource namespace do
@@ -185,9 +184,7 @@ module IntrospectiveGrape
         end
         dsl.params do
           klass.declare_filter_params(self, klass, model, api_params)
-          if klass.pagination
-            use :pagination, per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0
-          end
+          use :pagination, per_page: klass.pagination[:per_page]||25, max_per_page: klass.pagination[:max_per_page], offset: klass.pagination[:offset]||0 if klass.pagination
         end
         dsl.get '/' do
           # Invoke the policy for the action, defined in the policy classes for the model:
@@ -210,7 +207,7 @@ module IntrospectiveGrape
         dsl.desc "retrieve a #{name}" do
           detail klass.show_documentation || "returns details on a #{name}"
         end
-        dsl.get ":#{routes.last.swaggerKey}" do
+        dsl.get ":#{routes.last.swagger_key}" do
           authorize @model, :show?
           present klass.find_leaf(routes, @model, params), with: "#{klass}::#{model}Entity".constantize
         end
@@ -240,7 +237,7 @@ module IntrospectiveGrape
         dsl.params do
           klass.generate_params(self, :update, model, api_params, true)
         end
-        dsl.put ":#{routes.last.swaggerKey}" do
+        dsl.put ":#{routes.last.swagger_key}" do
           authorize @model, :update?
 
           @model.update_attributes!( safe_params(params).permit(klass.whitelist) )
@@ -260,7 +257,7 @@ module IntrospectiveGrape
         dsl.desc "destroy a #{name}" do
           detail klass.destroy_documentation || "destroys the details of a #{name}"
         end
-        dsl.delete ":#{routes.last.swaggerKey}" do
+        dsl.delete ":#{routes.last.swagger_key}" do
           authorize @model, :destroy?
           present status: (klass.find_leaf(routes, @model, params).destroy ? true : false)
         end
@@ -281,10 +278,12 @@ module IntrospectiveGrape
 
         name       = reflection_name || model.name.underscore
         reflection = parent_model&.reflections&.fetch(reflection_name)
-        many       = parent_model && PLURAL_REFLECTIONS.include?( reflection.class ) ? true : false
-        swaggerKey = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
+        many       = (parent_model && PLURAL_REFLECTIONS.include?(reflection.class))
+        swagger_key = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
 
-        routes.push OpenStruct.new(klass: self, name: name, param: "#{name}_attributes", model: model, many?: many, key: "#{name.singularize}_id".to_sym, swaggerKey: swaggerKey, reflection: reflection)
+        routes.push OpenStruct.new(klass: self, name: name, param: "#{name}_attributes", model: model,
+                                   many?: many, key: "#{name.singularize}_id".to_sym,
+                                   swagger_key: swagger_key, reflection: reflection)
       end
 
       def build_nested_attributes(routes, hash)
@@ -374,9 +373,9 @@ module IntrospectiveGrape
       end
 
       def file_attachment?(model, field)
-        model.respond_to?(:uploaders) && model.uploaders[field.to_sym] || # carrierwave
+        (model.respond_to?(:uploaders) && model.uploaders[field.to_sym]) || # carrierwave
           (model.respond_to?(:attachment_definitions) && model.attachment_definitions[field.to_sym]) ||
-          defined?(Paperclip::Attachment) && model.send(:new).try(field).is_a?(Paperclip::Attachment)
+          (defined?(Paperclip::Attachment) && model.send(:new).try(field).is_a?(Paperclip::Attachment))
       end
 
       def param_type(model, field)
