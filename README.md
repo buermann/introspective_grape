@@ -25,11 +25,11 @@ and building nested routes for the same.
 
 It relies on [Kaminari](https://github.com/kaminari/kaminari) for pagination and [Pundit](https://github.com/varvet/pundit) for authorization, both of which are semi-optional.
 
-SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5, and thus so is
+To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelize outputs, all the way through to your swagger docs.
+
+NOTE: SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5, and thus so is
 IntrospectiveGrape. Which is too bad! I don't know how anybody with a SQL database gets by
 without it. We're working on it when we get the chance.
-
-To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelize outputs, all the way through to your swagger docs.
 
 ## Documentation
 
