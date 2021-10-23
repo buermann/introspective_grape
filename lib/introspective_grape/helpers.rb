@@ -1,6 +1,7 @@
 module IntrospectiveGrape
   module Helpers
-    API_ACTIONS = %i[index show create update destroy].freeze
+    API_ACTIONS = %i(index show create update destroy).freeze
+
     def authentication_method=(method)
       # IntrospectiveGrape::API.authentication_method=
       @authentication_method = method

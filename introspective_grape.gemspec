@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.files         = `git ls-files`.split('\n').sort
   s.test_files    = `git ls-files -- spec/*`.split('\n')
 
-  s.required_ruby_version = '>= 2.4'
+  s.required_ruby_version = '>= 2.5'
 
   s.add_runtime_dependency 'rails', '5.2.6'
   s.add_runtime_dependency 'schema_validations'

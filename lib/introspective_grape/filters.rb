@@ -1,9 +1,7 @@
 module IntrospectiveGrape
   module Filters
-    #
     # Allow filters on all whitelisted model attributes (from api_params) and declare
     # customer filters for the index in a method.
-    #
 
     def default_sort(*args)
       @default_sort ||= args
@@ -46,36 +44,46 @@ module IntrospectiveGrape
       end
     end
 
-    def identifier_filter(klass, model, field)
-      if field.ends_with?('id') && klass.param_type(model, field) == Integer
-        field
-      else
-        false
-      end
-    end
-
     def declare_filter_params(dsl, klass, model, api_params)
       # Declare optional parameters for filtering parameters, create two parameters per
       # timestamp, a Start and an End, to apply a date range.
       simple_filters(klass, model, api_params).each do |field|
-        if timestamp_filter(klass, model, field)
-          terminal = field.ends_with?('_start') ? 'initial' : 'terminal'
-          dsl.optional field, type: klass.param_type(model, field), description: "Constrain #{field} by #{terminal} date."
-        elsif identifier_filter(klass, model, field)
-          dsl.optional field, type: Array[String], coerce_with: ->(val) { val.split(',') }, description: 'Filter by a comma separated list of unique identifiers.'
-        else
-          dsl.optional field, type: klass.param_type(model, field), description: "Filter on #{field} by value."
-        end
+        declare_simple_filter(dsl, klass, model, field)
       end
 
       custom_filters.each do |filter, details|
         dsl.optional filter, details
       end
 
-      return unless filters.exclude?(:all) && filters.exclude?(:filter)
+      dsl.optional :filter, type: String, description: filter_doc if special_filter_enabled?(filters)
+    end
 
-      dsl.optional :filter, type: String,
-        description: "JSON of conditions for query.  If you're familiar with ActiveRecord's query conventions you can build more complex filters, i.e. against included child associations, e.g.: {\"&lt;association_name&gt;_&lt;parent&gt;\":{\"field\":\"value\"}}"
+    def declare_simple_filter(dsl, klass, model, field)
+      if timestamp_filter(klass, model, field)
+        dsl.optional field, type: klass.param_type(model, field), description: "Constrain #{field} by #{humanize_date_range(field)} date."
+      elsif identifier_filter?(model, field)
+        dsl.optional field, type: Array[String], coerce_with: ->(val) { val.split(',') }, description: 'Filter by a comma separated list of unique identifiers.'
+      else
+        dsl.optional field, type: klass.param_type(model, field), description: "Filter on #{field} by value."
+      end
+    end
+
+    def humanize_date_range(field)
+      field.ends_with?('_start') ? 'initial' : 'terminal'
+    end
+
+    def identifier_filter?(model, field)
+      true if field.ends_with?('id') && %i(integer uuid).include?(model.columns_hash[field]&.type)
+    end
+
+    def special_filter_enabled?(filters)
+      filters.include?(:all) || filters.include?(:filter)
+    end
+
+    def filter_doc
+      <<-STR
+        JSON of conditions for query.  If you're familiar with ActiveRecord's query conventions you can build more complex filters, i.e. against included child associations, e.g.: {\"&lt;association_name&gt;_&lt;parent&gt;\":{\"field\":\"value\"}}
+      STR
     end
 
     def apply_simple_filter(klass, model, params, records, field)
@@ -102,15 +110,18 @@ module IntrospectiveGrape
         records = records.send(filter, params[filter])
       end
 
-      if params[:filter].present?
-        filters = JSON.parse( params[:filter].delete('\\') )
+      records = apply_filters(records, params[:filter])
+      records.where( JSON.parse(params[:query]) ) if params[:query].present?
+      records
+    end
+
+    def apply_filters(records, filters)
+      if filters.present?
+        filters = JSON.parse( filters.delete('\\') )
         filters.each do |key, value|
           records = records.where(key => value) if value.present?
         end
       end
-
-      records.where( JSON.parse(params[:query]) ) if params[:query].present?
-
       records
     end
   end

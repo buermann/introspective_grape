@@ -6,7 +6,8 @@ AllCops:
     - 'Gemfile'
     - 'vendor/**/*' # or vendor/bundle/**/*
 
-Gemspec/OrderedDependencies: # I like to group them, so what?
+Gemspec/OrderedDependencies:
+  # I like to group them, so what?
   Enabled: false
 
 Metrics/BlockLength:
@@ -14,6 +15,15 @@ Metrics/BlockLength:
 
 Metrics/MethodLength:
   Max: 30
+
+Metrics/AbcSize:
+  Max: 20
+
+Metrics/PerceivedComplexity:
+  Max: 12
+
+Metrics/CyclomaticComplexity:
+  Max: 12
 
 Layout/EndOfLine:
   Enabled: false
@@ -27,8 +37,11 @@ Layout/HashAlignment:
 Layout/LineLength:
   Enabled: false
 
-# I like to space repeated grammars out tabulated, defund these cops
 Layout/SpaceAroundEqualsInParameterDefault:
+  # I like to space repeated grammars out tabulated, defund these cops
+  Enabled: false
+
+Layout/EmptyLinesAroundExceptionHandlingKeywords:
   Enabled: false
 
 Layout/SpaceInsideBlockBraces:
@@ -59,4 +72,14 @@ Style/RedundantBegin:
   Enabled: false
 
 Style/RescueModifier:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  # the cops change this preference every version of ruby, but who cares in the first place?
+  Enabled: false
+
+Style/MultilineBlockChain:
   Enabled: false

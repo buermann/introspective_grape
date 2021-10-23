@@ -87,7 +87,7 @@ module IntrospectiveGrape
         # normalize the whitelist to symbols
         strong_params.map! {|f| f.is_a?(String) ? f.to_sym : f }
         # default to a flat representation of the model's attributes if left unspecified
-        strong_params = strong_params.blank? ? model.attribute_names.map(&:to_sym) - %i[id updated_at created_at] : strong_params
+        strong_params = strong_params.blank? ? model.attribute_names.map(&:to_sym) - %i(id updated_at created_at) : strong_params
 
         # The strong params will be the same for all routes, differing from the Grape params
         # when routes are nested
@@ -129,22 +129,24 @@ module IntrospectiveGrape
 
       def convert_nested_params_hash(dsl, routes)
         root  = routes.first
-        klass = root.klass
+        klass = self
         dsl.after_validation do
+          next unless params[root.key] # there was no one, nothing to see
+
           # After Grape validates its parameters:
           # 1) Find the root model instance for the API if its passed (implicitly either
           #    an update/destroy on the root node or it's a nested route
           # 2) For nested endpoints convert the params hash into Rails-compliant nested
           #    attributes, to be passed to the root instance for update. This keeps
           #    behavior consistent between bulk and single record updates.
-
-          @model = root.model.includes( klass.default_includes(root.model) ).find(params[root.key]) if params[root.key]
-
-          if routes.size > 1
-            nested_attributes = klass.build_nested_attributes(routes[1..], params.except(root.key, :api_key) )
-            @params.merge!( nested_attributes ) if nested_attributes.is_a?(Hash)
-          end
+          @model = root.model.includes( root.klass.default_includes(root.model) ).find(params[root.key])
+          @params.merge!( klass.merge_nested_params(routes, params) )
         end
+      end
+
+      def merge_nested_params(routes, params)
+        attr = params.reject {|k| [routes.first.key, :api_key].include?(k) }
+        build_nested_attributes(routes[1..-1], attr)
       end
 
       def define_restful_api(dsl, routes, model, api_params)
@@ -180,7 +182,7 @@ module IntrospectiveGrape
         simple_filters(klass, model, api_params)
 
         dsl.desc "list #{name}" do
-          detail klass.index_documentation || "returns list of all #{name}"
+          detail klass.index_documentation(name)
         end
         dsl.params do
           klass.declare_filter_params(self, klass, model, api_params)
@@ -205,7 +207,7 @@ module IntrospectiveGrape
         name  = routes.last.name.singularize
         klass = routes.first.klass
         dsl.desc "retrieve a #{name}" do
-          detail klass.show_documentation || "returns details on a #{name}"
+          detail klass.show_documentation(name)
         end
         dsl.get ":#{routes.last.swagger_key}" do
           authorize @model, :show?
@@ -217,7 +219,7 @@ module IntrospectiveGrape
         name  = routes.last.name.singularize
         klass = routes.first.klass
         dsl.desc "create a #{name}" do
-          detail klass.create_documentation || "creates a new #{name} record"
+          detail klass.create_documentation(name)
         end
         dsl.params do
           klass.generate_params(self, :create, model, api_params, true)
@@ -230,9 +232,9 @@ module IntrospectiveGrape
 
       def define_update(dsl, routes, model, api_params)
         klass = routes.first.klass
-        name = routes.last.name.singularize
+        name  = routes.last.name.singularize
         dsl.desc "update a #{name}" do
-          detail klass.update_documentation || "updates the details of a #{name}"
+          detail klass.update_documentation(name)
         end
         dsl.params do
           klass.generate_params(self, :update, model, api_params, true)
@@ -255,7 +257,7 @@ module IntrospectiveGrape
         klass = routes.first.klass
         name = routes.last.name.singularize
         dsl.desc "destroy a #{name}" do
-          detail klass.destroy_documentation || "destroys the details of a #{name}"
+          detail klass.destroy_documentation(name)
         end
         dsl.delete ":#{routes.last.swagger_key}" do
           authorize @model, :destroy?
@@ -276,14 +278,18 @@ module IntrospectiveGrape
         parent_model = routes.last&.model
         return routes if model == parent_model
 
-        name       = reflection_name || model.name.underscore
-        reflection = parent_model&.reflections&.fetch(reflection_name)
-        many       = (parent_model && PLURAL_REFLECTIONS.include?(reflection.class))
+        name        = reflection_name || model.name.underscore
+        reflection  = parent_model&.reflections&.fetch(reflection_name)
         swagger_key = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
 
         routes.push OpenStruct.new(klass: self, name: name, param: "#{name}_attributes", model: model,
-                                   many?: many, key: "#{name.singularize}_id".to_sym,
+                                   many?: plural?(parent_model, reflection),
+                                   key: "#{name.singularize}_id".to_sym,
                                    swagger_key: swagger_key, reflection: reflection)
+      end
+
+      def plural?(model, reflection)
+        (model && PLURAL_REFLECTIONS.include?(reflection.class))
       end
 
       def build_nested_attributes(routes, hash)
@@ -311,7 +317,7 @@ module IntrospectiveGrape
         # We'll be doing a recursive walk (to handle nested attributes) down the
         # whitelisted params, generating the Grape param definitions by introspecting
         # on the model and its associations.
-        raise "Invalid action: #{action}" unless %i[update create].include?(action)
+        raise "Invalid action: #{action}" unless %i(update create).include?(action)
 
         # dsl   : The Grape::Validations::ParamsScope object
         # action: create or update
@@ -346,18 +352,18 @@ module IntrospectiveGrape
         fields.each do |r, v|
           # Look at model.reflections to find the association's class name:
           reflection = r.to_s.sub(/_attributes$/, '') # the reflection name
-          relation = begin model.reflections[reflection].class_name.constantize rescue model end
+          relation   = find_relation(model, reflection)
 
           if file_attachment?(model, r)
             # Handle Carrierwave file upload fields
-            s = %i[filename type name tempfile head] - v
+            s = %i(filename type name tempfile head) - v
             Rails.logger.warn "Missing required file upload parameters #{s} for uploader field #{r}" if s.present?
-          elsif PLURAL_REFLECTIONS.include?( model.reflections[reflection].class )
+          elsif plural_reflection?(model, reflection)
             # In case you need a refresher on how these work:
             # http://api.rubyonrails.org/classes/ActiveRecord/NestedAttributes/ClassMethods.html
             dsl.optional r, type: Array do |dl|
               klass.generate_params(dl, action, relation, v)
-              klass.add_destroy_param(dl, model, reflection) unless action == :create
+              klass.add_destroy_param(dl, model, reflection, action)
             end
           else
             # TODO: handle any remaining correctly. Presently defaults to a Hash
@@ -366,9 +372,21 @@ module IntrospectiveGrape
             # HasAndBelongsToManyReflection, BelongsToReflection
             dsl.optional r, type: Hash do |dl|
               klass.generate_params(dl, action, relation, v)
-              klass.add_destroy_param(dl, model, reflection) unless action == :create
+              klass.add_destroy_param(dl, model, reflection, action)
             end
           end
+        end
+      end
+
+      def plural_reflection?(model, reflection)
+        PLURAL_REFLECTIONS.include?( model.reflections[reflection].class )
+      end
+
+      def find_relation(model, reflection)
+        begin
+          model.reflections[reflection].class_name.constantize
+        rescue StandardError
+          model
         end
       end
 
@@ -380,28 +398,46 @@ module IntrospectiveGrape
 
       def param_type(model, field)
         # Translate from the AR type to the GrapeParam types
-        field       = field.to_s
+        field   = field.to_s
         db_type = (model&.columns_hash || {})[field]&.type
 
         # Check if it's a file attachment, look for an override class from the model,
         # check PG2RUBY, use the database type, or fail over to a String:
-        ( file_attachment?(model, field) && Rack::Multipart::UploadedFile ) ||
-          (model.try(:grape_param_types) || {}).with_indifferent_access[field] ||
-          PG2RUBY[db_type]                                                ||
-          begin db_type.to_s.camelize.constantize rescue nil end          ||
-          String
+        uploaded_file?(model, field)           ||
+          check_model_for_type(model, field)    ||
+          PG2RUBY[db_type]                     ||
+          db_type_constant(db_type)            ||
+          String # default to String if nothing else works
+      end
+
+      def uploaded_file?(model, field)
+        file_attachment?(model, field) && Rack::Multipart::UploadedFile
+      end
+
+      def check_model_for_type(model, field)
+        (model.try(:grape_param_types) || {}).with_indifferent_access[field]
+      end
+
+      def db_type_constant(db_type)
+        begin
+          db_type.to_s.camelize.constantize
+        rescue StandardError
+          nil
+        end
       end
 
       def param_required?(model, field)
         # Detect if the field is a required field for the create action
         return false if skip_presence_validations.include?(field)
 
-        validated_field = field =~ /_id/ ? field.to_s.sub(/_id\z/, '').to_sym : field.to_sym
+        validated_field = field.match?(/_id/) ? field.to_s.sub(/_id\z/, '').to_sym : field.to_sym
 
         model.validators_on(validated_field).any? {|v| v.is_a? ActiveRecord::Validations::PresenceValidator }
       end
 
-      def add_destroy_param(dsl, model, reflection)
+      def add_destroy_param(dsl, model, reflection, action)
+        return if action == :create
+
         raise "#{model} does not accept nested attributes for #{reflection}" unless model.nested_attributes_options[reflection.to_sym]
 
         return unless model.nested_attributes_options[reflection.to_sym][:allow_destroy]

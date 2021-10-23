@@ -1,9 +1,23 @@
 module IntrospectiveGrape
   module Doc
-    define_method(:index_documentation) {}
-    define_method(:show_documentation) {}
-    define_method(:create_documentation) {}
-    define_method(:update_documentation) {}
-    define_method(:destroy_documentation) {}
+    def index_documentation(name=nil)
+      "returns list of all #{name}"
+    end
+
+    def show_documentation(name=nil)
+      "returns details on a #{name}"
+    end
+
+    def create_documentation(name=nil)
+      "creates a new #{name} record"
+    end
+
+    def update_documentation(name=nil)
+      "updates the details of a #{name}"
+    end
+
+    def destroy_documentation(name=nil)
+      "destroys the details of a #{name}"
+    end
   end
 end
