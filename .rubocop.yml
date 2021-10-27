@@ -6,13 +6,8 @@ AllCops:
     - 'Gemfile'
     - 'vendor/**/*' # or vendor/bundle/**/*
 
-Metrics/ClassLength:
-  Exclude:
-    - lib/introspective_grape/api.rb
-
 Gemspec/OrderedDependencies:
-  # I like to group them, so what?
-  Enabled: false
+  Enabled: false # I like to group them, so what?
 
 Metrics/BlockLength:
   Max: 30
@@ -22,8 +17,6 @@ Metrics/MethodLength:
 
 Metrics/AbcSize:
   Max: 20
-  Exclude: #
-    - lib/introspective_grape/api.rb
 
 Metrics/PerceivedComplexity:
   Max: 12

@@ -8,7 +8,9 @@ class IntrospectiveGrapeError < StandardError
 end
 
 module IntrospectiveGrape
+  # rubocop:disable Metrics/ClassLength
   class API < Grape::API::Instance
+    # rubocop:enable Metrics/ClassLength
     extend IntrospectiveGrape::Helpers
     extend IntrospectiveGrape::CreateHelpers
     extend IntrospectiveGrape::Filters
@@ -70,6 +72,7 @@ module IntrospectiveGrape
       #   define_method "after_#{a}_hook" do |model, params| ; end
       # end
 
+      # rubocop:disable Metrics/AbcSize
       def restful(model, strong_params=[], routes=[])
         raise IntrospectiveGrapeError.new("#{model.name}'s attribute_param_types class method needs to be changed to grape_param_types") if model.respond_to?(:attribute_param_types)
 
@@ -124,54 +127,6 @@ module IntrospectiveGrape
             next_routes = build_routes(routes, relation, reflection_name)
             define_routes(next_routes, fields)
           end
-        end
-      end
-
-      def convert_nested_params_hash(dsl, routes)
-        root  = routes.first
-        klass = self
-        dsl.after_validation do
-          next unless params[root.key] # there was no one, nothing to see
-
-          # After Grape validates its parameters:
-          # 1) Find the root model instance for the API if its passed (implicitly either
-          #    an update/destroy on the root node or it's a nested route
-          # 2) For nested endpoints convert the params hash into Rails-compliant nested
-          #    attributes, to be passed to the root instance for update. This keeps
-          #    behavior consistent between bulk and single record updates.
-          @model = root.model.includes( root.klass.default_includes(root.model) ).find(params[root.key])
-          @params.merge!( klass.merge_nested_params(routes, params) )
-        end
-      end
-
-      def merge_nested_params(routes, params)
-        attr = params.reject {|k| [routes.first.key, :api_key].include?(k) }
-        build_nested_attributes(routes[1..-1], attr)
-      end
-
-      def define_restful_api(dsl, routes, model, api_params)
-        # declare index, show, update, create, and destroy methods:
-        API_ACTIONS.each do |action|
-          send("define_#{action}", dsl, routes, model, api_params) unless exclude_actions(model).include?(action)
-        end
-      end
-
-      def define_endpoints(routes, api_params)
-        # De-reference these as local variables from their class scope, or when we make
-        # calls to the API they will be whatever they were last set to by the recursive
-        # calls to "nest_routes".
-        routes     = routes.clone
-        api_params = api_params.clone
-        model      = routes.last.model || return
-
-        # We define the param keys for ID fields in camelcase for swagger's URL substitution,
-        # they'll come back in snake case in the params hash, the API as a whole is agnostic:
-        namespace = routes[0..-2].map {|p| "#{p.name.pluralize}/:#{p.swagger_key}/" }.join + routes.last.name.pluralize
-
-        klass      = self # the 'resource' block changes the context to the Grape::API::Instance...
-        resource namespace do
-          klass.convert_nested_params_hash(self, routes)
-          klass.define_restful_api(self, routes, model, api_params)
         end
       end
 
@@ -253,6 +208,7 @@ module IntrospectiveGrape
         end
       end
 
+      # rubocop:enable Metrics/AbcSize
       def define_destroy(dsl, routes, _model, _api_params)
         klass = routes.first.klass
         name = routes.last.name.singularize
@@ -262,6 +218,54 @@ module IntrospectiveGrape
         dsl.delete ":#{routes.last.swagger_key}" do
           authorize @model, :destroy?
           present status: (klass.find_leaf(routes, @model, params).destroy ? true : false)
+        end
+      end
+
+      def convert_nested_params_hash(dsl, routes)
+        root  = routes.first
+        klass = self
+        dsl.after_validation do
+          next unless params[root.key] # there was no one, nothing to see
+
+          # After Grape validates its parameters:
+          # 1) Find the root model instance for the API if its passed (implicitly either
+          #    an update/destroy on the root node or it's a nested route
+          # 2) For nested endpoints convert the params hash into Rails-compliant nested
+          #    attributes, to be passed to the root instance for update. This keeps
+          #    behavior consistent between bulk and single record updates.
+          @model = root.model.includes( root.klass.default_includes(root.model) ).find(params[root.key])
+          @params.merge!( klass.merge_nested_params(routes, params) )
+        end
+      end
+
+      def merge_nested_params(routes, params)
+        attr = params.reject {|k| [routes.first.key, :api_key].include?(k) }
+        build_nested_attributes(routes[1..-1], attr)
+      end
+
+      def define_restful_api(dsl, routes, model, api_params)
+        # declare index, show, update, create, and destroy methods:
+        API_ACTIONS.each do |action|
+          send("define_#{action}", dsl, routes, model, api_params) unless exclude_actions(model).include?(action)
+        end
+      end
+
+      def define_endpoints(routes, api_params)
+        # De-reference these as local variables from their class scope, or when we make
+        # calls to the API they will be whatever they were last set to by the recursive
+        # calls to "nest_routes".
+        routes     = routes.clone
+        api_params = api_params.clone
+        model      = routes.last.model || return
+
+        # We define the param keys for ID fields in camelcase for swagger's URL substitution,
+        # they'll come back in snake case in the params hash, the API as a whole is agnostic:
+        namespace = routes[0..-2].map {|p| "#{p.name.pluralize}/:#{p.swagger_key}/" }.join + routes.last.name.pluralize
+
+        klass      = self # the 'resource' block changes the context to the Grape::API::Instance...
+        resource namespace do
+          klass.convert_nested_params_hash(self, routes)
+          klass.define_restful_api(self, routes, model, api_params)
         end
       end
 
