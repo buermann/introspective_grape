@@ -2,7 +2,6 @@ $LOAD_PATH.push File.expand_path('lib', __dir__)
 
 # Maintain your gem's version:
 require 'introspective_grape/version'
-# require 'introspective_grape/api'
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
@@ -11,12 +10,17 @@ Gem::Specification.new do |s|
   s.authors     = ['Josh Buermann']
   s.email       = ['buermann@gmail.com']
   s.homepage    = 'https://github.com/buermann/introspective_grape'
-  s.summary     = 'Introspectively configure deeply nested RESTful Grape APIs for ActiveRecord models.'
-  s.description = 'Introspectively configure deeply nested RESTful Grape APIs for ActiveRecord models.'
+  s.summary     = 'Quickly configure Grape APIs around your database schema and models.'
+  s.description = <<-DESC
+    IntrospectiveGrape provides handling for deeply nested relations according to the models'
+    `accepts_nested_attributes_for` declarations, generating all the necessary
+  boilerplate for flexible and consistent bulk endpoints on plural associations,
+    and building nested routes for the same.
+  DESC
   s.license     = 'MIT'
 
-  s.files         = `git ls-files`.split('\n').sort
-  s.test_files    = `git ls-files -- spec/*`.split('\n')
+  s.files         = `git ls-files`.split("\n").sort
+  s.test_files    = `git ls-files -- spec/*`.split("\n")
 
   s.required_ruby_version = '>= 2.5'
 
