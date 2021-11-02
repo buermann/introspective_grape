@@ -305,8 +305,7 @@ myself, but would be trivial to make more atomistic.
 ## Documenting Endpoints
 
 If you wish to provide additional documentation for end points you can define
-`self.<index,show,update,create,destroy>_documentation` class methods in the API class (or extend them
-from a documentation module, which would be preferable).
+`self.<index,show,update,create,destroy>_documentation(name)` class methods in the API class (or extend them from a documentation module, which would be preferable).
 
 ## Grape Hooks - The Precedence of Declaration Matters
 
