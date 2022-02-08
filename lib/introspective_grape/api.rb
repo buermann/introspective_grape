@@ -1,6 +1,6 @@
 require 'action_controller'
 require 'kaminari'
-require 'byebug'
+#require 'byebug'
 require 'grape-kaminari'
 require 'introspective_grape/validators'
 
@@ -408,7 +408,7 @@ module IntrospectiveGrape
         # Check if it's a file attachment, look for an override class from the model,
         # check PG2RUBY, use the database type, or fail over to a String:
         uploaded_file?(model, field)           ||
-          check_model_for_type(model, field)    ||
+          check_model_for_type(model, field)   ||
           PG2RUBY[db_type]                     ||
           db_type_constant(db_type)            ||
           String # default to String if nothing else works
