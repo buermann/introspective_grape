@@ -1,3 +1,9 @@
+
+0.5.2 02/07/2022
+================
+
+Lock down compatible Grape version to 1.6.0, as the next version has breaking changes for classes inheriting from Grape::Validator::Base.
+
 0.5.1 02/07/2022
 ================
 
