@@ -27,6 +27,15 @@ describe Dummy::CompanyAPI, type: :request do
       json.first['id'].should eq Company.first.id
       response.headers.slice("X-Total", "X-Total-Pages", "X-Per-Page", "X-Page", "X-Next-Page", "X-Prev-Page", "X-Offset").values.should eq ["30", "2", "25", "1", "2", "", "0"]
     end
+
+    it "should allow pagination in a custom index" do
+      Company.destroy_all
+      30.times { Company.make! }
+
+      get '/api/v1/companies/paginated/list'
+      response.should be_successful
+      response.headers.slice("X-Total", "X-Total-Pages", "X-Per-Page", "X-Page", "X-Next-Page", "X-Prev-Page", "X-Offset").values.should eq ["30", "2", "25", "1", "2", "", "0"]
+    end
   end
 
   before :all do

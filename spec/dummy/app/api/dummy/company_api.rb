@@ -14,6 +14,15 @@ class Dummy::CompanyAPI < IntrospectiveGrape::API
       present params
     end
 
+    desc "Test kaminari pagination in a custom index"
+    params do
+      use :pagination
+    end
+    get '/paginated/list' do
+      authorize Company.new, :index?
+      companies = Company.all
+      present paginate(companies), using: CompanyEntity
+    end
   end
 
   class CompanyEntity < Grape::Entity
