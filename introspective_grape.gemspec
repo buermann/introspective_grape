@@ -28,7 +28,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'schema_validations'
   s.add_runtime_dependency 'rack'
 
-  s.add_runtime_dependency 'grape'
+  s.add_runtime_dependency 'grape', '1.6.0'
   s.add_runtime_dependency 'dry-types'
   s.add_runtime_dependency 'grape-entity'
   s.add_runtime_dependency 'grape-swagger'
