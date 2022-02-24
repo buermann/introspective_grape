@@ -1,5 +1,5 @@
 
-0.5.3 02/07/2022
+0.5.4 02/07/2022
 ================
 
 Fix bug from looking for the ActiveRecord columns_hash on non-ActiveRecord objects.
