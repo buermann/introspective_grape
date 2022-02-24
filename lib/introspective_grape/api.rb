@@ -403,7 +403,7 @@ module IntrospectiveGrape
       def param_type(model, field)
         # Translate from the AR type to the GrapeParam types
         field   = field.to_s
-        db_type = (model&.columns_hash || {})[field]&.type
+        db_type = (model&.try(:columns_hash) || {})[field]&.type
 
         # Check if it's a file attachment, look for an override class from the model,
         # check PG2RUBY, use the database type, or fail over to a String:
