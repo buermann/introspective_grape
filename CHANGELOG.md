@@ -1,6 +1,12 @@
 
-0.5.4 02/07/2022
+0.5.5 02/24/2022
 ================
+
+Update the local ruby in the gem to 2.7.3 to clear security warning cruft.
+
+Sanitize some sql.
+
+Target the still-supported 'kt-paperclip' in the gemspec (many pardons while we're planning the switch over to activestorage support).
 
 Fix bug from looking for the ActiveRecord columns_hash on non-ActiveRecord objects.
 

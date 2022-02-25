@@ -57,7 +57,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'machinist_redux'
 
   # dummy app dependencies
-  s.add_development_dependency 'paperclip'
+  s.add_development_dependency 'kt-paperclip'
   s.add_development_dependency 'rufus-mnemo'
   s.add_development_dependency 'devise'
 end

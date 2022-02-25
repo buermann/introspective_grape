@@ -91,7 +91,7 @@ module IntrospectiveGrape
 
       if timestamp_filter(klass, model, field)
         op      = field.ends_with?('_start') ? '>=' : '<='
-        records.where("#{timestamp_filter(klass, model, field)} #{op} ?", Time.zone.parse(params[field]))
+        records.where(ActiveRecord::Base.sanitize_sql_array(["#{timestamp_filter(klass, model, field)} #{op} ?", Time.zone.parse(params[field])]))
       elsif model.respond_to?("#{field}=")
         records.send("#{field}=", params[field])
       else

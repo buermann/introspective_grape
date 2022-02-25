@@ -1,19 +1,19 @@
 source 'https://rubygems.org'
-gem 'rails', '5.2.6'
+gem 'rails', '5.2.6.2'
 
 gem 'byebug'
 gem 'camel_snake_keys'
 
 gem 'devise'
 gem 'delayed_paperclip'
-#gem 'devise-async'
+gem 'kt-paperclip'
 
 gem 'grape'
 gem 'grape-entity'
 gem 'grape-kaminari'
 gem 'grape-swagger'
 gem 'grape-swagger-entity'
-gem 'introspective_grape', path: '~/Dropbox/contrib/introspective_grape'
+gem 'introspective_grape' #, path: '~/Dropbox/contrib/introspective_grape'
 
 gem 'paperclip'
 gem 'pundit'
