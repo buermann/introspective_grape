@@ -99,13 +99,15 @@ module IntrospectiveGrape
         # As routes are nested keep track of the routes, we are preventing siblings from
         # appending to the routes array here:
         routes = build_routes(routes, model)
-        define_routes(routes, whitelist)
 
         # Top level declaration of the Grape::API namespace for the resource:
         resource routes.first.name.pluralize do
-          # yield to append additional routes under the root namespace
+          # yield to prepend user-defined routes under the root namespace first,
           yield if block_given?
         end
+
+        # Then define IntrospectiveGrape's routes:
+        define_routes(routes, whitelist)
       end
 
       def define_routes(routes, api_params)
@@ -209,11 +211,14 @@ module IntrospectiveGrape
       end
 
       # rubocop:enable Metrics/AbcSize
-      def define_destroy(dsl, routes, _model, _api_params)
+      def define_destroy(dsl, routes, model, _api_params)
         klass = routes.first.klass
-        name = routes.last.name.singularize
+        name  = routes.last.name.singularize
         dsl.desc "destroy a #{name}" do
           detail klass.destroy_documentation(name)
+        end
+        dsl.params do
+          requires routes.last.swagger_key, type: klass.param_type(model, model.primary_key)
         end
         dsl.delete ":#{routes.last.swagger_key}" do
           authorize @model, :destroy?

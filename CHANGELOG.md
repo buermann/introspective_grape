@@ -1,4 +1,9 @@
 
+0.5.6 03/09/2022
+================
+
+On the DELETE endpoint the primary key with its type was undeclared, creating conflicts with user-defined delete endpoints.
+
 0.5.5 02/24/2022
 ================
 
