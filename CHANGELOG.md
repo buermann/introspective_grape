@@ -1,4 +1,9 @@
 
+0.5.7 03/10/2022
+================
+
+Handle the switch from Grape::Validations::Base to Grape::Validations::Validators::Base.
+
 0.5.6 03/09/2022
 ================
 

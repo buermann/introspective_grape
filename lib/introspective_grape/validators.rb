@@ -1,7 +1,9 @@
 require 'grape/validations'
 module Grape
   module Validators
-    class Json < Grape::Validations::Base
+    # Validations::Base becomes Validators::Base somewhere between 1.6.0 and 1.6.2
+    validation_class = defined?(Grape::Validations::Base) ? Grape::Validations::Base : Grape::Validations::Validators::Base
+    class Json < validation_class
       def validate_param!(field, params)
         begin
           JSON.parse( params[field] )
@@ -11,7 +13,7 @@ module Grape
       end
     end
 
-    class JsonArray < Grape::Validations::Base
+    class JsonArray < validation_class
       def validate_param!(field, params)
         begin
           raise unless JSON.parse( params[field] ).is_a? Array
@@ -21,7 +23,7 @@ module Grape
       end
     end
 
-    class JsonHash < Grape::Validations::Base
+    class JsonHash < validation_class
       def validate_param!(field, params)
         begin
           raise unless JSON.parse( params[field] ).is_a? Hash
