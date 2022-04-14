@@ -179,6 +179,8 @@ You can also eager load nested associations, if necessary:
   default_includes NestedModel, <associations for eager loading>
 ```
 
+My suggestion would be to ignore this feature and rely instead on [ArLazyPreload](https://github.com/DmitryTsepelev/ar_lazy_preload).
+
 ## Pagination
 
 The index action by default will not be paginated. Simply declaring `paginate` before the `restful` declaration will enable [Kaminari](https://github.com/amatsuda/kaminari) pagination on the index results using a default 25 results per page with an offset of 0. You can pass Kaminari's options to the paginate declaration, `per_page`, `max_per_page`, etc.
