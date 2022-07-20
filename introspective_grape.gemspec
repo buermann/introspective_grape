@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '> 2.5'
 
-  s.add_runtime_dependency 'rails' # , '6.1' #, '> 5.2'
+  s.add_runtime_dependency 'rails' #, '6.1' #, '> 5.2'
   s.add_runtime_dependency 'schema_validations'
   s.add_runtime_dependency 'rack'
 
