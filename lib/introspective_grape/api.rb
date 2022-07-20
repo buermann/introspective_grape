@@ -210,7 +210,6 @@ module IntrospectiveGrape
         end
       end
 
-      # rubocop:enable Metrics/AbcSize
       def define_destroy(dsl, routes, model, _api_params)
         klass = routes.first.klass
         name  = routes.last.name.singularize
@@ -225,6 +224,7 @@ module IntrospectiveGrape
           present status: (klass.find_leaf(routes, @model, params).destroy ? true : false)
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
       def convert_nested_params_hash(dsl, routes)
         root  = routes.first
@@ -291,10 +291,12 @@ module IntrospectiveGrape
         reflection  = parent_model&.reflections&.fetch(reflection_name)
         swagger_key = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
 
-        routes.push OpenStruct.new(klass: self, name: name, param: "#{name}_attributes", model: model,
-                                   many?: plural?(parent_model, reflection),
-                                   key: "#{name.singularize}_id".to_sym,
-                                   swagger_key: swagger_key, reflection: reflection)
+        routes.push OpenStruct.new( # rubocop:disable Style/OpenStructUse
+          klass: self, name: name, param: "#{name}_attributes", model: model,
+          many?: plural?(parent_model, reflection),
+          key: "#{name.singularize}_id".to_sym,
+          swagger_key: swagger_key, reflection: reflection
+        )
       end
 
       def plural?(model, reflection)
