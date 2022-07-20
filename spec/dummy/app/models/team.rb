@@ -6,4 +6,9 @@ class Team < AbstractAdapter
   has_many :users, through: :team_users
   accepts_nested_attributes_for :team_users, allow_destroy: true
 
+  before_validation :set_creator
+
+  def set_creator
+    self.creator ||= Current.user
+  end
 end

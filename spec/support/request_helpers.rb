@@ -7,8 +7,9 @@ module RequestHelpers
 
   def with_authentication(role=:superuser)
     return if @without_authentication
-    current_user = User.new #double('User')
-    allow(current_user).to receive(:admin?) { true }     if role == :superuser
+    current_user = User.find_or_create_by(email: 'test@test.com', superuser: true, authentication_token: '1234567890', first_name: "First", last_name: "Last")
+    Current.user = current_user
+    allow(current_user).to receive(:admin?)     { true } if role == :superuser
     allow(current_user).to receive(:superuser?) { true } if role == :superuser
 
     # Stubbing API helper methods requires this very nearly undocumented invokation

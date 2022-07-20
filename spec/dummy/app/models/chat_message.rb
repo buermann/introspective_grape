@@ -11,7 +11,7 @@ class ChatMessage < AbstractAdapter
   validate :author_in_chat
 
   def author_in_chat
-    errors[:base] << 'User not in chat session.' unless chat.active_users.include? author
+    errors.add(:base, 'User not in chat session.') unless chat.active_users.include? author
   end
 
   before_save :create_message_users, if: :new_record?

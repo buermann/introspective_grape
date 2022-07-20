@@ -141,7 +141,7 @@ describe Dummy::UserAPI, type: :request do
       end
 
       it "should return a validation error if the user's assigned project has no default password" do
-        project.update_attributes(default_password: nil)
+        project.update(default_password: nil)
         post "/api/v1/users", params: params
         response.status.should == 400
         json['error'].should == "Password: can't be blank"

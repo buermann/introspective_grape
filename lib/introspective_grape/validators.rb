@@ -8,7 +8,7 @@ module Grape
         begin
           JSON.parse( params[field] )
         rescue StandardError
-          raise Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be valid JSON!'
+          raise Grape::Exceptions::Validation.new params: [@scope.full_name(field)], message: 'must be valid JSON!'
         end
       end
     end
@@ -18,7 +18,7 @@ module Grape
         begin
           raise unless JSON.parse( params[field] ).is_a? Array
         rescue StandardError
-          raise Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be a valid JSON array!'
+          raise Grape::Exceptions::Validation.new params: [@scope.full_name(field)], message: 'must be a valid JSON array!'
         end
       end
     end
@@ -28,7 +28,7 @@ module Grape
         begin
           raise unless JSON.parse( params[field] ).is_a? Hash
         rescue StandardError
-          raise Grape::Exceptions::Validation, params: [@scope.full_name(field)], message: 'must be a valid JSON hash!'
+          raise Grape::Exceptions::Validation.new params: [@scope.full_name(field)], message: 'must be a valid JSON hash!'
         end
       end
     end

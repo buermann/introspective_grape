@@ -1,6 +1,10 @@
 source 'https://rubygems.org'
 gemspec
 
+gem 'devise'
+gem 'grape-entity'
+gem 'grape-swagger'
+
 # Declare your gem's dependencies in introspective_grape.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
 # development dependencies will be added by default to the :development group.

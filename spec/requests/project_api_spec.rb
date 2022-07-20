@@ -53,11 +53,14 @@ describe Dummy::ProjectAPI, type: :request do
 
       context "via nested attributes" do
         it "should create a team with users" do
+          count = Team.count
           p = {
-            name: 'New Team', team_users_attributes: [{ user_id: @u1.id }, { user_id: @u2.id }]
+            name: 'New Team', creator_id: @u1.id, team_users_attributes: [{ user_id: @u1.id }, { user_id: @u2.id }]
           }
           post "/api/v1/projects/#{project.id}/teams", params: p
           response.should be_successful
+
+          Team.count.should eq count+1
           Team.last.name.should == 'New Team'
           Team.last.users.to_a.should == [@u1,@u2]
         end

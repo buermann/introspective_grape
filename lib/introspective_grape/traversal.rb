@@ -36,7 +36,7 @@ module IntrospectiveGrape
       # For deeply nested routes we need to search from the root of the API to the leaf
       # of its nested associations in order to guarantee the validity of the relationship,
       # the authorization on the parent model, and the sanity of passed parameters.
-      routes[1..-1].each do |r|
+      routes[1..].each do |r|
         if record && params[r.key]
           ref    = r.reflection
           record = record.send(ref.name).where( id: params[r.key] ).first if ref

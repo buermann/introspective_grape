@@ -6,7 +6,7 @@ class Location < AbstractAdapter
   has_one  :gps,     class_name: 'LocationGps',    dependent: :destroy
   delegate :lat,:lng,:alt, to: :gps
 
-  belongs_to :parent_location, foreign_key: :parent_location_id, class_name: 'Location', inverse_of: :child_locations
+  belongs_to :parent_location, foreign_key: :parent_location_id, class_name: 'Location', inverse_of: :child_locations, optional: true
   has_many   :child_locations, foreign_key: :parent_location_id, class_name: 'Location', dependent: :destroy, inverse_of: :parent_location
 
   has_many :user_locations, dependent: :destroy

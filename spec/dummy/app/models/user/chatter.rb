@@ -52,7 +52,7 @@ module User::Chatter
       chat.messages.build(chat: chat, author: self, message: "#{self.name} [[ADDED_USER_MESSAGE]] #{users.map(&:name).join(',')}")
       chat.save!
     else
-      chat.errors[:base] << "Only current chat participants can add users."
+      chat.errors.add(:base, "Only current chat participants can add users.")
       raise ActiveRecord::RecordInvalid.new(chat)
     end
   end
@@ -62,7 +62,7 @@ module User::Chatter
 
     if chat.active_users.include?(self)
       reply(chat, "#{name} [[DEPARTS_MESSAGE]]")
-      chat.chat_users.detect {|cu| cu.user_id == self.id}.update_attributes(departed_at: Time.now)
+      chat.chat_users.detect {|cu| cu.user_id == self.id}.update(departed_at: Time.now)
     else
       true
     end

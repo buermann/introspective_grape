@@ -20,15 +20,14 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.files         = `git ls-files`.split("\n").sort
-  s.test_files    = `git ls-files -- spec/*`.split("\n")
 
   s.required_ruby_version = '> 2.5'
 
-  s.add_runtime_dependency 'rails', '~> 5.2'
+  s.add_runtime_dependency 'rails' # , '6.1' #, '> 5.2'
   s.add_runtime_dependency 'schema_validations'
   s.add_runtime_dependency 'rack'
 
-  s.add_runtime_dependency 'grape', '1.6.0'
+  s.add_runtime_dependency 'grape' # , '1.6.0'
   s.add_runtime_dependency 'dry-types'
   s.add_runtime_dependency 'grape-entity'
   s.add_runtime_dependency 'grape-swagger'
@@ -60,4 +59,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'kt-paperclip'
   s.add_development_dependency 'rufus-mnemo'
   s.add_development_dependency 'devise'
+  s.metadata['rubygems_mfa_required'] = 'true'
 end

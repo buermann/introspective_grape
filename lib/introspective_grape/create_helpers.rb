@@ -4,7 +4,7 @@ module IntrospectiveGrape
       dsl.send(:authorize, model, :create?)
       ActiveRecord::Base.transaction do
         old = find_leaves(routes, model, params)
-        model.update_attributes( dsl.send(:safe_params, params).permit(whitelist) )
+        model.update( dsl.send(:safe_params, params).permit(whitelist) )
         new = find_leaves(routes, model, params)
         old.respond_to?(:size) ? new - old : new
       end

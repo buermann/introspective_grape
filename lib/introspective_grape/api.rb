@@ -1,6 +1,6 @@
 require 'action_controller'
 require 'kaminari'
-#require 'byebug'
+# require 'byebug'
 require 'grape-kaminari'
 require 'introspective_grape/validators'
 
@@ -199,7 +199,7 @@ module IntrospectiveGrape
         dsl.put ":#{routes.last.swagger_key}" do
           authorize @model, :update?
 
-          @model.update_attributes!( safe_params(params).permit(klass.whitelist) )
+          @model.update!( safe_params(params).permit(klass.whitelist) )
 
           if IntrospectiveGrape.config.skip_object_reload
             present klass.find_leaf(routes, @model, params), with: "#{klass}::#{model}Entity".constantize
@@ -245,7 +245,7 @@ module IntrospectiveGrape
 
       def merge_nested_params(routes, params)
         attr = params.reject {|k| [routes.first.key, :api_key].include?(k) }
-        build_nested_attributes(routes[1..-1], attr)
+        build_nested_attributes(routes[1..], attr)
       end
 
       def define_restful_api(dsl, routes, model, api_params)

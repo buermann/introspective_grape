@@ -11,7 +11,7 @@ class DummyAPI < Grape::API #::Instance
 
   include ErrorHandlers
   helpers PermissionsHelper
-  helpers ApiHelpers
+  helpers APIHelpers
 
   USER_NOT_CONFIRMED = 'user_not_confirmed'.freeze
   BAD_LOGIN          = 'bad_login'.freeze
