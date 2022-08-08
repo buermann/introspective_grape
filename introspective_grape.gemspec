@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
     and building nested routes for the same.
   DESC
   s.license     = 'MIT'
+  s.metadata    = { "rubygems_mfa_required" => "true" }
 
   s.files         = `git ls-files`.split("\n").sort
 
