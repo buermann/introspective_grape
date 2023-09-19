@@ -2,7 +2,8 @@ require 'grape/validations'
 module Grape
   module Validators
     # Validations::Base becomes Validators::Base somewhere between 1.6.0 and 1.6.2
-    validation_class = defined?(Grape::Validations::Base) ? Grape::Validations::Base : Grape::Validations::Validators::Base
+    validation_class = defined?(Grape::Validations::Validators::Base) ? Grape::Validations::Validators::Base : Grape::Validations::Base
+
     class Json < validation_class
       def validate_param!(field, params)
         begin
