@@ -27,10 +27,6 @@ It relies on [Kaminari](https://github.com/kaminari/kaminari) for pagination and
 
 To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelize outputs, all the way through to your swagger docs.
 
-NOTE: SchemaPlus is not currently being maintained and is unavailable for Rails > 2.5, and thus so is
-IntrospectiveGrape. Which is too bad! I don't know how anybody with a relational database gets by
-without it. We're working on it when we get the chance.
-
 ## Documentation
 
 In your Gemfile:
