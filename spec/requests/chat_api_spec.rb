@@ -1,5 +1,5 @@
 require "rails_helper"
-describe Dummy::ChatAPI, type: :request do
+describe Dummy::ChatApi, type: :request do
 
   before :all do
     User.destroy_all

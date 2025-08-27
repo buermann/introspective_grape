@@ -4,6 +4,7 @@ gemspec
 gem 'devise'
 gem 'grape-entity'
 gem 'grape-swagger'
+gem 'validates_by_schema'
 
 # Declare your gem's dependencies in introspective_grape.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
@@ -15,8 +16,23 @@ gem 'grape-swagger'
 # Git. Remember to move these dependencies to your gemspec before releasing
 # your gem to rubygems.org.
 
+
 group :development, :test do
+  # testing
+  gem 'brakeman'
+  gem 'bundler-audit'
   gem 'byebug'
-  gem 'rb-readline'
   gem 'coveralls_reborn', require: false
+  gem 'machinist_redux'
+  gem 'rb-readline'
+  gem 'rspec-rails', '>= 3.0'
+  gem 'rubocop'
+  gem 'simplecov'
+
+  # dummy app dependencies
+  gem 'activerecord-jdbcsqlite3-adapter', platforms: :jruby
+  gem 'devise'
+  gem 'kt-paperclip'
+  gem 'rufus-mnemo'
+  gem 'sqlite3', platforms: :ruby
 end

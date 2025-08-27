@@ -1,5 +1,4 @@
 require 'coveralls'
-Coveralls.wear!('rails')
 ENV["RAILS_ENV"] = 'test'
 require File.expand_path("../dummy/config/environment", __FILE__)
 require 'rspec/rails'
@@ -8,7 +7,7 @@ require 'support/request_helpers'
 require 'support/pundit_helpers'
 Dir[Rails.root.join("../support/**/*.rb")].each { |f| require f }
 
-#load "#{Rails.root}/db/schema.rb"
+load "#{Rails.root}/db/schema.rb"
 RSpec.configure do |config|
   config.include Devise::TestHelpers, type: :controller
   config.use_transactional_fixtures = true

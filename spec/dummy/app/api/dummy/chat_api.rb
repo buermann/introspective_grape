@@ -1,4 +1,4 @@
-class Dummy::ChatAPI < Grape::API
+class Dummy::ChatApi < Grape::API
   formatter :json, IntrospectiveGrape::Formatter::CamelJson
 
   before do

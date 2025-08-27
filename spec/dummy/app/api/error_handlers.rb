@@ -2,27 +2,27 @@ require 'pundit'
 module ErrorHandlers
   def self.included(m)
     m.rescue_from ActiveRecord::RecordInvalid do |e|
-      error_response message: e.record.errors.to_a.uniq.join(', '), status: 400
+      error! e.record.errors.to_a.uniq.join(', '), 400
     end
 
     m.rescue_from Grape::Exceptions::ValidationErrors do |e|
-      error_response message: e.message, status: 400
+      error! e.message, 400
     end
 
     m.rescue_from ActiveRecord::RecordNotFound do |e|
-      error_response message: "Record not found! #{e.message}", status: 404
+      error! "Record not found! #{e.message}", 404
     end
 
     m.rescue_from ActiveRecord::InvalidForeignKey do |e|
-      error_response message: "Join record not found! #{e.message}", status: 404
+      error! "Join record not found! #{e.message}", 404
     end
 
     m.rescue_from Pundit::NotAuthorizedError do
-      error_response message: "Forbidden", status: 403
+      error! "Forbidden", 403
     end
 
     m.rescue_from Pundit::NotDefinedError do
-      error_response message: "Policy not implemented", status: 501
+      error! "Policy not implemented", 501
     end
   end
 end

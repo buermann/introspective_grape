@@ -1,4 +1,4 @@
-class Dummy::UserAPI < IntrospectiveGrape::API
+class Dummy::UserApi < IntrospectiveGrape::API
 
   skip_presence_validations :password
 

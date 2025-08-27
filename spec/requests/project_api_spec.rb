@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Dummy::ProjectAPI, type: :request do
+describe Dummy::ProjectApi, type: :request do
   before :all do
     [User,Project,Company,Location].map(&:destroy_all)
     cm = User.make!(email:'company.admin@springshot.com')

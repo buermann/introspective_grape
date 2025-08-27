@@ -57,7 +57,7 @@ module IntrospectiveGrape
       PG2RUBY = { datetime: DateTime }.freeze
 
       def inherited(child)
-        super(child)
+        super
         child.before do
           # Ensure that a user is logged in.
           send(IntrospectiveGrape::API.authentication_method(self))
@@ -85,12 +85,17 @@ module IntrospectiveGrape
         #
 
         # Defining the api will break pending migrations during db:migrate, so bail:
-        begin ActiveRecord::Migration.check_pending! rescue return end
+        begin
+          ActiveRecord::Migration.check_all_pending!
+        rescue StandardError => e
+          warn "Migrations are pending: #{e.message}"
+          return
+        end
 
         # normalize the whitelist to symbols
         strong_params.map! {|f| f.is_a?(String) ? f.to_sym : f }
         # default to a flat representation of the model's attributes if left unspecified
-        strong_params = strong_params.blank? ? model.attribute_names.map(&:to_sym) - %i(id updated_at created_at) : strong_params
+        strong_params = model.attribute_names.map(&:to_sym) - %i(id updated_at created_at) if strong_params.blank?
 
         # The strong params will be the same for all routes, differing from the Grape params
         # when routes are nested
@@ -291,16 +296,19 @@ module IntrospectiveGrape
         reflection  = parent_model&.reflections&.fetch(reflection_name)
         swagger_key = IntrospectiveGrape.config.camelize_parameters ? "#{name.singularize.camelize(:lower)}Id" : "#{name.singularize}_id"
 
-        routes.push OpenStruct.new( # rubocop:disable Style/OpenStructUse
-          klass: self, name: name, param: "#{name}_attributes", model: model,
-          many?: plural?(parent_model, reflection),
-          key: "#{name.singularize}_id".to_sym,
+        routes.push Route.new(
+          klass: self,
+          name: name,
+          param: "#{name}_attributes",
+          model: model,
+          many: plural?(parent_model, reflection),
+          key: :"#{name.singularize}_id",
           swagger_key: swagger_key, reflection: reflection
         )
       end
 
       def plural?(model, reflection)
-        (model && PLURAL_REFLECTIONS.include?(reflection.class))
+        model && PLURAL_REFLECTIONS.include?(reflection.class)
       end
 
       def build_nested_attributes(routes, hash)

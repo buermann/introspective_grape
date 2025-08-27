@@ -9,8 +9,9 @@ class Company < AbstractAdapter
 
   has_many :projects, foreign_key: :owner_id, dependent: :destroy, inverse_of: :owner
 
-  validates_length_of :name, maximum: 256
-  validates_length_of :short_name, maximum: 10
+  # leave these to validates_by_schema:
+  # validates_length_of :name, maximum: 256
+  # validates_length_of :short_name, maximum: 10
 
   def self.grape_validations
     {

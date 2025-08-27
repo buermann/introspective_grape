@@ -21,3 +21,4 @@ gem 'pundit'
 
 gem 'rack-cors'
 gem 'sqlite3'
+gem 'validates_by_schema'

@@ -15,17 +15,18 @@
 
 IntrospectiveGrape is a rails plugin for DRYing up
 [Grape APIs](https://github.com/ruby-grape/grape) by laying out simple
-(or, if you like, very complex) RESTful defaults based on the introspection of your database by
-[SchemaPlusValidations](https://github.com/SchemaPlus/schema_validations).
+(or, if you like, very complex) RESTful defaults based on your database schema.
 
 IntrospectiveGrape provides handling for deeply nested relations according to the models'
 `accepts_nested_attributes_for` declarations, generating all the necessary
-boilerplate for flexible and consistent bulk endpoints on plural associations,
-and building nested routes for the same.
+boilerplate for flexible and consistent bulk endpoints on plural associations
+and building the deeply nested routes for acting upon individual records.
 
 It relies on [Kaminari](https://github.com/kaminari/kaminari) for pagination and [Pundit](https://github.com/varvet/pundit) for authorization, both of which are semi-optional.
 
-To facilitate idiomatic ruby and javascript, respectively, it also makes it easy to snakecase incoming parameters and camelize outputs, all the way through to your swagger docs.
+To facilitate idiomatic ruby and javascript, respectively, it makes it trivial to snakecase
+incoming parameters and camelize outputs, all the way through to your automatically generated
+swagger documentation.
 
 ## Documentation
 
@@ -50,11 +51,9 @@ class MyAPI < Grape::API
 end
 ```
 
-This also monkey patches Grape::Swagger to camelize your API's self-documentation, while snakecasing parameters passed to your API.
+This also monkey-patches Grape::Swagger to camelize your API's self-documentation, while snakecasing parameters passed to your API.
 
-To include this behavior in your test coverage you need to either access the API's params hash or you can format the response body to `JSON.parse(response.body).with_snake_keys` in a helper method with the `using CamelSnakeKeys` refinement.
-
-If you need to disable all camel-snake transliteration set `IntrospectiveGrape.config.camelize_parameters = false` down in `config/initializers` and do not `require` or `formatter` those patches.
+If you prefer to disable all camel-snake transliterations set `IntrospectiveGrape.config.camelize_parameters = false` down in `config/initializers`.
 
 ## Authentication and authorization
 
@@ -66,7 +65,7 @@ IntrospectiveGrape::API.authentication_method = "whatever!"
 
 Pundit authorization is invoked against index?, show?, update?, create?, and destroy? methods with the model instance in question (or a new instance in the case of index).
 
-The joke goes that you may find you need to allow an unauthenticated user to attempt a log in, which can be handled with something like:
+The joke goes that you may find you need to allow an unauthenticated user to attempt a log in, which can be handled by authorizing non-users at that endpoint with something like:
 
 ```
   def authorize!
@@ -86,10 +85,10 @@ IntrospectiveGrape's parameterization of a model begins with the `restful` decla
 The simplest app/api/v1/my_model_api.rb with the broadest functionality would look like:
 
 ```
-class MyModelAPI < IntrospectiveGrape::API
+class MyModelApi < IntrospectiveGrape::API
   filter_on :all
 
-  restful MyModel, [:strong, :param, :fields, :and, { nested_model_attributes: [:nested,:fields, :_destroy] }]
+  restful MyModel, [:strong, :param, :fields, :and, { nested_model_attributes: [:nested, :fields, :_destroy] }]
 
   class <NestedModel>Entity < Grape::Entity
     expose :id, :attribute
@@ -105,9 +104,9 @@ end
 
 This would set up all the basic RESTFUL actions with nested routes for the associated model and its association, providing a good deal of flexibility for API consumers out of the box.
 
-IntrospectiveGrape looks in the MyModelAPI class for grape-entity definitions. If you prefer to define your entities elsewhere you could inherit them here instead.
+IntrospectiveGrape looks in the `MyModelApi` class for grape-entity definitions. If you prefer to define your entities elsewhere you can import them here instead.
 
-NOTE: Nested entities must be defined before their parents, inside-out, or you'll run into loading errors.
+NOTE: Nested entities defined in the mounted API classes must be defined before their parents, inside-out, or you'll run into load errors.
 
 ## Customizing End Points
 
@@ -141,8 +140,6 @@ class MyModelAPI < IntrospectiveGrape::API
   end
 end
 ```
-
-Please note, again, that the nested Grape::Entity is declared before its parent.
 
 ## Skipping a Presence Validation for a Required Field
 

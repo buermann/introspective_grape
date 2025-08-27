@@ -1,4 +1,4 @@
-class Dummy::LocationAPI < IntrospectiveGrape::API
+class Dummy::LocationApi < IntrospectiveGrape::API
   exclude_actions Location, :none
   include_actions LocationBeacon, :index
   include_actions LocationGps, :index

@@ -5,6 +5,8 @@ class User < AbstractAdapter
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :trackable, :validatable, :lockable
 
+  validates_by_schema except: :encrypted_password
+
   scope :active,   -> { where(:locked_at => nil) }
   scope :inactive, -> { where('locked_at is not null') }
 

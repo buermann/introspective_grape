@@ -1,4 +1,4 @@
-class Dummy::ProjectAPI < IntrospectiveGrape::API
+class Dummy::ProjectApi < IntrospectiveGrape::API
   include Grape::Kaminari
 
   default_includes Project, :owner, :admins, :user_project_jobs, project_jobs: [:job], teams: [:team_users]
@@ -43,7 +43,7 @@ class Dummy::ProjectAPI < IntrospectiveGrape::API
 
   class ProjectEntity < Grape::Entity
     expose :id, :name, :created_at, :updated_at
-    expose :owner,  using: Dummy::CompanyAPI::CompanyEntity
+    expose :owner,  using: Dummy::CompanyApi::CompanyEntity
     expose :admins, using: AdminEntity
     expose :project_jobs,      as: :jobs,      using: JobEntity
     expose :user_project_jobs, as: :user_jobs, using: UserJobEntity

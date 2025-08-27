@@ -62,7 +62,7 @@ module IntrospectiveGrape
       if timestamp_filter(klass, model, field)
         dsl.optional field, type: klass.param_type(model, field), description: "Constrain #{field} by #{humanize_date_range(field)} date."
       elsif identifier_filter?(model, field)
-        dsl.optional field, type: Array[String], coerce_with: ->(val) { val.split(',') }, description: 'Filter by a comma separated list of unique identifiers.'
+        dsl.optional field, type: [String], coerce_with: ->(val) { val.split(',') }, description: 'Filter by a comma separated list of unique identifiers.'
       else
         dsl.optional field, type: klass.param_type(model, field), description: "Filter on #{field} by value."
       end
@@ -82,7 +82,9 @@ module IntrospectiveGrape
 
     def filter_doc
       <<-STR
-        JSON of conditions for query.  If you're familiar with ActiveRecord's query conventions you can build more complex filters, i.e. against included child associations, e.g.: {\"&lt;association_name&gt;_&lt;parent&gt;\":{\"field\":\"value\"}}
+  JSON of conditions for query.
+
+  If you're familiar with ActiveRecord's query conventions you can build more complex filters, i.e. against included child associations, e.g.: {"&lt;association_name&gt;_&lt;parent&gt;":{"field":"value"}}
       STR
     end
 
@@ -106,7 +108,7 @@ module IntrospectiveGrape
         records = apply_simple_filter(klass, model, params, records, field)
       end
 
-      klass.custom_filters.each do |filter, _details|
+      klass.custom_filters.each_key do |filter|
         records = records.send(filter, params[filter])
       end
 

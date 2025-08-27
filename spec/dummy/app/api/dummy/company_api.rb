@@ -1,4 +1,4 @@
-class Dummy::CompanyAPI < IntrospectiveGrape::API
+class Dummy::CompanyApi < IntrospectiveGrape::API
   paginate
 
   restful Company, [:id, :name, :short_name, :gizmos, :widgets, :sprockets] do

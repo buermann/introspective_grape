@@ -1,4 +1,4 @@
-class Dummy::RoleAPI < IntrospectiveGrape::API
+class Dummy::RoleApi < IntrospectiveGrape::API
   restful Role
 
   class RoleEntity < Grape::Entity

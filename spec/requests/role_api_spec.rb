@@ -1,5 +1,5 @@
 require 'rails_helper'
-describe Dummy::RoleAPI, type: :request do
+describe Dummy::RoleApi, type: :request do
   let(:role) { Role.last }
   let(:user) { User.last }
   let(:company) { Company.last }

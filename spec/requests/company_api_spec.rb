@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Dummy::CompanyAPI, type: :request do
+describe Dummy::CompanyApi, type: :request do
   context :default_values do
     it "should respect default values" do
       get '/api/v1/companies/special/list'

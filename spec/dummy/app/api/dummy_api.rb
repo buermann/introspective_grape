@@ -1,17 +1,16 @@
 require 'byebug'
 require 'grape-kaminari'
-class DummyAPI < Grape::API #::Instance
+class DummyApi < Grape::API #::Instance
   include Grape::Kaminari
+  include ErrorHandlers
 
   version 'v1', using: :path
   format    :json
   formatter :json, IntrospectiveGrape::Formatter::CamelJson
   default_format :json
 
-
-  include ErrorHandlers
   helpers PermissionsHelper
-  helpers APIHelpers
+  helpers AuthenticationHelper
 
   USER_NOT_CONFIRMED = 'user_not_confirmed'.freeze
   BAD_LOGIN          = 'bad_login'.freeze
@@ -33,11 +32,11 @@ class DummyAPI < Grape::API #::Instance
   end
 
   # Load the in-memory database for the test app
-  load "#{Rails.root}/db/schema.rb"
+  # load "#{Rails.root}/db/schema.rb"
 
   # Mount every api endpoint under app/api/dummy/.
   Dir.glob(Rails.root+"app"+"api"+'dummy'+'*.rb').each do |f|
-    api = "Dummy::#{File.basename(f, '.rb').camelize.sub(/Api$/,'API')}"
+    api = "Dummy::#{File.basename(f, '.rb').camelize}"
     api = api.constantize
     mount api if api.respond_to? :endpoints
   end

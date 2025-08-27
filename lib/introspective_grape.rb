@@ -9,6 +9,7 @@ module IntrospectiveGrape
   autoload :Helpers,        'introspective_grape/helpers'
   autoload :SnakeParams,    'introspective_grape/snake_params'
   autoload :Traversal,      'introspective_grape/traversal'
+  autoload :Route,          'introspective_grape/route'
 
   module Formatter
     autoload :CamelJson, 'introspective_grape/formatter/camel_json'

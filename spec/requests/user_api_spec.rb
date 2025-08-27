@@ -1,5 +1,5 @@
 require 'rails_helper'
-describe Dummy::UserAPI, type: :request do
+describe Dummy::UserApi, type: :request do
 
   let(:user) { User.last || User.make!}
   let(:company) { Company.last || Company.make! }

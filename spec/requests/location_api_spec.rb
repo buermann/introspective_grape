@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Dummy::LocationAPI, type: :request do
+describe Dummy::LocationApi, type: :request do
   include LocationHelper
 
   let(:location) { Location.find_by_name("TEST") }

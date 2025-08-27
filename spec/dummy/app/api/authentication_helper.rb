@@ -1,4 +1,4 @@
-module APIHelpers
+module AuthenticationHelper
   def current_user
     params[:api_key].present? && @user = User.find_by_authentication_token(params[:api_key])
     # for testing in situ

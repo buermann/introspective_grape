@@ -2,7 +2,7 @@ require 'introspective_grape/camel_snake'
 module RequestHelpers
 
   def json
-    @json ||= CamelSnakeKeys.snake_keys(JSON.parse(response.body), true)
+    @json ||= CamelSnakeKeys.snake_keys(JSON.parse(response.body))
   end
 
   def with_authentication(role=:superuser)
