@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails' # , '6.1' #, '> 5.2'
   s.add_dependency 'rack'
 
-  s.add_dependency 'grape' # , '1.6.0'
+  s.add_dependency 'grape', '< 3'
   s.add_dependency 'dry-types'
   s.add_dependency 'grape-entity'
   s.add_dependency 'grape-swagger'
