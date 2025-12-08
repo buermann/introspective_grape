@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 3.1'
 
-  s.add_dependency 'rails', '< 8.1'
+  s.add_dependency 'rails', '< 8.1', '>= 6'
   s.add_dependency 'rack'
 
   s.add_dependency 'grape', '< 3'
