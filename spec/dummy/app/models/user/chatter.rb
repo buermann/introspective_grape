@@ -69,7 +69,7 @@ module User::Chatter
   end
 
   def mark_as_read(chat)
-    ChatMessageUser.joins(:chat_message).where('read_at IS NULL AND chat_messages.chat_id = ? AND user_id = ?', chat.id, id).update_all(read_at: Time.now)
+    ChatMessageUser.joins(:chat_message).where('chat_message_users.read_at IS NULL AND chat_messages.chat_id = ? AND chat_message_users.user_id = ?', chat.id, id).update_all(read_at: Time.now)
   end
 
   def mark_messages_as_read(messages)

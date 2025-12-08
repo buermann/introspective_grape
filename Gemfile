@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 gemspec
 
-gem 'devise'
 gem 'grape-entity'
 gem 'grape-swagger'
 gem 'validates_by_schema'
@@ -18,6 +17,7 @@ gem 'validates_by_schema'
 
 
 group :development, :test do
+  gem 'activestorage'
   # testing
   gem 'brakeman'
   gem 'bundler-audit'
