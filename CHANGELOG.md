@@ -1,4 +1,9 @@
 
+0.7.1 12/08/2025
+================
+
+Lock grape to <3 until we make introspective_grape grape 3+ compatible.
+
 0.7.0 08/27/2025
 ================
 
